@@ -1,0 +1,27 @@
+{
+  "name": "nodejs-terminal-multispinner",
+  "version": "0.0.1",
+  "description": "Multiple spinners for the terminal",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm run test"
+  },
+  "keywords": [
+    "node",
+    "nodejs",
+    "node.js",
+    "multiple",
+    "multi",
+    "multispinner",
+    "spinner",
+    "spinners",
+    "console",
+    "cli",
+    "command-line",
+    "command",
+    "terminal"
+  ],
+  "author": "Juan Bautista Carpanelli",
+  "email": "juanbanelli@gmail.com",
+  "license": "MIT"
+}
