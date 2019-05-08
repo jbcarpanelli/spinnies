@@ -6,8 +6,11 @@ const cliCursor = require('cli-cursor');
 
 const MultiSpinner = {
   initialize(options = {}) {
-    this.options = {
+    this.options = { 
       color: 'white',
+      spinnerColor: 'greenBright',
+      successColor: 'green',
+      failColor: 'red',
       ...options
     };
     this.spinners = [];
@@ -19,8 +22,11 @@ const MultiSpinner = {
   add(text, options = {}) {
     this.spinners.push({
       text,
+      color: this.options.color,
+      spinnerColor: this.options.spinnerColor,
+      successColor: this.options.successColor,
+      failColor: this.options.failColor,
       status: 'spinning',
-      color: 'white',
       ...options,
       index: this.index,
     });
@@ -46,13 +52,13 @@ const MultiSpinner = {
   setStream(frame) {
     let stream = '';
     let line = '';
-    this.spinners.map(({ text, status, color }) => {
+    this.spinners.map(({ text, status, color, spinnerColor, successColor, failColor }) => {
       if (status === 'spinning') {
-        line = `${chalk[color](frame)} ${chalk[color](text)}`;
+        line = `${chalk[spinnerColor](frame)} ${chalk[color](text)}`;
       } else if (status === 'success') {
-        line = `${chalk.green('✓')} ${chalk[color](text)}`;
+        line = `${chalk.green('✓')} ${chalk[successColor](text)}`;
       } else if (status === 'fail') {
-        line = `${chalk.red('✖')} ${chalk[color](text)}`;
+        line = `${chalk.red('✖')} ${chalk[failColor](text)}`;
       } else {
         line = `- ${chalk[color](text)}`;
       }
