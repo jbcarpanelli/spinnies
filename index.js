@@ -6,7 +6,7 @@ const cliCursor = require('cli-cursor');
 
 const MultiSpinner = {
   initialize(options = {}) {
-    this.options = { 
+    this.options = {
       color: 'white',
       spinnerColor: 'greenBright',
       successColor: 'green',
@@ -35,6 +35,14 @@ const MultiSpinner = {
     return { index: this.index - 1, spinners: this.spinners };
   },
 
+  success(currentIndex, successText, options = {}) {
+    if (successText) this.spinners[currentIndex].text = successText;
+    this.spinners[currentIndex].status = 'success';
+    this.setOrUpdateSpinners();
+
+    return this.spinners[currentIndex];
+  },
+
   setOrUpdateSpinners() {
     clearInterval(this.currentInterval);
     this.hideCursor();
@@ -47,6 +55,8 @@ const MultiSpinner = {
       if (cont === frames.length - 1) cont = 0
       else cont ++;
     }, interval)
+
+    this.checkIfActiveSpinners();
   },
 
   setStream(frame) {
@@ -65,6 +75,21 @@ const MultiSpinner = {
       stream += `${line}\n`;
     });
     this.writeStream(stream);
+  },
+
+  checkIfActiveSpinners() {
+    const interval = 80;
+    if (!this.hasActiveSpinners()) {
+      setTimeout(() => {
+        clearInterval(this.currentInterval);
+        this.currentInterval = null;
+        this.spinners.forEach(() => console.log())
+      }, interval + 1);
+    }
+  },
+
+  hasActiveSpinners() {
+    return !!this.spinners.find(({ status }) => status === 'spinning')
   },
 
   hideCursor() {
