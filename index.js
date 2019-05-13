@@ -7,7 +7,7 @@ const spinnerDots = require('./spinner');
 
 const MultiSpinner = {
   initialize(options = {}) {
-    this.options = {
+    this.options = { 
       color: 'white',
       spinnerColor: 'greenBright',
       successColor: 'green',
@@ -35,6 +35,25 @@ const MultiSpinner = {
     this.index += 1;
     this.setOrUpdateSpinners();
     return { index: this.index - 1, spinners: this.spinners };
+  },
+
+  update(currentIndex, newText, options = {}) {
+    const { color } = options;
+    if (color) this.spinners[currentIndex].color = color;
+    this.spinners[currentIndex].text = newText;
+    this.setOrUpdateSpinners();
+
+    return this.spinners[currentIndex];
+  },
+
+  fail(currentIndex, failText, options = {}) {
+    const { color } = options;
+    if (color) this.spinners[currentIndex].color = color;
+    if (failText) this.spinners[currentIndex].text = failText;
+    this.spinners[currentIndex].status = 'fail';
+    this.setOrUpdateSpinners();
+
+    return this.spinners[currentIndex];
   },
 
   success(currentIndex, successText, options = {}) {
@@ -107,5 +126,10 @@ const MultiSpinner = {
     readline.moveCursor(process.stderr, 0, -this.spinners.length);
   },
 }
+
+process.on('SIGINT', function() {
+  MultiSpinner.spinners.map(() => console.log())
+  process.exit();
+});
 
 module.exports = MultiSpinner;
