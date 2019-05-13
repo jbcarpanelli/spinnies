@@ -3,6 +3,7 @@
 const readline = require('readline');
 const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
+const spinnerDots = require('./spinner');
 
 const MultiSpinner = {
   initialize(options = {}) {
@@ -17,6 +18,7 @@ const MultiSpinner = {
     this.index = 0;
     this.isCursorHidden = false;
     this.currentInterval = null;
+    this.enabled = this.options.enabled && process.stderr.isTTY && !process.env.NODE_ENV === 'test' && !process.env.CI
   },
 
   add(text, options = {}) {
@@ -36,6 +38,8 @@ const MultiSpinner = {
   },
 
   success(currentIndex, successText, options = {}) {
+    const { color } = options;
+    if (color) this.spinners[currentIndex].color = color;
     if (successText) this.spinners[currentIndex].text = successText;
     this.spinners[currentIndex].status = 'success';
     this.setOrUpdateSpinners();
@@ -46,8 +50,7 @@ const MultiSpinner = {
   setOrUpdateSpinners() {
     clearInterval(this.currentInterval);
     this.hideCursor();
-    const frames = ['-', '|'];
-    const interval = 80;
+    const { frames, interval } = spinnerDots;
     let cont = 0
 
     this.currentInterval = setInterval(() => {
@@ -78,7 +81,7 @@ const MultiSpinner = {
   },
 
   checkIfActiveSpinners() {
-    const interval = 80;
+    const { interval } = spinnerDots;
     if (!this.hasActiveSpinners()) {
       setTimeout(() => {
         clearInterval(this.currentInterval);
