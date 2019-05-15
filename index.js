@@ -122,6 +122,11 @@ const MultiSpinner = {
   },
 
   writeStream(stream) {
+    this.spinners.forEach(({ text }, index) => {
+      readline.moveCursor(process.stderr, text.length + 2, index);
+      readline.clearLine(process.stderr, 1);
+      readline.moveCursor(process.stderr, -(text.length + 2), -index);
+    });
     process.stderr.write(stream);
     readline.moveCursor(process.stderr, 0, -this.spinners.length);
   },
