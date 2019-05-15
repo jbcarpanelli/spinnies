@@ -1,3 +1,3 @@
-# NodeJS terminal multispinner _(nodejs-terminal-multispinner)_
-> A multispinner for the terminal written for node.js
+# NodeJS terminal multispinner
+> A multispinner for the terminal written in javascript for node.js
 
