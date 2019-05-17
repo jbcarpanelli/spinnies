@@ -15,7 +15,6 @@ const MultiSpinner = {
       ...options
     };
     this.spinners = {};
-    this.index = 0;
     this.isCursorHidden = false;
     this.currentInterval = null;
     this.enabled = this.options.enabled && process.stderr.isTTY && !process.env.NODE_ENV === 'test' && !process.env.CI
@@ -30,9 +29,7 @@ const MultiSpinner = {
       failColor: this.options.failColor,
       status: 'spinning',
       ...options,
-      index: this.index,
     };
-    this.index += 1;
     this.setOrUpdateSpinners();
     return this.spinners[name];
   },
