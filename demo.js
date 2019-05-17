@@ -2,42 +2,42 @@ const spinners = require('./index');
 
 spinners.initialize();
 
-spinners.add('first-spinner', 'Lorem Ipsum is simply dummy text');
+spinners.add('first-spinner', { text: 'Lorem Ipsum is simply dummy text' });
 
 setTimeout(() => {
-  spinners.add('second-spinner', 'I\'m line 2');
+  spinners.add('second-spinner', { text: 'I\'m line 2' });
 }, 3000)
 
 setTimeout(() => {
-  spinners.add('third-spinner', 'And I\'m ironman', { color: 'yellowBright' });
+  spinners.add('third-spinner', { text: 'And I\'m ironman', color: 'yellowBright' });
 }, 5000)
 
 setTimeout(() => {
-  spinners.add('spinner-that-changes', 'I\'m another spinner that would love to make some friends!');
+  spinners.add('spinner-that-changes', { text: 'I\'m another spinner that would love to make some friends!' });
 }, 7000)
 
 setTimeout(() => {
-  spinners.add('non-spinnable', 'Im a non-spinnable line', { status: 'none' });
+  spinners.add('non-spinnable', { text: 'Im a non-spinnable line',  status: 'none' });
 }, 8000)
 
 setTimeout(() => {
-  spinners.fail('second-spinner', 'And I failed :\\');
+  spinners.fail('second-spinner', { text: 'And I failed :\\' });
 }, 9000)
 
 setTimeout(() => {
-  spinners.success('first-spinner', 'I\'m the updated (and optional) success message', { color: 'magenta' });
+  spinners.success('first-spinner', { text: 'I\'m the updated (and optional) success message', color: 'magenta' });
 }, 10000)
 
 setTimeout(() => {
-  spinners.update('third-spinner', 'I have been updated :D', { color: 'yellow' });
+  spinners.update('third-spinner', { text: 'I have been updated :D', color: 'yellow', spinnerColor: 'blue' });
 }, 12000)
 
 setTimeout(() => {
-  spinners.update('third-spinner', 'I have been updated again :D', { color: 'cyan' });
+  spinners.update('third-spinner', { text: 'I have been updated again :D', color: 'cyan' });
 }, 14500)
 
 setTimeout(() => {
-  spinners.update('third-spinner', 'Again, with fancy colors!', { color: 'magenta' });
+  spinners.update('third-spinner', { text: 'Again, with fancy colors!',  color: 'magenta' });
 }, 17000)
 
 setTimeout(() => {
@@ -45,5 +45,5 @@ setTimeout(() => {
 }, 20000)
 
 setTimeout(() => {
-  spinners.success('spinner-that-changes', 'Bye!', { successColor: 'blue' });
+  spinners.success('spinner-that-changes', { text: 'Bye!', successColor: 'blue' });
 }, 18000);

@@ -3,7 +3,7 @@
 const readline = require('readline');
 const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
-const spinnerDots = require('./spinner');
+const dots = require('./spinner');
 
 const MultiSpinner = {
   initialize(options = {}) {
@@ -20,9 +20,8 @@ const MultiSpinner = {
     this.enabled = this.options.enabled && process.stderr.isTTY && !process.env.NODE_ENV === 'test' && !process.env.CI
   },
 
-  add(name, text, options = {}) {
+  add(name, options = {}) {
     this.spinners[name] = {
-      text,
       color: this.options.color,
       spinnerColor: this.options.spinnerColor,
       successColor: this.options.successColor,
@@ -31,44 +30,37 @@ const MultiSpinner = {
       ...options,
     };
     this.setOrUpdateSpinners();
+
     return this.spinners[name];
   },
 
-  update(name, newText, options = {}) {
-    const { color } = options;
+  update(name, options = {}) {
+    this.setOrUpdateSpinners(name, options);
+    return this.spinners[name];
+  },
+
+  success(name, options = {}) {
+    this.setOrUpdateSpinners(name, options, 'success');
+    return this.spinners[name];
+  },
+
+  fail(name, options = {}) {
+    this.setOrUpdateSpinners(name, options, 'fail');
+    return this.spinners[name];
+  },
+
+  setOrUpdateSpinners(name, options = {}, status) {
+    const { text, color } = options;
+    const { frames, interval } = dots;
+
     if (color) this.spinners[name].color = color;
-    this.spinners[name].text = newText;
-    this.setOrUpdateSpinners();
+    if (text) this.spinners[name].text = text;
+    if (status) this.spinners[name].status = status;
 
-    return this.spinners[name];
-  },
-
-  fail(name, failText, options = {}) {
-    const { color } = options;
-    if (color) this.spinners[name].color = color;
-    if (failText) this.spinners[name].text = failText;
-    this.spinners[name].status = 'fail';
-    this.setOrUpdateSpinners();
-
-    return this.spinners[name];
-  },
-
-  success(name, successText, options = {}) {
-    const { color } = options;
-    if (color) this.spinners[name].color = color;
-    if (successText) this.spinners[name].text = successText;
-    this.spinners[name].status = 'success';
-    this.setOrUpdateSpinners();
-
-    return this.spinners[name];
-  },
-
-  setOrUpdateSpinners() {
     clearInterval(this.currentInterval);
     this.hideCursor();
-    const { frames, interval } = spinnerDots;
-    let cont = 0
 
+    let cont = 0;
     this.currentInterval = setInterval(() => {
       this.setStream(frames[cont]);
       if (cont === frames.length - 1) cont = 0
@@ -79,8 +71,9 @@ const MultiSpinner = {
   },
 
   setStream(frame) {
+    let line;
     let stream = '';
-    let line = '';
+
     Object.values(this.spinners)
       .map(({ text, status, color, spinnerColor, successColor, failColor }) => {
         if (status === 'spinning') {
@@ -94,11 +87,12 @@ const MultiSpinner = {
         }
         stream += `${line}\n`;
       });
+
     this.writeStream(stream);
   },
 
   checkIfActiveSpinners() {
-    const { interval } = spinnerDots;
+    const { interval } = dots;
     if (!this.hasActiveSpinners()) {
       setTimeout(() => {
         clearInterval(this.currentInterval);
