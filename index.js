@@ -5,6 +5,8 @@ const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const dots = require('./spinner');
 
+const VALID_STATUSES = ['success', 'fail', 'spinning', 'non-spinnable', 'stopped'];
+
 const MultiSpinner = {
   initialize(options = {}) {
     this.options = { 
@@ -21,6 +23,8 @@ const MultiSpinner = {
   },
 
   add(name, options = {}) {
+    const { status } = options;
+    if (status && !VALID_STATUSES.includes(status)) delete options.status;
     this.spinners[name] = {
       color: this.options.color,
       spinnerColor: this.options.spinnerColor,
@@ -56,6 +60,20 @@ const MultiSpinner = {
     return this.spinners[name];
   },
 
+  stopAll() {
+    Object.keys(this.spinners)
+      .forEach(name => {
+        const { status } = this.spinners[name];
+        if (status !== 'fail' && status !== 'success' && status !== 'non-spinnable') {
+          this.spinners[name].status = 'stopped';
+          this.spinners[name].color = 'grey';
+        }
+      });
+    this.checkIfActiveSpinners();
+
+    return this.spinners;
+  },
+
   setSpinnerProperties(name, options, status) {
     const { text, color, successColor, failColor, spinnerColor } = options;
     const properties = { text, color, successColor, failColor, spinnerColor, status };
@@ -84,7 +102,6 @@ const MultiSpinner = {
   setStream(frame) {
     let line;
     let stream = '';
-
     Object.values(this.spinners)
       .map(({ text, status, color, spinnerColor, successColor, failColor }) => {
         if (status === 'spinning') {

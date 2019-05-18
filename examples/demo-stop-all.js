@@ -1,4 +1,4 @@
-const spinners = require('./index');
+const spinners = require('..');
 
 spinners.initialize();
 
@@ -17,10 +17,6 @@ setTimeout(() => {
 }, 7000)
 
 setTimeout(() => {
-  spinners.add('non-spinnable', { text: 'Im a non-spinnable line',  status: 'none' });
-}, 8000)
-
-setTimeout(() => {
   spinners.fail('second-spinner', { text: 'And I failed :\\' });
 }, 9000)
 
@@ -37,13 +33,5 @@ setTimeout(() => {
 }, 14500)
 
 setTimeout(() => {
-  spinners.update('third-spinner', { text: 'Again, with fancy colors!',  color: 'magenta' });
-}, 17000)
-
-setTimeout(() => {
-  spinners.success('third-spinner');
-}, 20000)
-
-setTimeout(() => {
-  spinners.success('spinner-that-changes', { text: 'Bye!', successColor: 'blue' });
-}, 18000);
+  spinners.stopAll();
+}, 15000)
