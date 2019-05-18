@@ -29,38 +29,49 @@ const MultiSpinner = {
       status: 'spinning',
       ...options,
     };
-    this.setOrUpdateSpinners();
+    this.updateSpinnerState();
 
     return this.spinners[name];
   },
 
   update(name, options = {}) {
-    this.setOrUpdateSpinners(name, options);
+    const { status } = options
+    this.setSpinnerProperties(name, options, status);
+    this.updateSpinnerState();
+
     return this.spinners[name];
   },
 
   success(name, options = {}) {
-    this.setOrUpdateSpinners(name, options, 'success');
+    this.setSpinnerProperties(name, options, 'success');
+    this.updateSpinnerState();
+
     return this.spinners[name];
   },
 
   fail(name, options = {}) {
-    this.setOrUpdateSpinners(name, options, 'fail');
+    this.setSpinnerProperties(name, options, 'fail');
+    this.updateSpinnerState();
+
     return this.spinners[name];
   },
 
-  setOrUpdateSpinners(name, options = {}, status) {
-    const { text, color } = options;
-    const { frames, interval } = dots;
+  setSpinnerProperties(name, options, status) {
+    const { text, color, successColor, failColor, spinnerColor } = options;
+    const properties = { text, color, successColor, failColor, spinnerColor, status };
+    Object.keys(properties).forEach(key => {
+      if (!properties[key]) delete properties[key];
+    });
 
-    if (color) this.spinners[name].color = color;
-    if (text) this.spinners[name].text = text;
-    if (status) this.spinners[name].status = status;
+    this.spinners[name] = { ...this.spinners[name], ...properties };
+  },
+
+  updateSpinnerState(name, options = {}, status) {
+    const { frames, interval } = dots;
+    let cont = 0;
 
     clearInterval(this.currentInterval);
     this.hideCursor();
-
-    let cont = 0;
     this.currentInterval = setInterval(() => {
       this.setStream(frames[cont]);
       if (cont === frames.length - 1) cont = 0
@@ -96,15 +107,13 @@ const MultiSpinner = {
     if (!this.hasActiveSpinners()) {
       setTimeout(() => {
         clearInterval(this.currentInterval);
-        this.currentInterval = null;
-        Object.keys(this.spinners).forEach(() => console.log())
+        readline.moveCursor(process.stderr, 0, Object.keys(this.spinners).length);
       }, interval + 1);
     }
   },
 
   hasActiveSpinners() {
-    return !!Object.values(this.spinners)
-      .find(({ status }) => status === 'spinning')
+    return !!Object.values(this.spinners).find(({ status }) => status === 'spinning')
   },
 
   hideCursor() {
@@ -127,7 +136,7 @@ const MultiSpinner = {
 }
 
 process.on('SIGINT', function() {
-  Object.keys(MultiSpinner.spinners).map(() => console.log())
+  Object.keys(MultiSpinner.spinners).forEach(() => console.log())
   process.exit();
 });
 
