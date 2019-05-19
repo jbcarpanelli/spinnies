@@ -5,10 +5,11 @@ const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const dots = require('./spinner');
 
-const { purgeSpinnerOptions, isValidStatus } = require('./utils');
+const { purgeSpinnerOptions, purgeSpinnersOptions, isValidStatus } = require('./utils');
 
 class Spinners {
   constructor(options = {}) {
+    options = purgeSpinnersOptions(options);
     this.options = { 
       color: 'white',
       spinnerColor: 'greenBright',
