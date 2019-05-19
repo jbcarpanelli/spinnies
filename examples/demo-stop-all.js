@@ -1,6 +1,6 @@
-const spinners = require('..');
+const Spinners = require('..');
 
-spinners.initialize();
+const spinners = new Spinners();
 
 spinners.add('first-spinner', { text: 'Lorem Ipsum is simply dummy text' });
 

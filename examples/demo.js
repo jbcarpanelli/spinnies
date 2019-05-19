@@ -1,8 +1,18 @@
-const spinners = require('..');
+const Spinners = require('..');
 
-spinners.initialize();
+const fruits = { 
+  interval: 150,
+  frames: ['🍇', '🍈', '🍉', '🍋']
+}
+const spinners = new Spinners({
+  spinner: fruits,
+  color: 'blue',
+  successColor: 'green',
+  failColor: 'black',
+  spinnerColor: 'red'
+});
 
-spinners.add('first-spinner', { text: 'Lorem Ipsum is simply dummy text' });
+spinners.add('first-spinner', { text: 'Lorem Ipsum is simply dummy text', color: 'white' });
 
 setTimeout(() => {
   spinners.add('second-spinner', { text: 'I\'m line 2' });
