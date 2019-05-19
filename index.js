@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const dots = require('./spinner');
 
-const VALID_STATUSES = ['success', 'fail', 'spinning', 'non-spinnable', 'stopped'];
+const { purgeInvalidOptions, isValidStatus } = require('./utils');
 
 const MultiSpinner = {
   initialize(options = {}) {
@@ -23,13 +23,13 @@ const MultiSpinner = {
   },
 
   add(name, options = {}) {
-    const { status } = options;
-    if (status && !VALID_STATUSES.includes(status)) delete options.status;
+    const { status, text } = options;
+    options = purgeInvalidOptions(options);
+    if (!name || typeof name !== 'string') throw Error('A spinner reference name must be specified');
+    if (!text) throw Error('An initial spinner text must be specified');
+    if (!status || !isValidStatus(status)) delete options.status;
     this.spinners[name] = {
-      color: this.options.color,
-      spinnerColor: this.options.spinnerColor,
-      successColor: this.options.successColor,
-      failColor: this.options.failColor,
+      ...this.options,
       status: 'spinning',
       ...options,
     };
@@ -39,7 +39,7 @@ const MultiSpinner = {
   },
 
   update(name, options = {}) {
-    const { status } = options
+    const { status } = options;
     this.setSpinnerProperties(name, options, status);
     this.updateSpinnerState();
 
@@ -75,13 +75,11 @@ const MultiSpinner = {
   },
 
   setSpinnerProperties(name, options, status) {
-    const { text, color, successColor, failColor, spinnerColor } = options;
-    const properties = { text, color, successColor, failColor, spinnerColor, status };
-    Object.keys(properties).forEach(key => {
-      if (!properties[key]) delete properties[key];
-    });
+    if (!name || typeof name !== 'string') throw Error('A spinner reference name must be specified');
+    options = purgeInvalidOptions(options);
+    status = status || 'spinning';
 
-    this.spinners[name] = { ...this.spinners[name], ...properties };
+    this.spinners[name] = { ...this.spinners[name], ...options, status };
   },
 
   updateSpinnerState(name, options = {}, status) {
