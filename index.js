@@ -119,11 +119,10 @@ class Spinners {
   checkIfActiveSpinners() {
     const { interval } = this.options.spinner;
     if (!this.hasActiveSpinners()) {
-      setTimeout(() => {
-        clearInterval(this.currentInterval);
-        readline.moveCursor(process.stderr, 0, Object.keys(this.spinners).length);
-        cliCursor.show();
-      }, interval + 1);
+      clearInterval(this.currentInterval);
+      this.setStream();
+      readline.moveCursor(process.stderr, 0, Object.keys(this.spinners).length);
+      cliCursor.show();
     }
   }
 
