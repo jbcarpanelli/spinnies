@@ -67,7 +67,7 @@ describe('utils', () => {
     });
 
     describe('#purgeSpinnerOptions', () => {
-      context('when providing ivalid status and name', () => {
+      context('when providing valid status and name', () => {
         it('persist them', () => {
           const options = purgeSpinnerOptions({ ...this.colors, text: 'text', status: 'success' });
           expect(options).to.include({ ...this.colors, text: 'text', status: 'success' });

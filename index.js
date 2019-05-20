@@ -30,13 +30,15 @@ class Spinners {
   add(name, options = {}) {
     if (typeof name !== 'string') throw Error('A spinner reference name must be specified');
     if (!options.text) options.text = name;
-    this.spinners[name] = {
+    const spinnerProperties = {
       ...colorOptions(this.options),
       status: 'spinning',
       ...purgeSpinnerOptions(options),
     };
+    this.spinners[name] = spinnerProperties;
     this.updateSpinnerState();
-    return this.spinners[name];
+
+    return spinnerProperties;
   }
 
   update(name, options = {}) {
@@ -76,6 +78,7 @@ class Spinners {
 
   setSpinnerProperties(name, options, status) {
     if (typeof name !== 'string') throw Error('A spinner reference name must be specified');
+    if (!this.spinners[name]) throw Error(`No spinner initialized with name ${name}`);
     options = purgeSpinnerOptions(options);
     status = status || 'spinning';
 
@@ -122,6 +125,7 @@ class Spinners {
       clearInterval(this.currentInterval);
       this.setStream();
       readline.moveCursor(process.stderr, 0, Object.keys(this.spinners).length);
+      this.spinners = {};
       cliCursor.show();
     }
   }

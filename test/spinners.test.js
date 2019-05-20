@@ -88,11 +88,11 @@ describe('MultiSpinner', () => {
 
       describe('#stopAll', () => {
         it('sets non-finished spinners as stopped', () => {
-          this.spinners.stopAll();
           const spinner = this.spinners.success('spinner');
           const anotherSpinner = this.spinners.fail('another-spinner');
           const nonSpinnable = this.spinners.pickSpinner('non-spinnable');
           const thirdSpinner = this.spinners.pickSpinner('third-spinner');
+          this.spinners.stopAll();
 
           expect(spinner.status).to.eq('success');
           expect(anotherSpinner.status).to.eq('fail');

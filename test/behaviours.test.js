@@ -19,6 +19,12 @@ function expectToBehaveLikeAnUpdate(self, status) {
       });
     });
 
+    context('when specifying a non-existent spinner name', () => {
+      it('throws an error', () => {
+        expect(() => self.spinners[status]('i-dont-exist')).to.throw('No spinner initialized with name i-dont-exist')
+      });
+    });
+
     context('when specifying options', () => {
       context('when options are correct', () => {
         it('overrides the default options', () => {
