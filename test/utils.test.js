@@ -2,7 +2,7 @@
 
 const expect = require('chai').expect
 
-const { purgeSpinnersOptions, purgeSpinnerOptions, colorOptions } = require('../utils');
+const { purgeSpinnersOptions, purgeSpinnerOptions, colorOptions, breakText } = require('../utils');
 
 describe('utils', () => {
   beforeEach('set options', () => {
@@ -79,6 +79,31 @@ describe('utils', () => {
           const options = purgeSpinnerOptions({ ...this.colors, text: 3, status: 'foo' });
           expect(options).to.include(this.colors);
           expect(options).to.not.have.any.keys('text', 'status');
+        });
+      });
+    });
+
+    describe('#breakText', () => {
+      beforeEach(() => {
+        this.columns = process.stderr.columns;
+        process.stderr.columns = 10;
+      });
+
+      afterEach(() => {
+        process.stderr.columns = this.columns;
+      });
+
+      context('when number of lines in text is greater than the columns length', () => {
+        it('adds line-breaks to the given text', () => {
+          const text = breakText(new Array(101).join('a'));
+          expect(text.split('\n')).to.have.lengthOf(Math.ceil(100/7));
+        });
+      });
+
+      context('when number of lines in text is less than the columns length', () => {
+        it('does not add line-breaks to the given text', () => {
+          const text = '12345';
+          expect(text.split('\n')).to.have.lengthOf(1);
         });
       });
     });

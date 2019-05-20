@@ -55,7 +55,6 @@ function expectToBehaveLikeAnUpdate(self, status) {
   });
 }
 
-
 module.exports = {
   expectToBehaveLikeAnUpdate,
 }

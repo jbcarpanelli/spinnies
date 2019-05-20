@@ -8,8 +8,8 @@ const spinners = new Spinners({
   spinner: fruits,
   color: 'blue',
   successColor: 'green',
-  failColor: 'black',
-  spinnerColor: 'red'
+  failColor: 'red',
+  spinnerColor: 'blueBright'
 });
 
 spinners.add('first-spinner', { text: 'Lorem Ipsum is simply dummy text', color: 'white' });
@@ -23,7 +23,7 @@ setTimeout(() => {
 }, 5000)
 
 setTimeout(() => {
-  spinners.add('spinner-that-changes', { text: 'I\'m another spinner that would love to make some friends!' });
+  spinners.add('spinner-that-changes', { text: 'I am another spinner that would love to make some friends! Also I am very long, but I break into two or more lines if needed' });
 }, 7000)
 
 setTimeout(() => {

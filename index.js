@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const dots = require('./spinner');
 
-const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions } = require('./utils');
+const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText } = require('./utils');
 
 class Spinners {
   constructor(options = {}) {
@@ -103,8 +103,10 @@ class Spinners {
   setStream(frame) {
     let line;
     let stream = '';
-    Object.values(this.spinners)
-      .map(({ text, status, color, spinnerColor, successColor, failColor }) => {
+    const rawTextLines = [];
+    Object.values(this.spinners).map(({ text, status, color, spinnerColor, successColor, failColor }) => {
+        text = breakText(text);
+        rawTextLines.push(...text.split('\n'));
         if (status === 'spinning') {
           line = `${chalk[spinnerColor](frame)} ${chalk[color](text)}`;
         } else if (status === 'success') {
@@ -116,7 +118,8 @@ class Spinners {
         }
         stream += `${line}\n`;
       });
-    this.writeStream(stream);
+    this.cleanStream(rawTextLines);
+    this.writeStream(stream, rawTextLines);
   }
 
   checkIfActiveSpinners() {
@@ -127,12 +130,12 @@ class Spinners {
       readline.moveCursor(process.stderr, 0, Object.keys(this.spinners).length);
       this.spinners = {};
       cliCursor.show();
+      this.isCursorHidden = false;
     }
   }
 
   hasActiveSpinners() {
-    return !!Object.values(this.spinners)
-      .find(({ status }) => status === 'spinning')
+    return !!Object.values(this.spinners).find(({ status }) => status === 'spinning')
   }
 
   hideCursor() {
@@ -142,14 +145,20 @@ class Spinners {
     }
   }
 
-  writeStream(stream) {
-    Object.values(this.spinners).forEach(({ text }, index) => {
-      readline.moveCursor(process.stderr, text.length + 2, index);
-      readline.clearLine(process.stderr, 1);
-      readline.moveCursor(process.stderr, -(text.length + 2), -index);
-    });
+  writeStream(stream, rawTextLines) {
     process.stderr.write(stream);
-    readline.moveCursor(process.stderr, 0, -Object.keys(this.spinners).length);
+    readline.moveCursor(process.stderr, 0, -rawTextLines.length);
+  }
+
+  cleanStream(rawTextLines) {
+    rawTextLines.forEach((text, index) => {
+      readline.moveCursor(process.stderr, text.length, index);
+      readline.clearLine(process.stderr, 1);
+      readline.moveCursor(process.stderr, -text.length, -index);
+    });
+    readline.moveCursor(process.stderr, 0, rawTextLines.length);
+    readline.clearScreenDown(process.stderr);
+    readline.moveCursor(process.stderr, 0, -rawTextLines.length);
   }
 }
 

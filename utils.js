@@ -35,8 +35,16 @@ function colorOptions({ color, successColor, failColor, spinnerColor }) {
   return colors;
 }
 
+function breakText(text) {
+  const columns = process.stderr.columns || 95;
+  return text.length >= columns - 3
+    ? `${text.substring(0, columns - 3)}\n${breakText(text.substring(columns - 3, text.length))}`
+    : text;
+}
+
 module.exports = {
   purgeSpinnersOptions,
   purgeSpinnerOptions,
   colorOptions,
+  breakText,
 }
