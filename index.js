@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const dots = require('./spinner');
 
-const { purgeSpinnerOptions, purgeSpinnersOptions, isValidStatus } = require('./utils');
+const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions } = require('./utils');
 
 class Spinners {
   constructor(options = {}) {
@@ -21,19 +21,19 @@ class Spinners {
     this.spinners = {};
     this.isCursorHidden = false;
     this.currentInterval = null;
-    // this.enabled = this.options.enabled && process.stderr.isTTY && !process.env.NODE_ENV === 'test' && !process.env.CI
+  }
+
+  pickSpinner(name) {
+    return this.spinners[name];
   }
 
   add(name, options = {}) {
-    const { status, text } = options;
-    options = purgeSpinnerOptions(options);
-    if (!name || typeof name !== 'string') throw Error('A spinner reference name must be specified');
-    if (!text) throw Error('An initial spinner text must be specified');
-    if (!status || !isValidStatus(status)) delete options.status;
+    if (typeof name !== 'string') throw Error('A spinner reference name must be specified');
+    if (!options.text) options.text = name;
     this.spinners[name] = {
-      ...this.options,
+      ...colorOptions(this.options),
       status: 'spinning',
-      ...options,
+      ...purgeSpinnerOptions(options),
     };
     this.updateSpinnerState();
     return this.spinners[name];
@@ -84,14 +84,14 @@ class Spinners {
 
   updateSpinnerState(name, options = {}, status) {
     const { frames, interval } = this.options.spinner;
-    let cont = 0;
+    let framePos = 0;
 
     clearInterval(this.currentInterval);
     this.hideCursor();
     this.currentInterval = setInterval(() => {
-      this.setStream(frames[cont]);
-      if (cont === frames.length - 1) cont = 0
-      else cont ++;
+      this.setStream(frames[framePos]);
+      if (framePos === frames.length - 1) framePos = 0
+      else framePos ++;
     }, interval)
 
     this.checkIfActiveSpinners();
@@ -122,6 +122,7 @@ class Spinners {
       setTimeout(() => {
         clearInterval(this.currentInterval);
         readline.moveCursor(process.stderr, 0, Object.keys(this.spinners).length);
+        cliCursor.show();
       }, interval + 1);
     }
   }

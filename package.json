@@ -4,7 +4,8 @@
   "description": "Multiple spinners for the terminal",
   "main": "index.js",
   "scripts": {
-    "test": "npm run test"
+    "test": "npx mocha test",
+    "demo": "node ./examples/demo.js"
   },
   "keywords": [
     "node",
@@ -27,5 +28,9 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "cli-cursor": "^3.0.0"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.1.4"
   }
 }
