@@ -13,6 +13,12 @@ function expectToBehaveLikeAnUpdate(self, status) {
       expect(anotherSpinner.status).to.eq('spinning');
     });
 
+    context('when not specifying a spinner name', () => {
+      it('throws an error', () => {
+          expect(() => self.spinners[status]({})).to.throw('A spinner reference name must be specified');
+      });
+    });
+
     context('when specifying options', () => {
       context('when options are correct', () => {
         it('overrides the default options', () => {
@@ -22,12 +28,21 @@ function expectToBehaveLikeAnUpdate(self, status) {
         });
       });
 
-
-      context('when options are not valid', () => {
+      context('when options have no valid values', () => {
         it('mantains the previous options', () => {
           const options = { text: 42, color: 'foo', spinnerColor: 'bar' };
           const spinner = self.spinners[currentStatus]('spinner', options);
           expect(spinner).to.include({ text: 'spinner', color: 'white', spinnerColor: 'greenBright' });
+        });
+      });
+
+      context('when specifying invalid attributes', () => {
+        it('ignores those attributes', () => {
+          const options = { text: 'updated text', color: 'black', spinnerColor: 'black' };
+          const invalidOptions = { foo: 42, bar: 'bar'}
+          const spinner = self.spinners[status]('spinner', options);
+          expect(spinner).to.include(options);
+          expect(spinner).to.not.have.any.keys('foo', 'bar');
         });
       });
     });

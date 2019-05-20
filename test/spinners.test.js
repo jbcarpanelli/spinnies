@@ -79,21 +79,24 @@ describe('MultiSpinner', () => {
         this.spinners.add('spinner');
         this.spinners.add('another-spinner');
         this.spinners.add('third-spinner');
+        this.spinners.add('non-spinnable', { status: 'non-spinnable' });
       });
 
-      expectToBehaveLikeAnUpdate(this, 'success')
-      expectToBehaveLikeAnUpdate(this, 'fail')
-      expectToBehaveLikeAnUpdate(this, 'update')
+      expectToBehaveLikeAnUpdate(this, 'success');
+      expectToBehaveLikeAnUpdate(this, 'fail');
+      expectToBehaveLikeAnUpdate(this, 'update');
 
       describe('#stopAll', () => {
         it('sets non-finished spinners as stopped', () => {
           this.spinners.stopAll();
           const spinner = this.spinners.success('spinner');
           const anotherSpinner = this.spinners.fail('another-spinner');
+          const nonSpinnable = this.spinners.pickSpinner('non-spinnable');
           const thirdSpinner = this.spinners.pickSpinner('third-spinner');
 
           expect(spinner.status).to.eq('success');
           expect(anotherSpinner.status).to.eq('fail');
+          expect(nonSpinnable.status).to.eq('non-spinnable');
           expect(thirdSpinner.status).to.eq('stopped');
           expect(thirdSpinner.color).to.eq('grey');
         });
