@@ -1,5 +1,7 @@
 'use strict';
 
+const readline = require('readline');
+
 const VALID_STATUSES = ['success', 'fail', 'spinning', 'non-spinnable', 'stopped'];
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
 
@@ -42,9 +44,37 @@ function breakText(text) {
     : text;
 }
 
+function preventBreakLines() {
+  readline.emitKeypressEvents(process.stdin);
+  process.stdin.on('keypress', (string, key) => {
+    if(key.sequence === '\n' || key.sequence === '\r') {
+      readline.moveCursor(process.stderr, 0, -1);
+    }
+  });
+}
+
+function writeStream(stream, rawLines) {
+  process.stderr.write(stream);
+  readline.moveCursor(process.stderr, 0, -rawLines.length);
+}
+
+function cleanStream(rawLines) {
+  rawLines.forEach((lineLength, index) => {
+    readline.moveCursor(process.stderr, lineLength , index);
+    readline.clearLine(process.stderr, 1);
+    readline.moveCursor(process.stderr, -lineLength, -index);
+  });
+  readline.moveCursor(process.stderr, 0, rawLines.length);
+  readline.clearScreenDown(process.stderr);
+  readline.moveCursor(process.stderr, 0, -rawLines.length);
+}
+
 module.exports = {
   purgeSpinnersOptions,
   purgeSpinnerOptions,
   colorOptions,
   breakText,
+  preventBreakLines,
+  writeStream,
+  cleanStream,
 }
