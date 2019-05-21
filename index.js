@@ -5,8 +5,8 @@ const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const dots = require('./spinner');
 
-const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText } = require('./utils');
-const { preventBreakLines, writeStream, cleanStream } = require('./utils');
+const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength } = require('./utils');
+const { preventLineBreaks, writeStream, cleanStream } = require('./utils');
 
 class Spinners {
   constructor(options = {}) {
@@ -17,12 +17,13 @@ class Spinners {
       successColor: 'green',
       failColor: 'red',
       spinner: dots,
+      preventLineBreaks: true,
       ...options
     };
     this.spinners = {};
     this.isCursorHidden = false;
     this.currentInterval = null;
-    preventBreakLines();
+    if (this.options.preventLineBreaks) preventLineBreaks();
   }
 
   pickSpinner(name) {
@@ -30,7 +31,7 @@ class Spinners {
   }
 
   add(name, options = {}) {
-    process.stdin.resume();
+    if (this.options.preventLineBreaks) process.stdin.resume();
     if (typeof name !== 'string') throw Error('A spinner reference name must be specified');
     if (!options.text) options.text = name;
     const spinnerProperties = {
@@ -106,10 +107,10 @@ class Spinners {
   setStream(frame = '') {
     let line;
     let stream = '';
-    const rawLines = [];
+    const linesLength = [];
     Object.values(this.spinners).map(({ text, status, color, spinnerColor, successColor, failColor }) => {
         text = breakText(text);
-        rawLines.push(...(text.split('\n').map(line => line.length + frame.length)));
+        linesLength.push(...getLinesLength(text));
         if (status === 'spinning') {
           line = `${chalk[spinnerColor](frame)} ${chalk[color](text)}`;
         } else if (status === 'success') {
@@ -122,8 +123,8 @@ class Spinners {
         stream += `${line}\n`;
       });
 
-    cleanStream(rawLines);
-    writeStream(stream, rawLines);
+    cleanStream(linesLength);
+    writeStream(stream, linesLength);
   }
 
   checkIfActiveSpinners() {
@@ -135,7 +136,7 @@ class Spinners {
       this.spinners = {};
       cliCursor.show();
       this.isCursorHidden = false;
-      process.stdin.pause();
+      if (this.options.preventLineBreaks) process.stdin.pause();
     }
   }
 

@@ -17,10 +17,11 @@ function purgeSpinnerOptions(options) {
 }
 
 function purgeSpinnersOptions(options) {
-  const { spinner } = options;
-  const colors = colorOptions(options)
+  const { spinner, preventLineBreaks } = options;
+  const colors = colorOptions(options);
+  const lineBreaksOption = typeof preventLineBreaks === 'boolean' ? { preventLineBreaks } : {};
 
-  return isValidSpinner(spinner) ? { ...colors, spinner } : colors;
+  return isValidSpinner(spinner) ? { ...colors, ...lineBreaksOption, spinner } : colors;
 }
 
 function isValidSpinner(spinner = {}) {
@@ -44,10 +45,14 @@ function breakText(text) {
     : text;
 }
 
-function preventBreakLines() {
+function getLinesLength(text) {
+  return text.split('\n').map((line, index) => index === 0 ? line.length + 2 : line.length);
+}
+
+function preventLineBreaks() {
   readline.emitKeypressEvents(process.stdin);
-  process.stdin.on('keypress', (string, key) => {
-    if(key.sequence === '\n' || key.sequence === '\r') {
+  process.stdin.on('keypress', (string, { sequence }) => {
+    if(sequence === '\n' || sequence === '\r') {
       readline.moveCursor(process.stderr, 0, -1);
     }
   });
@@ -60,7 +65,7 @@ function writeStream(stream, rawLines) {
 
 function cleanStream(rawLines) {
   rawLines.forEach((lineLength, index) => {
-    readline.moveCursor(process.stderr, lineLength , index);
+    readline.moveCursor(process.stderr, lineLength, index);
     readline.clearLine(process.stderr, 1);
     readline.moveCursor(process.stderr, -lineLength, -index);
   });
@@ -74,7 +79,8 @@ module.exports = {
   purgeSpinnerOptions,
   colorOptions,
   breakText,
-  preventBreakLines,
+  preventLineBreaks,
+  getLinesLength,
   writeStream,
   cleanStream,
 }
