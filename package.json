@@ -1,11 +1,10 @@
 {
-  "name": "nodejs-terminal-multispinner",
+  "name": "spinnies",
   "version": "0.1.2",
-  "description": "Multiple spinners for the terminal",
+  "description": "Create and manage multiple spinners in command-line interface programs",
   "main": "index.js",
   "scripts": {
-    "test": "npx mocha test",
-    "demo": "node ./examples/demo.js"
+    "test": "npx mocha test"
   },
   "keywords": [
     "node",
@@ -22,8 +21,7 @@
     "command",
     "terminal"
   ],
-  "author": "Juan Bautista Carpanelli",
-  "email": "juanbanelli@gmail.com",
+  "author": "Juan Bautista Carpanelli <juanbanelli@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.4.2",
