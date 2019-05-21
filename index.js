@@ -103,13 +103,13 @@ class Spinners {
     this.checkIfActiveSpinners();
   }
 
-  setStream(frame) {
+  setStream(frame = '') {
     let line;
     let stream = '';
     const rawLines = [];
     Object.values(this.spinners).map(({ text, status, color, spinnerColor, successColor, failColor }) => {
         text = breakText(text);
-        rawLines.push(...(text.split('\n').map(line => line.length)));
+        rawLines.push(...(text.split('\n').map(line => line.length + frame.length)));
         if (status === 'spinning') {
           line = `${chalk[spinnerColor](frame)} ${chalk[color](text)}`;
         } else if (status === 'success') {
