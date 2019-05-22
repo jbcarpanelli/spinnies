@@ -22,6 +22,7 @@ class Spinners {
     };
     this.spinners = {};
     this.isCursorHidden = false;
+    this.linesLength = [];
     this.currentInterval = null;
     if (this.options.preventLineBreaks) preventLineBreaks();
   }
@@ -107,10 +108,10 @@ class Spinners {
   setStream(frame = '') {
     let line;
     let stream = '';
-    const linesLength = [];
+    this.linesLength = [];
     Object.values(this.spinners).map(({ text, status, color, spinnerColor, successColor, failColor }) => {
         text = breakText(text);
-        linesLength.push(...getLinesLength(text));
+        this.linesLength.push(...getLinesLength(text));
         if (status === 'spinning') {
           line = `${chalk[spinnerColor](frame)} ${chalk[color](text)}`;
         } else if (status === 'success') {
@@ -123,8 +124,8 @@ class Spinners {
         stream += `${line}\n`;
       });
 
-    cleanStream(linesLength);
-    writeStream(stream, linesLength);
+    cleanStream(this.linesLength);
+    writeStream(stream, this.linesLength);
   }
 
   checkIfActiveSpinners() {
@@ -132,7 +133,7 @@ class Spinners {
     if (!this.hasActiveSpinners()) {
       clearInterval(this.currentInterval);
       this.setStream();
-      readline.moveCursor(process.stderr, 0, Object.keys(this.spinners).length);
+      readline.moveCursor(process.stderr, 0, this.linesLength.length);
       this.spinners = {};
       cliCursor.show();
       this.isCursorHidden = false;
