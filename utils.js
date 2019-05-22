@@ -38,15 +38,17 @@ function colorOptions({ color, successColor, failColor, spinnerColor }) {
   return colors;
 }
 
-function breakText(text) {
+function breakText(text, prefixLength) {
   const columns = process.stderr.columns || 95;
-  return text.length >= columns - 3
-    ? `${text.substring(0, columns - 3)}\n${breakText(text.substring(columns - 3, text.length))}`
+  return text.length  >= columns - prefixLength
+    ? `${text.substring(0, columns - prefixLength - 1)}\n${breakText(text.substring(columns - prefixLength - 1, text.length), 0)}`
     : text;
 }
 
-function getLinesLength(text) {
-  return text.split('\n').map((line, index) => index === 0 ? line.length + 2 : line.length);
+function getLinesLength(text, prefixLength) {
+  return text
+    .split('\n')
+    .map((line, index) => index === 0 ? line.length + prefixLength : line.length);
 }
 
 function preventLineBreaks() {

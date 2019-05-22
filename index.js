@@ -109,22 +109,27 @@ class Spinners {
     let stream = '';
     const linesLength = [];
     Object.values(this.spinners).map(({ text, status, color, spinnerColor, successColor, failColor }) => {
-        text = breakText(text);
-        linesLength.push(...getLinesLength(text));
-        if (status === 'spinning') {
-          line = `${chalk[spinnerColor](frame)} ${chalk[color](text)}`;
-        } else if (status === 'success') {
+      let prefixLength = 2;
+      if (status === 'spinning') {
+        prefixLength = frame.length + 1;
+        text = breakText(text, prefixLength);
+        line = `${chalk[spinnerColor](frame)} ${chalk[color](text)}`;
+      } else {
+        text = breakText(text, prefixLength);
+        if (status === 'success') {
           line = `${chalk.green('✓')} ${chalk[successColor](text)}`;
         } else if (status === 'fail') {
           line = `${chalk.red('✖')} ${chalk[failColor](text)}`;
         } else {
           line = `- ${chalk[color](text)}`;
         }
-        stream += `${line}\n`;
-      });
+      }
+      linesLength.push(...getLinesLength(text, prefixLength));
+      stream += `${line}\n`;
+    });
 
-    cleanStream(linesLength);
     writeStream(stream, linesLength);
+    cleanStream(linesLength);
   }
 
   checkIfActiveSpinners() {

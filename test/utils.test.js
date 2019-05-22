@@ -95,8 +95,11 @@ describe('utils', () => {
 
       context('when number of lines in text is greater than the columns length', () => {
         it('adds line-breaks to the given text', () => {
-          const text = breakText(new Array(101).join('a'));
-          expect(text.split('\n')).to.have.lengthOf(Math.ceil(100/7));
+          const text = breakText(new Array(51).join('a'), 3);
+          const splitted = text.split('\n');
+          expect(splitted).to.have.lengthOf(6);
+          expect(splitted[0]).to.have.lengthOf(6); // 10 - 3 - 1
+          expect(splitted[1]).to.have.lengthOf(9); // 10 - 0 - 1
         });
       });
 
