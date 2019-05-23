@@ -6,7 +6,7 @@ const cliCursor = require('cli-cursor');
 const dots = require('./spinner');
 
 const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength } = require('./utils');
-const { preventLineBreaks, writeStream, cleanStream } = require('./utils');
+const { disableEnterKey, writeStream, cleanStream } = require('./utils');
 
 class Spinners {
   constructor(options = {}) {
@@ -17,13 +17,14 @@ class Spinners {
       successColor: 'green',
       failColor: 'red',
       spinner: dots,
-      preventLineBreaks: true,
+      disableEnterKey: false,
       ...options
     };
     this.spinners = {};
     this.isCursorHidden = false;
+    this.wasEnterKeyEnabled = false;
+    this.isEnterKeyEnabled = false;
     this.currentInterval = null;
-    if (this.options.preventLineBreaks) preventLineBreaks();
   }
 
   pickSpinner(name) {
@@ -31,7 +32,6 @@ class Spinners {
   }
 
   add(name, options = {}) {
-    if (this.options.preventLineBreaks) process.stdin.resume();
     if (typeof name !== 'string') throw Error('A spinner reference name must be specified');
     if (!options.text) options.text = name;
     const spinnerProperties = {
@@ -94,7 +94,8 @@ class Spinners {
     let framePos = 0;
 
     clearInterval(this.currentInterval);
-    this.hideCursor();
+    this.toggleCursor();
+    this.enableEnterKey();
     this.currentInterval = setInterval(() => {
       this.setStream(frames[framePos]);
       if (framePos === frames.length - 1) framePos = 0
@@ -139,9 +140,8 @@ class Spinners {
       this.setStream();
       readline.moveCursor(process.stderr, 0, Object.keys(this.spinners).length);
       this.spinners = {};
-      cliCursor.show();
-      this.isCursorHidden = false;
-      if (this.options.preventLineBreaks) process.stdin.pause();
+      this.toggleCursor();
+      this.disableEnterKey();
     }
   }
 
@@ -149,10 +149,23 @@ class Spinners {
     return !!Object.values(this.spinners).find(({ status }) => status === 'spinning')
   }
 
-  hideCursor() {
-    if (!this.isCursorHidden) {
-      cliCursor.hide();
-      this.isCursorHidden = true;
+  toggleCursor() {
+    this.isCursorHidden && !this.hasActiveSpinners() ? cliCursor.show() : cliCursor.hide();
+    this.isCursorHidden = !this.isCursorHidden;
+  }
+
+  enableEnterKey() {
+    if (this.options.disableEnterKey && !this.isEnterKeyEnabled) {
+      this.wasEnterKeyEnabled ? process.stdin.resume() : disableEnterKey();
+      this.isEnterKeyEnabled = true;
+      this.wasEnterKeyEnabled = true;
+    }
+  }
+
+  disableEnterKey() {
+    if (this.options.disableEnterKey) {
+      this.isEnterKeyEnabled = false;
+      process.stdin.pause();
     }
   }
 }

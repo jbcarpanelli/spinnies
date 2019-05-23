@@ -16,12 +16,12 @@ function purgeSpinnerOptions(options) {
   return { ...colors, ...opts };
 }
 
-function purgeSpinnersOptions(options) {
-  const { spinner, preventLineBreaks } = options;
-  const colors = colorOptions(options);
-  const lineBreaksOption = typeof preventLineBreaks === 'boolean' ? { preventLineBreaks } : {};
+function purgeSpinnersOptions({ spinner, disableEnterKey, ...others }) {
+  const colors = colorOptions(others);
+  const lineBreaksOption = typeof disableEnterKey === 'boolean' ? { disableEnterKey } : {};
+  const options = { ...colors, ...lineBreaksOption };
 
-  return isValidSpinner(spinner) ? { ...colors, ...lineBreaksOption, spinner } : colors;
+  return isValidSpinner(spinner) ? { ...options, spinner } : options;
 }
 
 function isValidSpinner(spinner = {}) {
@@ -51,7 +51,7 @@ function getLinesLength(text, prefixLength) {
     .map((line, index) => index === 0 ? line.length + prefixLength : line.length);
 }
 
-function preventLineBreaks() {
+function disableEnterKey() {
   readline.emitKeypressEvents(process.stdin);
   process.stdin.on('keypress', (string, { sequence }) => {
     if(sequence === '\n' || sequence === '\r') {
@@ -81,7 +81,7 @@ module.exports = {
   purgeSpinnerOptions,
   colorOptions,
   breakText,
-  preventLineBreaks,
+  disableEnterKey,
   getLinesLength,
   writeStream,
   cleanStream,
