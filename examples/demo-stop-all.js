@@ -21,7 +21,7 @@ setTimeout(() => {
 }, 9000)
 
 setTimeout(() => {
-  spinners.success('first-spinner', { text: 'I\'m the updated (and optional) success message', color: 'magenta' });
+  spinners.succeed('first-spinner', { text: 'I\'m the updated (and optional) success message', color: 'magenta' });
 }, 10000)
 
 setTimeout(() => {

@@ -7,7 +7,7 @@ const fruits = {
 const spinners = new Spinners({
   spinner: fruits,
   color: 'blue',
-  successColor: 'green',
+  succeedColor: 'green',
   failColor: 'red',
   spinnerColor: 'blueBright'
 });
@@ -35,7 +35,7 @@ setTimeout(() => {
 }, 9000)
 
 setTimeout(() => {
-  spinners.success('first-spinner', { text: 'I\'m the updated (and optional) success message', color: 'magenta' });
+  spinners.succeed('first-spinner', { text: 'I\'m the updated (and optional) success message', color: 'magenta' });
 }, 10000)
 
 setTimeout(() => {
@@ -51,9 +51,9 @@ setTimeout(() => {
 }, 17000)
 
 setTimeout(() => {
-  spinners.success('third-spinner');
+  spinners.succeed('third-spinner');
 }, 20000)
 
 setTimeout(() => {
-  spinners.success('spinner-that-changes', { text: 'Bye!', successColor: 'blue' });
+  spinners.succeed('spinner-that-changes', { text: 'Bye!', succeedColor: 'blue' });
 }, 18000);

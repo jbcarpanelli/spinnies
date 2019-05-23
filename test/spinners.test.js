@@ -17,7 +17,7 @@ describe('MultiSpinner', () => {
     this.spinners = new Spinners();
     this.spinnersOptions = {
       color: 'white',
-      successColor: 'green',
+      succeedColor: 'green',
       failColor: 'red',
       spinnerColor: 'greenBright',
       status: 'spinning',
@@ -57,7 +57,7 @@ describe('MultiSpinner', () => {
         context('when specifying options', () => {
           context('when options are correct', () => {
             it('overrides the default options', () => {
-              const options = { color: 'black', spinnerColor: 'black', successColor: 'black', failColor: 'black', status: 'non-spinnable' };
+              const options = { color: 'black', spinnerColor: 'black', succeedColor: 'black', failColor: 'black', status: 'non-spinnable' };
               const spinner = this.spinners.add('spinner-name', options);
               expect(spinner).to.include({ ...this.spinnersOptions, ...options, status: 'non-spinnable' });
             });
@@ -82,19 +82,19 @@ describe('MultiSpinner', () => {
         this.spinners.add('non-spinnable', { status: 'non-spinnable' });
       });
 
-      expectToBehaveLikeAnUpdate(this, 'success');
+      expectToBehaveLikeAnUpdate(this, 'succeed');
       expectToBehaveLikeAnUpdate(this, 'fail');
       expectToBehaveLikeAnUpdate(this, 'update');
 
       describe('#stopAll', () => {
         it('sets non-finished spinners as stopped', () => {
-          const spinner = this.spinners.success('spinner');
+          const spinner = this.spinners.succeed('spinner');
           const anotherSpinner = this.spinners.fail('another-spinner');
-          const nonSpinnable = this.spinners.pickSpinner('non-spinnable');
-          const thirdSpinner = this.spinners.pickSpinner('third-spinner');
+          const nonSpinnable = this.spinners.pick('non-spinnable');
+          const thirdSpinner = this.spinners.pick('third-spinner');
           this.spinners.stopAll();
 
-          expect(spinner.status).to.eq('success');
+          expect(spinner.status).to.eq('succeed');
           expect(anotherSpinner.status).to.eq('fail');
           expect(nonSpinnable.status).to.eq('non-spinnable');
           expect(thirdSpinner.status).to.eq('stopped');

@@ -3,12 +3,12 @@
 const expect = require('chai').expect
 
 function expectToBehaveLikeAnUpdate(self, status) {
-  const currentStatus = status === 'update' ? 'success' : status;
+  const currentStatus = status === 'update' ? 'succeed' : status;
 
   describe(`#${status}`, () => {
     it(`should change the status to ${currentStatus}`, () => {
       const spinner = self.spinners[currentStatus]('spinner');
-      const anotherSpinner = self.spinners.pickSpinner('another-spinner');
+      const anotherSpinner = self.spinners.pick('another-spinner');
       expect(spinner.status).to.eq(currentStatus);
       expect(anotherSpinner.status).to.eq('spinning');
     });

@@ -14,7 +14,7 @@ class Spinners {
     this.options = { 
       color: 'white',
       spinnerColor: 'greenBright',
-      successColor: 'green',
+      succeedColor: 'green',
       failColor: 'red',
       spinner: dots,
       disableEnterKey: false,
@@ -27,7 +27,7 @@ class Spinners {
     this.currentInterval = null;
   }
 
-  pickSpinner(name) {
+  pick(name) {
     return this.spinners[name];
   }
 
@@ -53,8 +53,8 @@ class Spinners {
     return this.spinners[name];
   }
 
-  success(name, options = {}) {
-    this.setSpinnerProperties(name, options, 'success');
+  succeed(name, options = {}) {
+    this.setSpinnerProperties(name, options, 'succeed');
     this.updateSpinnerState();
 
     return this.spinners[name];
@@ -70,7 +70,7 @@ class Spinners {
   stopAll() {
     Object.keys(this.spinners).forEach(name => {
       const { status } = this.spinners[name];
-      if (status !== 'fail' && status !== 'success' && status !== 'non-spinnable') {
+      if (status !== 'fail' && status !== 'succeed' && status !== 'non-spinnable') {
         this.spinners[name].status = 'stopped';
         this.spinners[name].color = 'grey';
       }
@@ -78,6 +78,10 @@ class Spinners {
     this.checkIfActiveSpinners();
 
     return this.spinners;
+  }
+
+  hasActiveSpinners() {
+    return !!Object.values(this.spinners).find(({ status }) => status === 'spinning')
   }
 
   setSpinnerProperties(name, options, status) {
@@ -94,7 +98,8 @@ class Spinners {
     let framePos = 0;
 
     clearInterval(this.currentInterval);
-    this.toggleCursor();
+    this.isCursorHidden = true;
+    cliCursor.hide();
     this.enableEnterKey();
     this.currentInterval = setInterval(() => {
       this.setStream(frames[framePos]);
@@ -109,7 +114,7 @@ class Spinners {
     let line;
     let stream = '';
     const linesLength = [];
-    Object.values(this.spinners).map(({ text, status, color, spinnerColor, successColor, failColor }) => {
+    Object.values(this.spinners).map(({ text, status, color, spinnerColor, succeedColor, failColor }) => {
       let prefixLength = 2;
       if (status === 'spinning') {
         prefixLength = frame.length + 1;
@@ -117,8 +122,8 @@ class Spinners {
         line = `${chalk[spinnerColor](frame)} ${chalk[color](text)}`;
       } else {
         text = breakText(text, prefixLength);
-        if (status === 'success') {
-          line = `${chalk.green('✓')} ${chalk[successColor](text)}`;
+        if (status === 'succeed') {
+          line = `${chalk.green('✓')} ${chalk[succeedColor](text)}`;
         } else if (status === 'fail') {
           line = `${chalk.red('✖')} ${chalk[failColor](text)}`;
         } else {
@@ -140,18 +145,10 @@ class Spinners {
       this.setStream();
       readline.moveCursor(process.stderr, 0, Object.keys(this.spinners).length);
       this.spinners = {};
-      this.toggleCursor();
+      this.isCursorHidden = false;
+      cliCursor.show();
       this.disableEnterKey();
     }
-  }
-
-  hasActiveSpinners() {
-    return !!Object.values(this.spinners).find(({ status }) => status === 'spinning')
-  }
-
-  toggleCursor() {
-    this.isCursorHidden && !this.hasActiveSpinners() ? cliCursor.show() : cliCursor.hide();
-    this.isCursorHidden = !this.isCursorHidden;
   }
 
   enableEnterKey() {

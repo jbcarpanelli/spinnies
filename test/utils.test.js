@@ -6,7 +6,7 @@ const { purgeSpinnersOptions, purgeSpinnerOptions, colorOptions, breakText } = r
 
 describe('utils', () => {
   beforeEach('set options', () => {
-    this.colors = { color: 'blue', spinnerColor: 'blue', successColor: 'blue', failColor: 'blue' };
+    this.colors = { color: 'blue', spinnerColor: 'blue', succeedColor: 'blue', failColor: 'blue' };
   });
 
   describe('functions', () => {
@@ -20,9 +20,9 @@ describe('utils', () => {
         });
 
         it('removes invalid colors', () => {
-          const colors = colorOptions({ ...this.colors, spinnerColor: 'foo', successColor: 'bar' });
+          const colors = colorOptions({ ...this.colors, spinnerColor: 'foo', succeedColor: 'bar' });
           expect(colors).to.include({ color: 'blue', failColor: 'blue' });
-          expect(colors).to.not.have.any.keys('spinnerColor', 'successColor');
+          expect(colors).to.not.have.any.keys('spinnerColor', 'succeedColor');
         });
       });
     });
@@ -69,8 +69,8 @@ describe('utils', () => {
     describe('#purgeSpinnerOptions', () => {
       context('when providing valid status and name', () => {
         it('persist them', () => {
-          const options = purgeSpinnerOptions({ ...this.colors, text: 'text', status: 'success' });
-          expect(options).to.include({ ...this.colors, text: 'text', status: 'success' });
+          const options = purgeSpinnerOptions({ ...this.colors, text: 'text', status: 'succeed' });
+          expect(options).to.include({ ...this.colors, text: 'text', status: 'succeed' });
         });
       });
 

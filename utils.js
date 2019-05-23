@@ -2,7 +2,7 @@
 
 const readline = require('readline');
 
-const VALID_STATUSES = ['success', 'fail', 'spinning', 'non-spinnable', 'stopped'];
+const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped'];
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
 
 function purgeSpinnerOptions(options) {
@@ -29,8 +29,8 @@ function isValidSpinner(spinner = {}) {
   return typeof spinner === 'object' && Array.isArray(frames) && frames.length > 0 && typeof interval === 'number';
 }
 
-function colorOptions({ color, successColor, failColor, spinnerColor }) {
-  const colors = { color, successColor, failColor, spinnerColor };
+function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
+  const colors = { color, succeedColor, failColor, spinnerColor };
   Object.keys(colors).forEach(key => {
     if (!VALID_COLORS.includes(colors[key])) delete colors[key];
   });
