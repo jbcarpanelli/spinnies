@@ -2,19 +2,15 @@
 
 const expect = require('chai').expect
 
-const Spinners = require('..');
+const Spinnies = require('..');
 const { expectToBehaveLikeAnUpdate } = require('./behaviours.test');
 
 setInterval = (fn) => fn();
 setTimeout = (fn) => fn();
 
-// TODO: test  stderr
-// silence stderr writes for now.
-process.stderr.write = () => null;
-
-describe('MultiSpinner', () => {
+describe('Spinnies', () => {
   beforeEach('initialize', () => {
-    this.spinners = new Spinners();
+    this.spinners = new Spinnies();
     this.spinnersOptions = {
       color: 'white',
       succeedColor: 'green',

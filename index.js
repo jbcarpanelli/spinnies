@@ -6,9 +6,9 @@ const cliCursor = require('cli-cursor');
 const dots = require('./spinner');
 
 const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength } = require('./utils');
-const { disableEnterKey, writeStream, cleanStream } = require('./utils');
+const { writeStream, cleanStream } = require('./utils');
 
-class Spinners {
+class Spinnies {
   constructor(options = {}) {
     options = purgeSpinnersOptions(options);
     this.options = { 
@@ -17,14 +17,16 @@ class Spinners {
       succeedColor: 'green',
       failColor: 'red',
       spinner: dots,
-      disableEnterKey: false,
+      disableSpins: false,
       ...options
     };
     this.spinners = {};
     this.isCursorHidden = false;
-    this.wasEnterKeyEnabled = false;
-    this.isEnterKeyEnabled = false;
     this.currentInterval = null;
+    this.stream = process.stderr;
+    this.lineCount = 0;
+    this.spin = !this.options.disableSpins && !process.env.CI && process.stderr && process.stderr.isTTY;
+    this.bindSigint();
   }
 
   pick(name) {
@@ -94,25 +96,29 @@ class Spinners {
   }
 
   updateSpinnerState(name, options = {}, status) {
-    const { frames, interval } = this.options.spinner;
-    let framePos = 0;
-
-    clearInterval(this.currentInterval);
-    this.isCursorHidden = true;
-    cliCursor.hide();
-    this.enableEnterKey();
-    this.currentInterval = setInterval(() => {
-      this.setStream(frames[framePos]);
-      if (framePos === frames.length - 1) framePos = 0
-      else framePos ++;
-    }, interval)
-
-    this.checkIfActiveSpinners();
+    if (this.spin) {
+      clearInterval(this.currentInterval);
+      this.currentInterval = this.loopStream();
+      if (!this.isCursonHidden) cliCursor.hide();
+      this.isCursorHidden = true;
+      this.checkIfActiveSpinners();
+    } else {
+      this.setRawStreamOutput();
+    }
   }
 
-  setStream(frame = '') {
+  loopStream() {
+    const { frames, interval } = this.options.spinner;
+    let framePos = 0;
+    return setInterval(() => {
+      this.setStreamOutput(frames[framePos]);
+      framePos = framePos === frames.length - 1 ? 0 : ++framePos
+    }, interval);
+  }
+
+  setStreamOutput(frame = '') {
     let line;
-    let stream = '';
+    let output = '';
     const linesLength = [];
     Object.values(this.spinners).map(({ text, status, color, spinnerColor, succeedColor, failColor }) => {
       let prefixLength = 2;
@@ -131,40 +137,41 @@ class Spinners {
         }
       }
       linesLength.push(...getLinesLength(text, prefixLength));
-      stream += `${line}\n`;
+      output += `${line}\n`;
     });
 
-    writeStream(stream, linesLength);
-    cleanStream(linesLength);
+    writeStream(this.stream, output, linesLength);
+    cleanStream(this.stream, linesLength);
+    this.lineCount = linesLength.length;
+  }
+
+  setRawStreamOutput() {
+    Object.values(this.spinners).forEach(i => {
+      process.stderr.write(`- ${i.text}\n`);
+    });
   }
 
   checkIfActiveSpinners() {
-    const { interval } = this.options.spinner;
     if (!this.hasActiveSpinners()) {
-      clearInterval(this.currentInterval);
-      this.setStream();
-      readline.moveCursor(process.stderr, 0, Object.keys(this.spinners).length);
+      if (this.spin) {
+        this.setStreamOutput();
+        readline.moveCursor(this.stream, 0, this.lineCount);
+        clearInterval(this.currentInterval);
+        this.isCursorHidden = false;
+        cliCursor.show();
+      }
       this.spinners = {};
-      this.isCursorHidden = false;
+    }
+  }
+
+  bindSigint(lines) {
+    process.removeAllListeners('SIGINT');
+    process.on('SIGINT', () => {
       cliCursor.show();
-      this.disableEnterKey();
-    }
-  }
-
-  enableEnterKey() {
-    if (this.options.disableEnterKey && !this.isEnterKeyEnabled) {
-      this.wasEnterKeyEnabled ? process.stdin.resume() : disableEnterKey();
-      this.isEnterKeyEnabled = true;
-      this.wasEnterKeyEnabled = true;
-    }
-  }
-
-  disableEnterKey() {
-    if (this.options.disableEnterKey) {
-      this.isEnterKeyEnabled = false;
-      process.stdin.pause();
-    }
+      readline.moveCursor(process.stderr, 0, this.lineCount);
+      process.exit(0);
+    });
   }
 }
 
-module.exports = Spinners;
+module.exports = Spinnies;

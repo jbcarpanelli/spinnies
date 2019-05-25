@@ -16,12 +16,11 @@ function purgeSpinnerOptions(options) {
   return { ...colors, ...opts };
 }
 
-function purgeSpinnersOptions({ spinner, disableEnterKey, ...others }) {
+function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
   const colors = colorOptions(others);
-  const lineBreaksOption = typeof disableEnterKey === 'boolean' ? { disableEnterKey } : {};
-  const options = { ...colors, ...lineBreaksOption };
+  const spinOption = typeof disableSpins === 'boolean' ? { disableSpins } : {};
 
-  return isValidSpinner(spinner) ? { ...options, spinner } : options;
+  return isValidSpinner(spinner) ? { ...colors, ...spinOption, spinner } : { ...colors, ...spinOption };
 }
 
 function isValidSpinner(spinner = {}) {
@@ -51,29 +50,20 @@ function getLinesLength(text, prefixLength) {
     .map((line, index) => index === 0 ? line.length + prefixLength : line.length);
 }
 
-function disableEnterKey() {
-  readline.emitKeypressEvents(process.stdin);
-  process.stdin.on('keypress', (string, { sequence }) => {
-    if(sequence === '\n' || sequence === '\r') {
-      readline.moveCursor(process.stderr, 0, -1);
-    }
-  });
+function writeStream(stream, output, rawLines) {
+  stream.write(output);
+  readline.moveCursor(stream, 0, -rawLines.length);
 }
 
-function writeStream(stream, rawLines) {
-  process.stderr.write(stream);
-  readline.moveCursor(process.stderr, 0, -rawLines.length);
-}
-
-function cleanStream(rawLines) {
+function cleanStream(stream, rawLines) {
   rawLines.forEach((lineLength, index) => {
-    readline.moveCursor(process.stderr, lineLength, index);
-    readline.clearLine(process.stderr, 1);
-    readline.moveCursor(process.stderr, -lineLength, -index);
+    readline.moveCursor(stream, lineLength, index);
+    readline.clearLine(stream, 1);
+    readline.moveCursor(stream, -lineLength, -index);
   });
-  readline.moveCursor(process.stderr, 0, rawLines.length);
-  readline.clearScreenDown(process.stderr);
-  readline.moveCursor(process.stderr, 0, -rawLines.length);
+  readline.moveCursor(stream, 0, rawLines.length);
+  readline.clearScreenDown(stream);
+  readline.moveCursor(stream, 0, -rawLines.length);
 }
 
 module.exports = {
@@ -81,7 +71,6 @@ module.exports = {
   purgeSpinnerOptions,
   colorOptions,
   breakText,
-  disableEnterKey,
   getLinesLength,
   writeStream,
   cleanStream,
