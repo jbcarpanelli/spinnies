@@ -3,7 +3,7 @@
 const readline = require('readline');
 const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
-const dots = require('./spinner');
+const { dots } = require('./spinners');
 
 const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength } = require('./utils');
 const { writeStream, cleanStream } = require('./utils');

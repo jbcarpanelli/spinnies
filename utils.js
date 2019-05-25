@@ -1,6 +1,7 @@
 'use strict';
 
 const readline = require('readline');
+const { dashes } = require('./spinners');
 
 const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped'];
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
@@ -19,6 +20,9 @@ function purgeSpinnerOptions(options) {
 function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
   const colors = colorOptions(others);
   const spinOption = typeof disableSpins === 'boolean' ? { disableSpins } : {};
+  if (process.platform === 'win32') {
+    spinners = dashes;
+  }
 
   return isValidSpinner(spinner) ? { ...colors, ...spinOption, spinner } : { ...colors, ...spinOption };
 }
