@@ -21,7 +21,7 @@ function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
   const colors = colorOptions(others);
   const spinOption = typeof disableSpins === 'boolean' ? { disableSpins } : {};
   if (process.platform === 'win32') {
-    spinners = dashes;
+    spinner = dashes;
   }
 
   return isValidSpinner(spinner) ? { ...colors, ...spinOption, spinner } : { ...colors, ...spinOption };

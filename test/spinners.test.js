@@ -83,18 +83,53 @@ describe('Spinnies', () => {
       expectToBehaveLikeAnUpdate(this, 'update');
 
       describe('#stopAll', () => {
-        it('sets non-finished spinners as stopped', () => {
-          const spinner = this.spinners.succeed('spinner');
-          const anotherSpinner = this.spinners.fail('another-spinner');
-          const nonSpinnable = this.spinners.pick('non-spinnable');
-          const thirdSpinner = this.spinners.pick('third-spinner');
-          this.spinners.stopAll();
+        beforeEach(() => {
+          this.spinner = this.spinners.succeed('spinner');
+          this.anotherSpinner = this.spinners.fail('another-spinner');
+          this.nonSpinnable = this.spinners.pick('non-spinnable');
+          this.thirdSpinner = this.spinners.pick('third-spinner');
+        });
 
-          expect(spinner.status).to.eq('succeed');
-          expect(anotherSpinner.status).to.eq('fail');
-          expect(nonSpinnable.status).to.eq('non-spinnable');
-          expect(thirdSpinner.status).to.eq('stopped');
-          expect(thirdSpinner.color).to.eq('grey');
+        const expectToKeepFinishedSpinners = () => {
+          expect(this.spinner.status).to.eq('succeed');
+          expect(this.anotherSpinner.status).to.eq('fail');
+          expect(this.nonSpinnable.status).to.eq('non-spinnable');
+        };
+
+        context('when providing a new status', () => {
+          it('sets non-finished spinners as succeed', () => {
+            this.spinners.stopAll('succeed');
+
+            expectToKeepFinishedSpinners();
+            expect(this.thirdSpinner.status).to.eq('succeed');
+            expect(this.thirdSpinner.color).to.eq('green');
+          });
+
+          it('sets non-finished spinners as fail', () => {
+            this.spinners.stopAll('fail');
+
+            expectToKeepFinishedSpinners();
+            expect(this.thirdSpinner.status).to.eq('fail');
+            expect(this.thirdSpinner.color).to.eq('red');
+          });
+
+          it('sets non-finished spinners as stopped', () => {
+            this.spinners.stopAll('foobar');
+
+            expectToKeepFinishedSpinners();
+            expect(this.thirdSpinner.status).to.eq('stopped');
+            expect(this.thirdSpinner.color).to.eq('grey');
+          });
+        });
+
+        context('when not providing a new status', () => {
+          it('sets non-finished spinners as stopped', () => {
+            this.spinners.stopAll();
+
+            expectToKeepFinishedSpinners();
+            expect(this.thirdSpinner.status).to.eq('stopped');
+            expect(this.thirdSpinner.color).to.eq('grey');
+          });
         });
       });
     });

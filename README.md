@@ -64,7 +64,7 @@ Parameters:
 - **name** - `string`: spinner reference name.
 - **options** - `object`:
   - **text**: - `string`: Optional text to show in the spinner. If none is provided, the `name` field will be shown.
-  - **status** - `string`: Sets the initial status of the spinner. Valid statuses are: `succeed`, `fail`, `spinning`, `non-spinnable`and `stopped`.
+  - **status** - `string`: Initial status of the spinner. Valid statuses are: `succeed`, `fail`, `spinning`, `non-spinnable`and `stopped`.
   - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
   - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
   - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
@@ -96,7 +96,7 @@ Parameters:
 - **name** - `string`: spinner reference name.
 - **options** - `object`:
   - **text**: - `string`: Optional text to show in the spinner. If none is provided, the `name` field will be shown.
-  - **status** - `string`: Sets the initial status of the spinner. Valid statuses are: `succeed`, `fail`, `spinning`, `non-spinnable`and `stopped`.
+  - **status** - `string`: New status of the spinner. Valid statuses are: `succeed`, `fail`, `spinning`, `non-spinnable`and `stopped`.
   - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
   - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
   - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
@@ -108,7 +108,7 @@ Example:
 ```js
 const spinnies = new Spinnies();
 spinnies.add('spinner-1', { text: 'Hello! I am the initial text`, color: 'green' });
-...
+// some code
 spinnies.update('spinner-1', { text: 'Hello, I am an updated text!', color: 'blue' });
 
 ```
@@ -152,14 +152,14 @@ Example:
 ```js
 const spinnies = new Spinnies();
 spinnies.add('spinner-1', { text: 'Hello! I am the initial text`, color: 'green' });
-...
+// some code
 spinnies.fail('spinner-1', { text: 'I failed', failColor: 'redBright' });
 
 ```
 
-#### stopAll()
+#### stopAll([status])
 
-Stops the spinners and sets the non-succeeded and non-failed ones to `stopped`. You can see an example [here](https://github.com/jcarpanelli/spinnies/blob/master/examples/demo-stop-all.js).
+Stops the spinners and sets the non-succeeded and non-failed ones to the provided status, which can be `succeed`, `fail` or `stopped`. You can see an example [here](https://github.com/jcarpanelli/spinnies/blob/master/examples/demo-stop-all.js).
 
 #### hasActiveSpinners()
 Return value: returns `false` if all spinners have succeeded, failed or have been stopped.

@@ -1,6 +1,6 @@
 {
   "name": "spinnies",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Create and manage multiple spinners in command-line interface programs",
   "main": "index.js",
   "scripts": {
@@ -15,8 +15,11 @@
     "multispinner",
     "spinner",
     "spinners",
-    "console",
+    "loadre",
+    "loading",
+    "loading-bar",
     "cli",
+    "console",
     "command-line",
     "command",
     "terminal"

@@ -33,5 +33,5 @@ setTimeout(() => {
 }, 14500)
 
 setTimeout(() => {
-  spinners.stopAll();
+  spinners.stopAll('fail');
 }, 15000)

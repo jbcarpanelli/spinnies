@@ -6,7 +6,7 @@ const cliCursor = require('cli-cursor');
 const { dots } = require('./spinners');
 
 const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength } = require('./utils');
-const { writeStream, cleanStream } = require('./utils');
+const { isValidStatus, writeStream, cleanStream } = require('./utils');
 
 class Spinnies {
   constructor(options = {}) {
@@ -69,12 +69,17 @@ class Spinnies {
     return this.spinners[name];
   }
 
-  stopAll() {
+  stopAll(newStatus = 'stopped') {
     Object.keys(this.spinners).forEach(name => {
-      const { status } = this.spinners[name];
-      if (status !== 'fail' && status !== 'succeed' && status !== 'non-spinnable') {
-        this.spinners[name].status = 'stopped';
-        this.spinners[name].color = 'grey';
+      const { status: currentStatus } = this.spinners[name];
+      if (currentStatus !== 'fail' && currentStatus !== 'succeed' && currentStatus !== 'non-spinnable') {
+        if (newStatus === 'succeed' || newStatus === 'fail') {
+          this.spinners[name].status = newStatus;
+          this.spinners[name].color = this.options[`${newStatus}Color`];
+        } else {
+          this.spinners[name].status = 'stopped';
+          this.spinners[name].color = 'grey';
+        }
       }
     });
     this.checkIfActiveSpinners();
@@ -83,7 +88,7 @@ class Spinnies {
   }
 
   hasActiveSpinners() {
-    return !!Object.values(this.spinners).find(({ status }) => status === 'spinning')
+    return !!Object.values(this.spinners).find(({ status }) => status === 'spinning');
   }
 
   setSpinnerProperties(name, options, status) {
