@@ -7,6 +7,7 @@ const { expectToBehaveLikeAnUpdate } = require('./behaviours.test');
 
 setInterval = (fn) => fn();
 setTimeout = (fn) => fn();
+process.stderr.write = () => {};
 
 describe('Spinnies', () => {
   beforeEach('initialize', () => {

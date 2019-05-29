@@ -25,6 +25,7 @@ class Spinnies {
     this.currentInterval = null;
     this.stream = process.stderr;
     this.lineCount = 0;
+    this.currentFrameIndex = 0;
     this.spin = !this.options.disableSpins && !process.env.CI && process.stderr && process.stderr.isTTY;
     this.bindSigint();
   }
@@ -114,10 +115,9 @@ class Spinnies {
 
   loopStream() {
     const { frames, interval } = this.options.spinner;
-    let framePos = 0;
     return setInterval(() => {
-      this.setStreamOutput(frames[framePos]);
-      framePos = framePos === frames.length - 1 ? 0 : ++framePos
+      this.setStreamOutput(frames[this.currentFrameIndex]);
+      this.currentFrameIndex = this.currentFrameIndex === frames.length - 1 ? 0 : ++this.currentFrameIndex
     }, interval);
   }
 
