@@ -47,6 +47,8 @@ Parameters
     You can see the already provided spinner [here](https://github.com/jcarpanelli/spinnies/blob/master/spinners.json).
   - **disableSpins** - `boolean`: Disable spins (will still print raw messages).
 
+*Note: If you are working in any `win32` platform, the default spin animation will be overriden. You can get rid of this defining a different spinner animation manually.*
+
 Example: 
 
 ```js
@@ -130,7 +132,7 @@ Example:
 ```js
 const spinnies = new Spinnies();
 spinnies.add('spinner-1', { text: 'Hello! I am the initial text`, color: 'green' });
-...
+// some code
 spinnies.succeed('spinner-1', { text: 'Success!', successColor: 'greenBright' });
 
 ```
