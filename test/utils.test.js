@@ -3,6 +3,7 @@
 const expect = require('chai').expect
 
 const { purgeSpinnersOptions, purgeSpinnerOptions, colorOptions, breakText } = require('../utils');
+const { dots } = require('../spinners');
 
 describe('utils', () => {
   beforeEach('set options', () => {
@@ -30,29 +31,26 @@ describe('utils', () => {
     describe('#purgeSpinnersOptions', () => {
       describe('spinner object', () => {
         context('when providing invalid interval and frames', () => {
-          it('does not persist the spinner', () => {
+          it('picks the default spinner', () => {
             const spinner = { interval: 'foo', frames: 'bar' };
             const options = purgeSpinnersOptions({ ...this.colors, spinner });
-            expect(options).to.include(this.colors);
-            expect(options).to.not.have.property('spinner');
+            expect(options).to.deep.include({ ...this.colors, spinner: dots });
           });
         });
 
         context('when providing invalid interval', () => {
-          it('does not persist the spinner', () => {
+          it('picks the interval from the default spinner', () => {
             const spinner = { interval: 'foo', frames: ['-', '+'] };
             const options = purgeSpinnersOptions({ ...this.colors, spinner });
-            expect(options).to.include(this.colors);
-            expect(options).to.not.have.property('spinner');
+            expect(options).to.deep.include({ ...this.colors, spinner: { interval: dots.interval, frames: ['-', '+'] } });
           });
         });
 
         context('when providing invalid frames', () => {
-          it('does not persist the spinner', () => {
+          it('picks frames from the default spinner', () => {
             const spinner = { interval: 100, frames: 'foo' };
             const options = purgeSpinnersOptions({ ...this.colors, spinner });
-            expect(options).to.include(this.colors);
-            expect(options).to.not.have.property('spinner');
+            expect(options).to.deep.include({ ...this.colors, spinner: { interval: 100, frames: dots.frames } });
           });
         });
 
@@ -60,7 +58,7 @@ describe('utils', () => {
           it('persists the spinner', () => {
             const spinner = { interval: 100, frames: ['-', '+'] };
             const options = purgeSpinnersOptions({ ...this.colors, spinner });
-            expect(options).to.include({ ...this.colors, spinner });
+            expect(options).to.deep.include({ ...this.colors, spinner });
           });
         })
       });

@@ -1,7 +1,7 @@
 'use strict';
 
 const readline = require('readline');
-const { dashes } = require('./spinners');
+const { dots } = require('./spinners');
 
 const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped'];
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
@@ -19,17 +19,19 @@ function purgeSpinnerOptions(options) {
 
 function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
   const colors = colorOptions(others);
-  const spinOption = typeof disableSpins === 'boolean' ? { disableSpins } : {};
-  if (process.platform === 'win32') {
-    spinner = dashes;
-  }
+  const disableSpinsOption = typeof disableSpins === 'boolean' ? { disableSpins } : {};
+  spinner = turnToValidSpinner(spinner);
 
-  return isValidSpinner(spinner) ? { ...colors, ...spinOption, spinner } : { ...colors, ...spinOption };
+  return { ...colors, ...disableSpinsOption, spinner }
 }
 
-function isValidSpinner(spinner = {}) {
-  const { interval, frames } = spinner;
-  return typeof spinner === 'object' && Array.isArray(frames) && frames.length > 0 && typeof interval === 'number';
+function turnToValidSpinner(spinner = {}) {
+  if (!typeof spinner === 'object') return dots;
+  let { interval, frames } = spinner;
+  if (!Array.isArray(frames) || frames.length < 1) frames = dots.frames;
+  if (typeof interval !== 'number') interval = dots.interval;
+
+  return { interval, frames };
 }
 
 function colorOptions({ color, succeedColor, failColor, spinnerColor }) {

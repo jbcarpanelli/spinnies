@@ -3,7 +3,7 @@
 const readline = require('readline');
 const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
-const { dots } = require('./spinners');
+const { dashes, dots } = require('./spinners');
 
 const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength } = require('./utils');
 const { isValidStatus, writeStream, cleanStream } = require('./utils');
@@ -16,7 +16,7 @@ class Spinnies {
       spinnerColor: 'greenBright',
       succeedColor: 'green',
       failColor: 'red',
-      spinner: dots,
+      spinner: process.platform === 'win32' ? dashes : dots,
       disableSpins: false,
       ...options
     };
@@ -180,3 +180,5 @@ class Spinnies {
 }
 
 module.exports = Spinnies;
+module.exports.dots = dots;
+module.exports.dashes = dashes;
