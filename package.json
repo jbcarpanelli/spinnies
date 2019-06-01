@@ -1,6 +1,6 @@
 {
   "name": "spinnies",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "Create and manage multiple spinners in command-line interface programs",
   "main": "index.js",
   "scripts": {
@@ -25,6 +25,14 @@
     "terminal"
   ],
   "author": "Juan Bautista Carpanelli <juanbanelli@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:jcarpanelli/spinnies.git"
+  },
+  "bugs": {
+    "url": "https://github.com/jcarpanelli/spinnies/issues"
+  },
+  "homepage": "https://github.com/jcarpanelli/spinnies#readme",
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.4.2",
