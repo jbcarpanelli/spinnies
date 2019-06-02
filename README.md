@@ -30,13 +30,15 @@ setTimeout(() => {
 
 ## API
 
+This library follows the a **non-error-throwing** philosophy. If you provide an invalid option or an invalid value for a valid option *it will be ignored*.
+
 ### Initialization:
 
 #### new Spinnies([options])
 
 Parameters
 - **options** - `object`:
-  - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). Default value is `white`
+  - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). Default value is `white`.
   - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). Default value is `green`.
   - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). Default value is `red`.
   - **spinnerColor**- `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). Default value is `greenBright`.
@@ -92,7 +94,7 @@ Return value: Returns the spinner's options.
 
 #### update(name, [options])
 
-Updates the spinner with name `name`.
+Updates the spinner with name `name` with the provided options.
 
 Parameters:
 - **name** - `string`: spinner reference name.
@@ -109,7 +111,7 @@ Example:
 
 ```js
 const spinnies = new Spinnies();
-spinnies.add('spinner-1', { text: 'Hello! I am the initial text`, color: 'green' });
+spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
 // some code
 spinnies.update('spinner-1', { text: 'Hello, I am an updated text!', color: 'blue' });
 
@@ -117,7 +119,7 @@ spinnies.update('spinner-1', { text: 'Hello, I am an updated text!', color: 'blu
 
 #### succeed(name, [options])
 
-Sets the specified spinner as `succeed`.
+Sets the specified spinner status as `succeed`.
 
 Parameters:
 - **name** - `string`: spinner reference name.
@@ -131,7 +133,7 @@ Example:
 
 ```js
 const spinnies = new Spinnies();
-spinnies.add('spinner-1', { text: 'Hello! I am the initial text`, color: 'green' });
+spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
 // some code
 spinnies.succeed('spinner-1', { text: 'Success!', successColor: 'greenBright' });
 
@@ -139,7 +141,7 @@ spinnies.succeed('spinner-1', { text: 'Success!', successColor: 'greenBright' })
 
 #### fail(name, [options])
 
-Sets the specified spinner as `fail`.
+Sets the specified spinner status as `fail`.
 
 Parameters:
 - **name** - `string`: spinner reference name.
@@ -153,7 +155,7 @@ Example:
 
 ```js
 const spinnies = new Spinnies();
-spinnies.add('spinner-1', { text: 'Hello! I am the initial text`, color: 'green' });
+spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
 // some code
 spinnies.fail('spinner-1', { text: 'I failed', failColor: 'redBright' });
 
@@ -169,7 +171,7 @@ Return value: returns `false` if all spinners have succeeded, failed or have bee
 
 ## Contribute
 
-Star it, fork it, improve it, PR it!
+Star it, fork it, improve it, PR it! :raised_hands:.
 
 
 ## Acknowledgements
