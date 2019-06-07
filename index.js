@@ -122,31 +122,35 @@ class Spinnies {
   }
 
   setStreamOutput(frame = '') {
-    let line;
     let output = '';
     const linesLength = [];
-    Object.values(this.spinners).map(({ text, status, color, spinnerColor, succeedColor, failColor }) => {
-      let prefixLength = 2;
-      if (status === 'spinning') {
-        prefixLength = frame.length + 1;
-        text = breakText(text, prefixLength);
-        line = `${chalk[spinnerColor](frame)} ${chalk[color](text)}`;
-      } else {
-        text = breakText(text, prefixLength);
-        if (status === 'succeed') {
-          line = `${chalk.green('✓')} ${chalk[succeedColor](text)}`;
-        } else if (status === 'fail') {
-          line = `${chalk.red('✖')} ${chalk[failColor](text)}`;
+    const hasActiveSpinners = this.hasActiveSpinners();
+    Object
+      .values(this.spinners)
+      .map(({ text, status, color, spinnerColor, succeedColor, failColor }) => {
+        let line;
+        let prefixLength = 2;
+        if (status === 'spinning') {
+          prefixLength = frame.length + 1;
+          text = breakText(text, prefixLength);
+          line = `${chalk[spinnerColor](frame)} ${chalk[color](text)}`;
         } else {
-          line = `- ${chalk[color](text)}`;
+          if (hasActiveSpinners) text = breakText(text, prefixLength);
+          if (status === 'succeed') {
+            line = `${chalk.green('✓')} ${chalk[succeedColor](text)}`;
+          } else if (status === 'fail') {
+            line = `${chalk.red('✖')} ${chalk[failColor](text)}`;
+          } else {
+            line = `- ${chalk[color](text)}`;
+          }
         }
-      }
-      linesLength.push(...getLinesLength(text, prefixLength));
-      output += `${line}\n`;
-    });
+        linesLength.push(...getLinesLength(text, prefixLength));
+        output += `${line}\n`;
+      });
 
+    if(!hasActiveSpinners) readline.clearScreenDown(this.stream);
     writeStream(this.stream, output, linesLength);
-    cleanStream(this.stream, linesLength);
+    if (hasActiveSpinners) cleanStream(this.stream, linesLength);
     this.lineCount = linesLength.length;
   }
 
