@@ -39,9 +39,12 @@ class Spinnies {
     if (!options.text) options.text = name;
     const spinnerProperties = {
       ...colorOptions(this.options),
+      succeedPrefix: this.options.succeedPrefix,
+      failPrefix: this.options.failPrefix,
       status: 'spinning',
       ...purgeSpinnerOptions(options),
     };
+
     this.spinners[name] = spinnerProperties;
     this.updateSpinnerState();
 
@@ -127,7 +130,7 @@ class Spinnies {
     const hasActiveSpinners = this.hasActiveSpinners();
     Object
       .values(this.spinners)
-      .map(({ text, status, color, spinnerColor, succeedColor, failColor }) => {
+      .map(({ text, status, color, spinnerColor, succeedColor, failColor, succeedPrefix, failPrefix }) => {
         let line;
         let prefixLength = 2;
         if (status === 'spinning') {
@@ -137,9 +140,9 @@ class Spinnies {
         } else {
           if (hasActiveSpinners) text = breakText(text, prefixLength);
           if (status === 'succeed') {
-            line = `${chalk.green('✓')} ${chalk[succeedColor](text)}`;
+            line = `${chalk.green(succeedPrefix)} ${chalk[succeedColor](text)}`;
           } else if (status === 'fail') {
-            line = `${chalk.red('✖')} ${chalk[failColor](text)}`;
+            line = `${chalk.red(failPrefix)} ${chalk[failColor](text)}`;
           } else {
             line = `- ${chalk[color](text)}`;
           }
