@@ -18,7 +18,6 @@ function purgeSpinnerOptions(options) {
 }
 
 function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
-  const {succeedPrefix, failPrefix} = others;
   const colors = colorOptions(others);
   const prefixes = prefixOptions(others);
   const disableSpinsOption = typeof disableSpins === 'boolean' ? { disableSpins } : {};
@@ -50,7 +49,7 @@ function prefixOptions({ succeedPrefix, failPrefix }) {
   succeedPrefix = succeedPrefix ? succeedPrefix : (process.platform === 'win32' ? '√' : '✓');
   failPrefix = failPrefix ? failPrefix : (process.platform === 'win32' ?  '×' : '✖');
 
-  return {succeedPrefix, failPrefix};
+  return { succeedPrefix, failPrefix };
 }
 
 function breakText(text, prefixLength) {

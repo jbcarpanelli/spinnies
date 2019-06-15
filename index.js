@@ -140,8 +140,10 @@ class Spinnies {
         } else {
           if (hasActiveSpinners) text = breakText(text, prefixLength);
           if (status === 'succeed') {
+            prefixLength = succeedPrefix.length + 1;
             line = `${chalk.green(succeedPrefix)} ${chalk[succeedColor](text)}`;
           } else if (status === 'fail') {
+            prefixLength = failPrefix.length + 1;
             line = `${chalk.red(failPrefix)} ${chalk[failColor](text)}`;
           } else {
             line = `- ${chalk[color](text)}`;
