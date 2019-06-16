@@ -38,7 +38,7 @@ function expectToBehaveLikeAnUpdate(self, status) {
         it('mantains the previous options', () => {
           const options = { text: 42, color: 'foo', spinnerColor: 'bar' };
           const spinner = self.spinners[currentStatus]('spinner', options);
-          expect(spinner).to.include({ text: 'spinner', color: 'white', spinnerColor: 'greenBright' });
+          expect(spinner).to.include({ text: 'spinner', spinnerColor: 'greenBright' });
         });
       });
 

@@ -13,7 +13,6 @@ describe('Spinnies', () => {
   beforeEach('initialize', () => {
     this.spinners = new Spinnies();
     this.spinnersOptions = {
-      color: 'white',
       succeedColor: 'green',
       failColor: 'red',
       spinnerColor: 'greenBright',

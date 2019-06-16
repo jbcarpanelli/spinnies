@@ -12,7 +12,6 @@ class Spinnies {
   constructor(options = {}) {
     options = purgeSpinnersOptions(options);
     this.options = { 
-      color: 'white',
       spinnerColor: 'greenBright',
       succeedColor: 'green',
       failColor: 'red',
@@ -132,11 +131,11 @@ class Spinnies {
       .values(this.spinners)
       .map(({ text, status, color, spinnerColor, succeedColor, failColor, succeedPrefix, failPrefix }) => {
         let line;
-        let prefixLength = 2;
+        let prefixLength;
         if (status === 'spinning') {
           prefixLength = frame.length + 1;
           text = breakText(text, prefixLength);
-          line = `${chalk[spinnerColor](frame)} ${chalk[color](text)}`;
+          line = `${chalk[spinnerColor](frame)} ${color ? chalk[color](text) : text}`;
         } else {
           if (hasActiveSpinners) text = breakText(text, prefixLength);
           if (status === 'succeed') {
@@ -146,7 +145,7 @@ class Spinnies {
             prefixLength = failPrefix.length + 1;
             line = `${chalk.red(failPrefix)} ${chalk[failColor](text)}`;
           } else {
-            line = `- ${chalk[color](text)}`;
+            line = text;
           }
         }
         linesLength.push(...getLinesLength(text, prefixLength));
