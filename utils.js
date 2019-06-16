@@ -1,7 +1,7 @@
 'use strict';
 
 const readline = require('readline');
-const { dots } = require('./spinners');
+const { dashes, dots } = require('./spinners');
 
 const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped'];
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
@@ -19,17 +19,19 @@ function purgeSpinnerOptions(options) {
 
 function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
   const colors = colorOptions(others);
+  const prefixes = prefixOptions(others);
   const disableSpinsOption = typeof disableSpins === 'boolean' ? { disableSpins } : {};
   spinner = turnToValidSpinner(spinner);
 
-  return { ...colors, ...disableSpinsOption, spinner }
+  return { ...colors, ...prefixes, ...disableSpinsOption, spinner }
 }
 
 function turnToValidSpinner(spinner = {}) {
-  if (!typeof spinner === 'object') return dots;
+  const platformSpinner = process.platform === 'win32' ? dashes : dots;
+  if (!typeof spinner === 'object') return platformSpinner;
   let { interval, frames } = spinner;
-  if (!Array.isArray(frames) || frames.length < 1) frames = dots.frames;
-  if (typeof interval !== 'number') interval = dots.interval;
+  if (!Array.isArray(frames) || frames.length < 1) frames = platformSpinner.frames;
+  if (typeof interval !== 'number') interval = platformSpinner.interval;
 
   return { interval, frames };
 }
@@ -41,6 +43,13 @@ function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
   });
 
   return colors;
+}
+
+function prefixOptions({ succeedPrefix, failPrefix }) {
+  succeedPrefix = succeedPrefix ? succeedPrefix : (process.platform === 'win32' ? '√' : '✓');
+  failPrefix = failPrefix ? failPrefix : (process.platform === 'win32' ?  '×' : '✖');
+
+  return { succeedPrefix, failPrefix };
 }
 
 function breakText(text, prefixLength) {
