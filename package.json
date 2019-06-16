@@ -1,6 +1,6 @@
 {
   "name": "spinnies",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Create and manage multiple spinners in command-line interface programs",
   "main": "index.js",
   "scripts": {
