@@ -145,7 +145,8 @@ class Spinnies {
             prefixLength = failPrefix.length + 1;
             line = `${chalk.red(failPrefix)} ${chalk[failColor](text)}`;
           } else {
-            line = text;
+            prefixLength = 0;
+            line = color ? chalk[color](text) : text;
           }
         }
         linesLength.push(...getLinesLength(text, prefixLength));
