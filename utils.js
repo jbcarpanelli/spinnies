@@ -1,6 +1,7 @@
 'use strict';
 
 const readline = require('readline');
+const stripAnsi = require('strip-ansi');
 const { dashes, dots } = require('./spinners');
 
 const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped'];
@@ -60,7 +61,7 @@ function breakText(text, prefixLength) {
 }
 
 function getLinesLength(text, prefixLength) {
-  return text
+  return stripAnsi(text)
     .split('\n')
     .map((line, index) => index === 0 ? line.length + prefixLength : line.length);
 }
