@@ -1,6 +1,7 @@
 # ![spin](https://i.ibb.co/4M0J13j/spin.png) Spinnies ![spin](https://i.ibb.co/4M0J13j/spin.png)
 > Node.js module to create and manage multiple spinners in command-line interface programs
 
+[![npm](https://img.shields.io/npm/v/spinnies.svg)](https://www.npmjs.com/package/spinnies)
 [![CircleCI](https://circleci.com/gh/jcarpanelli/spinnies.svg?style=shield)](https://circleci.com/gh/jcarpanelli/spinnies)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
@@ -30,7 +31,7 @@ setTimeout(() => {
 
 ## API
 
-This library follows the a **non-error-throwing** philosophy. If you provide an invalid option or an invalid value for a valid option *it will be ignored*.
+This library follows a **non-error-throwing** philosophy. If you provide an invalid option or an invalid value for a valid option *it will be ignored*.
 
 ### Initialization:
 
@@ -38,10 +39,12 @@ This library follows the a **non-error-throwing** philosophy. If you provide an 
 
 Parameters
 - **options** - `object`:
-  - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). Default value is `white`.
-  - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). Default value is `green`.
-  - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). Default value is `red`.
-  - **spinnerColor**- `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). Default value is `greenBright`.
+  - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `white`.
+  - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `green`.
+  - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `red`.
+  - **spinnerColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `greenBright`.
+  - **succeedPrefix** - `string`: The default value is ✓.
+  - **failPrefix**- `string`: The default value is ✖.
   - **spinner**- `object`: 
     - **interval** - `number`
     - **frames** - `string[]`
