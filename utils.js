@@ -54,9 +54,17 @@ function prefixOptions({ succeedPrefix, failPrefix }) {
 }
 
 function breakText(text, prefixLength) {
+  return text.split('\n')
+    .map((line, index) => index === 0 ? breakLine(line, prefixLength) : breakLine(line, 0))
+    .join('\n');
+}
+
+function breakLine(text, prefixLength) {
   const columns = process.stderr.columns || 95;
   return text.length  >= columns - prefixLength
-    ? `${text.substring(0, columns - prefixLength - 1)}\n${breakText(text.substring(columns - prefixLength - 1, text.length), 0)}`
+    ? `${text.substring(0, columns - prefixLength - 1)}\n${
+      breakText(text.substring(columns - prefixLength - 1, text.length), 0)
+    }`
     : text;
 }
 
