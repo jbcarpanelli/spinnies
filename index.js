@@ -137,15 +137,17 @@ class Spinnies {
           text = breakText(text, prefixLength);
           line = `${chalk[spinnerColor](frame)} ${color ? chalk[color](text) : text}`;
         } else {
-          if (hasActiveSpinners) text = breakText(text, prefixLength);
           if (status === 'succeed') {
             prefixLength = succeedPrefix.length + 1;
+            if (hasActiveSpinners) text = breakText(text, prefixLength);
             line = `${chalk.green(succeedPrefix)} ${chalk[succeedColor](text)}`;
           } else if (status === 'fail') {
             prefixLength = failPrefix.length + 1;
+            if (hasActiveSpinners) text = breakText(text, prefixLength);
             line = `${chalk.red(failPrefix)} ${chalk[failColor](text)}`;
           } else {
             prefixLength = 0;
+            if (hasActiveSpinners) text = breakText(text, prefixLength);
             line = color ? chalk[color](text) : text;
           }
         }

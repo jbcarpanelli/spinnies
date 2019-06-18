@@ -59,13 +59,13 @@ function breakText(text, prefixLength) {
     .join('\n');
 }
 
-function breakLine(text, prefixLength) {
+function breakLine(line, prefixLength) {
   const columns = process.stderr.columns || 95;
-  return text.length  >= columns - prefixLength
-    ? `${text.substring(0, columns - prefixLength - 1)}\n${
-      breakText(text.substring(columns - prefixLength - 1, text.length), 0)
+  return line.length  >= columns - prefixLength
+    ? `${line.substring(0, columns - prefixLength - 1)}\n${
+      breakLine(line.substring(columns - prefixLength - 1, line.length), 0)
     }`
-    : text;
+    : line;
 }
 
 function getLinesLength(text, prefixLength) {
