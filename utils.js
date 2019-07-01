@@ -47,7 +47,7 @@ function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
 }
 
 function prefixOptions({ succeedPrefix, failPrefix }) {
-  if(terminalSupportUnicode()) {
+  if(terminalSupportsUnicode()) {
     succeedPrefix = succeedPrefix || '✓';
     failPrefix = failPrefix || '✖';
   } else {
