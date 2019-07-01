@@ -15,7 +15,7 @@ class Spinnies {
       spinnerColor: 'greenBright',
       succeedColor: 'green',
       failColor: 'red',
-      spinner: !terminalSupportsUnicode() ? dashes : dots,
+      spinner: terminalSupportsUnicode() ? dots : dashes,
       disableSpins: false,
       ...options
     };
