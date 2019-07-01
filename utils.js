@@ -47,8 +47,13 @@ function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
 }
 
 function prefixOptions({ succeedPrefix, failPrefix }) {
-  succeedPrefix = succeedPrefix ? succeedPrefix : (!terminalSupportsUnicode() ? '√' : '✓');
-  failPrefix = failPrefix ? failPrefix : (!terminalSupportsUnicode() ?  '×' : '✖');
+  if(terminalSupportUnicode()) {
+    succeedPrefix = succeedPrefix || '✓';
+    failPrefix = failPrefix || '✖';
+  } else {
+    succeedPrefix = succeedPrefix || '√';
+    failPrefix = failPrefix || '×';
+  }
 
   return { succeedPrefix, failPrefix };
 }
