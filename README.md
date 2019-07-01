@@ -45,16 +45,16 @@ Parameters
   - **spinnerColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `greenBright`.
   - **succeedPrefix** - `string`: The default value is ✓.
   - **failPrefix**- `string`: The default value is ✖.
-  - **spinner**- `object`: 
+  - **spinner**- `object`:
     - **interval** - `number`
     - **frames** - `string[]`
-    
+
     You can see the already provided spinner [here](https://github.com/jcarpanelli/spinnies/blob/master/spinners.json).
   - **disableSpins** - `boolean`: Disable spins (will still print raw messages).
 
-*Note: If you are working in any `win32` platform, the default spin animation will be overriden. You can get rid of this defining a different spinner animation manually.*
+*Note: If you are working in any `win32` platform, the default spin animation will be overriden. You can get rid of this defining a different spinner animation manually, or by using the integrated VSCode terminal or Windows Terminal.*
 
-Example: 
+Example:
 
 ```js
 const spinner = { interval: 80, frames: ['🍇', '🍈', '🍉', '🍋'] }
@@ -132,7 +132,7 @@ Parameters:
 
 Return value: Returns the spinner's options.
 
-Example: 
+Example:
 
 ```js
 const spinnies = new Spinnies();

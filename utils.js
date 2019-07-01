@@ -28,7 +28,7 @@ function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
 }
 
 function turnToValidSpinner(spinner = {}) {
-  const platformSpinner = process.platform === 'win32' ? dashes : dots;
+  const platformSpinner = terminalSupportsUnicode() ? dots : dashes;
   if (!typeof spinner === 'object') return platformSpinner;
   let { interval, frames } = spinner;
   if (!Array.isArray(frames) || frames.length < 1) frames = platformSpinner.frames;
@@ -47,8 +47,13 @@ function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
 }
 
 function prefixOptions({ succeedPrefix, failPrefix }) {
-  succeedPrefix = succeedPrefix ? succeedPrefix : (process.platform === 'win32' ? '√' : '✓');
-  failPrefix = failPrefix ? failPrefix : (process.platform === 'win32' ?  '×' : '✖');
+  if(terminalSupportsUnicode()) {
+    succeedPrefix = succeedPrefix || '✓';
+    failPrefix = failPrefix || '✖';
+  } else {
+    succeedPrefix = succeedPrefix || '√';
+    failPrefix = failPrefix || '×';
+  }
 
   return { succeedPrefix, failPrefix };
 }
@@ -90,6 +95,14 @@ function cleanStream(stream, rawLines) {
   readline.moveCursor(stream, 0, -rawLines.length);
 }
 
+function terminalSupportsUnicode() {
+    // The default command prompt and powershell in Windows do not support Unicode characters.
+    // However, the VSCode integrated terminal and the Windows Terminal both do.
+    return process.platform !== 'win32'
+      || process.env.TERM_PROGRAM === 'vscode'
+      || !!process.env.WT_SESSION
+}
+
 module.exports = {
   purgeSpinnersOptions,
   purgeSpinnerOptions,
@@ -98,4 +111,5 @@ module.exports = {
   getLinesLength,
   writeStream,
   cleanStream,
+  terminalSupportsUnicode,
 }

@@ -5,17 +5,17 @@ const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const { dashes, dots } = require('./spinners');
 
-const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength } = require('./utils');
+const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
 const { isValidStatus, writeStream, cleanStream } = require('./utils');
 
 class Spinnies {
   constructor(options = {}) {
     options = purgeSpinnersOptions(options);
-    this.options = { 
+    this.options = {
       spinnerColor: 'greenBright',
       succeedColor: 'green',
       failColor: 'red',
-      spinner: process.platform === 'win32' ? dashes : dots,
+      spinner: terminalSupportsUnicode() ? dots : dashes,
       disableSpins: false,
       ...options
     };
