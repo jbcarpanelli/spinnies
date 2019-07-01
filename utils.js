@@ -28,7 +28,7 @@ function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
 }
 
 function turnToValidSpinner(spinner = {}) {
-  const platformSpinner = !terminalSupportsUnicode() ? dashes : dots;
+  const platformSpinner = terminalSupportsUnicode() ? dots : dashes;
   if (!typeof spinner === 'object') return platformSpinner;
   let { interval, frames } = spinner;
   if (!Array.isArray(frames) || frames.length < 1) frames = platformSpinner.frames;
