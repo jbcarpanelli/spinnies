@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.3] - 2019-07-02
 ### Fixed
-- Use the Unicode dots animation when run inside a VSCode integrated terminal or Windows Terminal ()
+- Use the Unicode dots animation when run inside a VSCode integrated terminal or Windows Terminal (https://github.com/jcarpanelli/spinnies/pull/12). Thanks @MLoughry!
 
 ## [0.4.2] - 2019-06-18
 ### Fixed
