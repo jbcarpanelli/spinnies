@@ -129,7 +129,7 @@ class Spinnies {
     const hasActiveSpinners = this.hasActiveSpinners();
     Object
       .values(this.spinners)
-      .map(({ text, status, color, spinnerColor, succeedColor, failColor, succeedPrefix, failPrefix }) => {
+      .map(({ text, status, color, spinnerColor, succeedColor, failColor, succeedPrefix, failPrefix, indent }) => {
         let line;
         let prefixLength;
         if (status === 'spinning') {
@@ -151,8 +151,9 @@ class Spinnies {
             line = color ? chalk[color](text) : text;
           }
         }
+        if (indent) prefixLength += indent;
         linesLength.push(...getLinesLength(text, prefixLength));
-        output += `${line}\n`;
+        output += indent ? `${" ".repeat(indent)}${line}\n` : `${line}\n`;
       });
 
     if(!hasActiveSpinners) readline.clearScreenDown(this.stream);
