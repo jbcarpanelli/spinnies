@@ -14,6 +14,7 @@ function purgeSpinnerOptions(options) {
 
   if (!VALID_STATUSES.includes(status)) delete opts.status;
   if (typeof text !== 'string') delete opts.text;
+  if (typeof indent !== 'number') delete opts.indent;
 
   return { ...colors, ...opts };
 }
