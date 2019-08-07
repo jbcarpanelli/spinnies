@@ -5,7 +5,7 @@ const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const { dashes, dots } = require('./spinners');
 
-const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
+const { turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
 const { isValidStatus, writeStream, cleanStream } = require('./utils');
 
 class Spinnies {
@@ -31,6 +31,14 @@ class Spinnies {
 
   pick(name) {
     return this.spinners[name];
+  }
+
+  setFrames(frames) {
+    const spinner = turnToValidSpinner(frames);
+    this.options.spinner = spinner;
+    this.updateSpinnerState();
+
+    return this;
   }
 
   add(name, options = {}) {

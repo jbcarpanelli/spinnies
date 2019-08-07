@@ -95,6 +95,33 @@ Parameters:
 
 Return value: Returns the spinner's options.
 
+#### setFrames(spinner)
+
+Updates the spinners frames.
+
+Parameters:
+- **spinner** - `object`:
+  - **interval** - `number`
+  - **frames** - `string[]`
+
+Return value: Returns the spinners instance (`this`).
+
+Example:
+
+```js
+const fruits = { 
+  interval: 150,
+  frames: ['🍇', '🍈', '🍉', '🍋']
+};
+const veggies = {
+  interval: 100,
+  frames: ['🍅', '🥒', '🥦', '🥕']
+};
+const spinnies = new Spinnies({ spinner: fruits });
+// some code
+spinnies.setFrames(vegis);
+```
+
 #### update(name, [options])
 
 Updates the spinner with name `name` with the provided options.

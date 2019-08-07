@@ -112,4 +112,5 @@ module.exports = {
   writeStream,
   cleanStream,
   terminalSupportsUnicode,
+  turnToValidSpinner
 }

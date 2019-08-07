@@ -39,6 +39,10 @@ setTimeout(() => {
 }, 10000)
 
 setTimeout(() => {
+  spinners.setFrames({frames: ['O', 'o']});
+}, 11000)
+
+setTimeout(() => {
   spinners.update('third-spinner', { text: 'I have been updated :D', color: 'yellow', spinnerColor: 'blue' });
 }, 12000)
 
