@@ -72,6 +72,11 @@ class Spinnies {
     return this.spinners[name];
   }
 
+  remove(name) {
+    delete this.spinners[name]
+    this.updateSpinnerState();
+  }
+
   stopAll(newStatus = 'stopped') {
     Object.keys(this.spinners).forEach(name => {
       const { status: currentStatus } = this.spinners[name];

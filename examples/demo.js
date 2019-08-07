@@ -5,7 +5,7 @@ const fruits = {
   frames: ['🍇', '🍈', '🍉', '🍋']
 }
 const spinners = new Spinners({
-  spinner: fruits,
+  // spinner: fruits,
   color: 'blue',
   succeedColor: 'green',
   failColor: 'red',
@@ -51,9 +51,22 @@ setTimeout(() => {
 }, 17000)
 
 setTimeout(() => {
+  spinners.update('spinner-that-changes', { text: 'Bye!'});
+}, 18000);
+
+setTimeout(() => {
   spinners.succeed('third-spinner');
 }, 20000)
 
 setTimeout(() => {
-  spinners.succeed('spinner-that-changes', { text: 'Bye!', succeedColor: 'blue' });
-}, 18000);
+  spinners.update('third-spinner', { text: 'Im going to be removed' });
+}, 21000)
+
+setTimeout(() => {
+  spinners.remove('third-spinner');
+}, 22000)
+
+setTimeout(() => {
+  spinners.succeed('spinner-that-changes', { text: 'Bye! but for real this time', succeedColor: 'blue' });
+}, 26000);
+

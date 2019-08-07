@@ -164,6 +164,26 @@ spinnies.fail('spinner-1', { text: 'I failed', failColor: 'redBright' });
 
 ```
 
+#### remove(name)
+
+Remove a spinner, which will make the spinner disappear and not rerender.
+
+Parameters:
+- **name** - `string`: spinner reference name.
+
+Return value: `undefined`.
+
+Example:
+
+```js
+const spinnies = new Spinnies();
+spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+spinnies.add('spinner-2', { text: 'Hello! I am a cool spinner', color: 'blue' });
+// some code
+spinnies.remove('spinner-1');
+
+```
+
 #### stopAll([status])
 
 Stops the spinners and sets the non-succeeded and non-failed ones to the provided status, which can be `succeed`, `fail` or `stopped`. You can see an example [here](https://github.com/jcarpanelli/spinnies/blob/master/examples/demo-stop-all.js).
