@@ -29,6 +29,24 @@ function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
 
 function turnToValidSpinner(spinner = {}) {
   const platformSpinner = terminalSupportsUnicode() ? dots : dashes;
+
+  if (typeof spinner === 'string') {
+    try {
+      const cliSpinners = require('cli-spinners');
+      const selectedSpinner = cliSpinners[spinner];
+
+      if(selectedSpinner) {
+        return selectedSpinner;
+      }
+
+      return platformSpinner; // The spinner doesn't exist in the cli-spinners library
+    } catch {
+      // cli-spinners is not installed, ignore error
+      return platformSpinner;
+    }
+
+  }
+
   if (!typeof spinner === 'object') return platformSpinner;
   let { interval, frames } = spinner;
   if (!Array.isArray(frames) || frames.length < 1) frames = platformSpinner.frames;

@@ -35,6 +35,24 @@ This library follows a **non-error-throwing** philosophy. If you provide an inva
 
 ### Initialization:
 
+#### About spinner types
+
+The `spinner` option, passed to the instance options and to spinnies.setFrames()
+Follow this protocol:
+- If `spinner` is a string:
+  It will try to use the `spinner` as the name for a spinner from the [cli-spinners](https://github.com/sindresorhus/cli-spinners)
+  *Note: cli-spinners is an optional dependencies.*
+  Install it:
+  - With yarn `yarn add cli-spinners`
+  - With npm `npm i cli-spinners`
+  If you are intrested in using this feature.
+  *If cli-spinners was not installed and a string was passed as the `spinner` option*
+  *the spinner will default to the platformDefaultSpinner*
+- If `spinner` is an object
+  It should have keys: `frames` and `interval`
+  Where `frames` is an array of characters and `interval` is a number of milliseconds.
+
+
 #### new Spinnies([options])
 
 Parameters
@@ -44,10 +62,11 @@ Parameters
   - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `red`.
   - **spinnerColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `greenBright`.
   - **succeedPrefix** - `string`: The default value is ✓.
-  - **failPrefix**- `string`: The default value is ✖.
-  - **spinner**- `object`:
-    - **interval** - `number`
-    - **frames** - `string[]`
+  - **failPrefix** - `string`: The default value is ✖.
+  - **spinner** - **spinnerNameFromCliSpinners** = `string`
+    or `object`:
+      - **interval** - `number`
+      - **frames** - `string[]`
 
     You can see the already provided spinner [here](https://github.com/jcarpanelli/spinnies/blob/master/spinners.json).
   - **disableSpins** - `boolean`: Disable spins (will still print raw messages).
@@ -100,16 +119,17 @@ Return value: Returns the spinner's options.
 Updates the spinners frames.
 
 Parameters:
-- **spinner** - `object`:
-  - **interval** - `number`
-  - **frames** - `string[]`
+- **spinner** - **spinnerNameFromCliSpinners** = `string`
+  or `object`:
+    - **interval** - `number`
+    - **frames** - `string[]`
 
 Return value: Returns the spinners instance (`this`).
 
 Example:
 
 ```js
-const fruits = { 
+const fruits = {
   interval: 150,
   frames: ['🍇', '🍈', '🍉', '🍋']
 };

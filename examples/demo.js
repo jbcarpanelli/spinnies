@@ -1,6 +1,6 @@
 const Spinners = require('..');
 
-const fruits = { 
+const fruits = {
   interval: 150,
   frames: ['🍇', '🍈', '🍉', '🍋']
 }
@@ -39,7 +39,7 @@ setTimeout(() => {
 }, 10000)
 
 setTimeout(() => {
-  spinners.setFrames({frames: ['O', 'o']});
+  spinners.setFrames({frames: ['O', 'o'], interval: 175});
 }, 11000)
 
 setTimeout(() => {
@@ -48,7 +48,11 @@ setTimeout(() => {
 
 setTimeout(() => {
   spinners.update('third-spinner', { text: 'I have been updated again :D', color: 'cyan' });
-}, 14500)
+}, 14000)
+
+setTimeout(() => {
+  spinners.setFrames('arrow');
+}, 16000)
 
 setTimeout(() => {
   spinners.update('third-spinner', { text: 'Again, with fancy colors!',  color: 'magenta' });

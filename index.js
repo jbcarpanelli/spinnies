@@ -44,7 +44,7 @@ class Spinnies {
     this.currentFrameIndex = 0;
     this.updateSpinnerState();
 
-    return spinner;
+    return this;
   }
 
   add(name, options = {}) {
