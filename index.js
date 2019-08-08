@@ -19,6 +19,7 @@ class Spinnies {
       disableSpins: false,
       ...options
     };
+    this.logs = [];
     this.spinners = {};
     this.isCursorHidden = false;
     this.currentInterval = null;
@@ -29,6 +30,10 @@ class Spinnies {
     this.bindSigint();
   }
 
+  addLog(str) {
+    this.logs.push(str);
+  }
+
   pick(name) {
     return this.spinners[name];
   }
@@ -36,9 +41,10 @@ class Spinnies {
   setFrames(frames) {
     const spinner = turnToValidSpinner(frames);
     this.options.spinner = spinner;
+    this.currentFrameIndex = 0;
     this.updateSpinnerState();
 
-    return this;
+    return spinner;
   }
 
   add(name, options = {}) {
@@ -130,6 +136,7 @@ class Spinnies {
 
   loopStream() {
     const { frames, interval } = this.options.spinner;
+    this.addLog(frames);
     return setInterval(() => {
       this.setStreamOutput(frames[this.currentFrameIndex]);
       this.currentFrameIndex = this.currentFrameIndex === frames.length - 1 ? 0 : ++this.currentFrameIndex
@@ -200,6 +207,14 @@ class Spinnies {
       readline.moveCursor(process.stderr, 0, this.lineCount);
       process.exit(0);
     });
+  }
+
+  log(method = console.log) {
+    this.logs.forEach((log) => method(log));
+  }
+
+  getLogs() {
+    return this.logs;
   }
 }
 
