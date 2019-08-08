@@ -41,11 +41,14 @@ The `spinner` option, passed to the instance options and to spinnies.setFrames()
 Follow this protocol:
 - If `spinner` is a string:
   It will try to use the `spinner` as the name for a spinner from the [cli-spinners](https://github.com/sindresorhus/cli-spinners)
+
   *Note: cli-spinners is an optional dependencies.*
   Install it:
   - With yarn `yarn add cli-spinners`
   - With npm `npm i cli-spinners`
+
   If you are intrested in using this feature.
+
   *If cli-spinners was not installed and a string was passed as the `spinner` option*
   *the spinner will default to the platformDefaultSpinner*
 - If `spinner` is an object
