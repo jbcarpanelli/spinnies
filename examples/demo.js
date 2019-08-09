@@ -23,7 +23,7 @@ setTimeout(() => {
 }, 5000)
 
 setTimeout(() => {
-  spinners.add('spinner-that-changes', { text: 'I am another spinner that would love to make some friends! Also I am very long, but I break into two or more lines if needed' });
+  spinners.add('spinner-that-changes', { text: 'I am another spinner that would love to make some friends! Also I am very long, but I break into two or more lines if needed, i can break break break and break all day long, using word-wrap so words won\'t get teared up' });
 }, 7000)
 
 setTimeout(() => {
@@ -76,5 +76,6 @@ setTimeout(() => {
 
 setTimeout(() => {
   spinners.succeed('spinner-that-changes', { text: 'Bye! but for real this time', succeedColor: 'blue' });
+  spinners.log();
 }, 26000);
 

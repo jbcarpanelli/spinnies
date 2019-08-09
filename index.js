@@ -1,11 +1,10 @@
 'use strict';
-
 const readline = require('readline');
 const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const { dashes, dots } = require('./spinners');
 
-const { turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
+const { indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
 const { isValidStatus, writeStream, cleanStream } = require('./utils');
 
 class Spinnies {
@@ -136,7 +135,6 @@ class Spinnies {
 
   loopStream() {
     const { frames, interval } = this.options.spinner;
-    this.addLog(frames);
     return setInterval(() => {
       this.setStreamOutput(frames[this.currentFrameIndex]);
       this.currentFrameIndex = this.currentFrameIndex === frames.length - 1 ? 0 : ++this.currentFrameIndex
@@ -155,22 +153,27 @@ class Spinnies {
         if (status === 'spinning') {
           prefixLength = frame.length + 1;
           text = breakText(text, prefixLength);
+          text = indentText(text, prefixLength, this.logs);
           line = `${chalk[spinnerColor](frame)} ${color ? chalk[color](text) : text}`;
         } else {
           if (status === 'succeed') {
             prefixLength = succeedPrefix.length + 1;
             if (hasActiveSpinners) text = breakText(text, prefixLength);
+            text = indentText(text, prefixLength);
             line = `${chalk.green(succeedPrefix)} ${chalk[succeedColor](text)}`;
           } else if (status === 'fail') {
             prefixLength = failPrefix.length + 1;
             if (hasActiveSpinners) text = breakText(text, prefixLength);
+            text = indentText(text, prefixLength);
             line = `${chalk.red(failPrefix)} ${chalk[failColor](text)}`;
           } else {
             prefixLength = 0;
             if (hasActiveSpinners) text = breakText(text, prefixLength);
+            text = indentText(text, prefixLength);
             line = color ? chalk[color](text) : text;
           }
         }
+
         linesLength.push(...getLinesLength(text, prefixLength));
         output += `${line}\n`;
       });

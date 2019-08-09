@@ -2,6 +2,7 @@
 
 const readline = require('readline');
 const stripAnsi = require('strip-ansi');
+const wordwrapjs = require("wordwrapjs")
 const { dashes, dots } = require('./spinners');
 
 const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped'];
@@ -77,18 +78,18 @@ function prefixOptions({ succeedPrefix, failPrefix }) {
 }
 
 function breakText(text, prefixLength) {
-  return text.split('\n')
-    .map((line, index) => index === 0 ? breakLine(line, prefixLength) : breakLine(line, 0))
-    .join('\n');
+  const columns = process.stderr.columns || 95;
+
+  return wordwrapjs.wrap(text, { width: (columns - prefixLength - 1) });
 }
 
-function breakLine(line, prefixLength) {
-  const columns = process.stderr.columns || 95;
-  return line.length  >= columns - prefixLength
-    ? `${line.substring(0, columns - prefixLength - 1)}\n${
-      breakLine(line.substring(columns - prefixLength - 1, line.length), 0)
-    }`
-    : line;
+function indentText(text, prefixLength) {
+  if(!prefixLength) return text;
+
+  return text
+    .split('\n')
+    .map((line, index) => `${' '.repeat((index !== 0) ? prefixLength : 0)}${line}`)
+    .join('\n');
 }
 
 function getLinesLength(text, prefixLength) {
@@ -130,5 +131,6 @@ module.exports = {
   writeStream,
   cleanStream,
   terminalSupportsUnicode,
-  turnToValidSpinner
+  turnToValidSpinner,
+  indentText
 }
