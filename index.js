@@ -116,7 +116,7 @@ class Spinnies {
     if (typeof name !== 'string') throw Error('A spinner reference name must be specified');
     if (!this.spinners[name]) throw Error(`No spinner initialized with name ${name}`);
     options = purgeSpinnerOptions(options);
-    status = status || 'spinning';
+    status = status || this.spinners[name].status || 'spinning';
 
     this.spinners[name] = { ...this.spinners[name], ...options, status };
   }

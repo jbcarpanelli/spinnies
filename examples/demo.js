@@ -43,6 +43,10 @@ setTimeout(() => {
 }, 10000)
 
 setTimeout(() => {
+  spinners.update('first-spinner', { text: 'I\'m the updated (and very much optional) success message', color: 'magenta' });
+}, 13000)
+
+setTimeout(() => {
   spinners.setFrames('star');
 }, 11000)
 
