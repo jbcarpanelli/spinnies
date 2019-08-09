@@ -23,7 +23,7 @@ setTimeout(() => {
 }, 5000)
 
 setTimeout(() => {
-  spinners.add('spinner-that-changes', { text: 'I am another spinner that would love to make some friends! Also I am very long, but I break into two or more lines if needed, i can break break break and break all day long, using word-wrap so words won\'t get teared up' });
+  spinners.add('indented', { color: 'magenta', text: 'Im an indented line with 2 spaces',  indent: 2 });
 }, 7000)
 
 setTimeout(() => {
@@ -35,19 +35,35 @@ setTimeout(() => {
 }, 9000)
 
 setTimeout(() => {
+  spinners.update('indented', { indent: 4, text: 'Im an indented line I used to have 2 space but now i have 4!' });
+}, 9500)
+
+setTimeout(() => {
   spinners.succeed('first-spinner', { text: 'I\'m the updated (and optional) success message', color: 'magenta' });
 }, 10000)
 
 setTimeout(() => {
-  spinners.setFrames({frames: ['O', 'o'], interval: 175});
+  spinners.setFrames('star');
 }, 11000)
 
 setTimeout(() => {
-  spinners.update('third-spinner', { text: 'I have been updated :D', color: 'yellow', spinnerColor: 'blue' });
+  spinners.succeed('indented');
+}, 11500)
+
+setTimeout(() => {
+  spinners.add('spinner-that-changes', { text: 'I am another spinner that would love to make some friends! Also I am very long, but I break into two or more lines if needed, i can break break break and break all day long, using word-wrap so words won\'t get teared up' });
 }, 12000)
 
 setTimeout(() => {
+  spinners.update('third-spinner', { text: 'I have been updated :D', color: 'yellow', spinnerColor: 'blue' });
+}, 12500)
+
+setTimeout(() => {
   spinners.update('third-spinner', { text: 'I have been updated again :D', color: 'cyan' });
+}, 14000)
+
+setTimeout(() => {
+  spinners.update('spinner-that-changes', { indent: 4, text: 'I can be indented too! I am another spinner that would love to make some friends! Also I am very long, but I break into two or more lines if needed, i can break break break and break all day long, using word-wrap so words won\'t get teared up' });
 }, 14000)
 
 setTimeout(() => {
@@ -59,15 +75,11 @@ setTimeout(() => {
 }, 17000)
 
 setTimeout(() => {
-  spinners.update('spinner-that-changes', { text: 'Bye!'});
-}, 18000);
-
-setTimeout(() => {
   spinners.succeed('third-spinner');
 }, 20000)
 
 setTimeout(() => {
-  spinners.update('third-spinner', { text: 'Im going to be removed' });
+  spinners.update('third-spinner', { text: 'Im going to be removed', color: 'red' });
 }, 21000)
 
 setTimeout(() => {
@@ -75,7 +87,7 @@ setTimeout(() => {
 }, 22000)
 
 setTimeout(() => {
-  spinners.succeed('spinner-that-changes', { text: 'Bye! but for real this time', succeedColor: 'blue' });
+  spinners.succeed('spinner-that-changes', { text: 'Bye!', succeedColor: 'blue' });
   spinners.log();
 }, 26000);
 

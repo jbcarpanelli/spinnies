@@ -9,12 +9,13 @@ const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
 
 function purgeSpinnerOptions(options) {
-  const { text, status } = options;
-  const opts = { text, status };
+  const { text, status, indent } = options;
+  const opts = { text, status, indent };
   const colors = colorOptions(options);
 
   if (!VALID_STATUSES.includes(status)) delete opts.status;
   if (typeof text !== 'string') delete opts.text;
+  if (typeof indent !== 'number') delete opts.indent;
 
   return { ...colors, ...opts };
 }
@@ -77,25 +78,32 @@ function prefixOptions({ succeedPrefix, failPrefix }) {
   return { succeedPrefix, failPrefix };
 }
 
-function breakText(text, prefixLength) {
+function breakText(text, prefixLength, indent = 0) {
   const columns = process.stderr.columns || 95;
 
-  return wordwrapjs.wrap(text, { width: (columns - prefixLength - 1) });
+  return wordwrapjs.wrap(text, { width: (columns - prefixLength - indent - 1) });
 }
 
-function indentText(text, prefixLength) {
-  if(!prefixLength) return text;
+function indentText(text, prefixLength, indent = 0) {
+  if(!prefixLength && !indent) return text;
+
+  const repeater = (index) => ' '.repeat((index !== 0) ? (prefixLength + indent) : 0);
 
   return text
     .split('\n')
-    .map((line, index) => `${' '.repeat((index !== 0) ? prefixLength : 0)}${line}`)
+    .map((line, index) => `${repeater(index)}${line}`)
     .join('\n');
 }
 
-function getLinesLength(text, prefixLength) {
+function secondStageIndent(str, indent = 0) {
+  return `${' '.repeat(indent)}${str}`; // Indent the prefix after it was added
+}
+
+
+function getLinesLength(text, prefixLength, indent = 0) {
   return stripAnsi(text)
     .split('\n')
-    .map((line, index) => index === 0 ? line.length + prefixLength : line.length);
+    .map((line, index) => index === 0 ? line.length + prefixLength + indent : line.length);
 }
 
 function writeStream(stream, output, rawLines) {
@@ -132,5 +140,6 @@ module.exports = {
   cleanStream,
   terminalSupportsUnicode,
   turnToValidSpinner,
-  indentText
+  indentText,
+  secondStageIndent
 }

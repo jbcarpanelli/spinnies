@@ -94,6 +94,7 @@ Parameters:
 - **options** - `object`:
   - **text**: - `string`: Optional text to show in the spinner. If none is provided, the `name` field will be shown.
   - **status** - `string`: Initial status of the spinner. Valid statuses are: `succeed`, `fail`, `spinning`, `non-spinnable`and `stopped`.
+  - **indent**: - `number`: Optional number of spaces to add before the spinner.
   - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
   - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
   - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).

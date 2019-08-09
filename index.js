@@ -4,7 +4,7 @@ const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const { dashes, dots } = require('./spinners');
 
-const { indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
+const { secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
 const { isValidStatus, writeStream, cleanStream } = require('./utils');
 
 class Spinnies {
@@ -147,35 +147,35 @@ class Spinnies {
     const hasActiveSpinners = this.hasActiveSpinners();
     Object
       .values(this.spinners)
-      .map(({ text, status, color, spinnerColor, succeedColor, failColor, succeedPrefix, failPrefix }) => {
+      .map(({ text, status, color, spinnerColor, succeedColor, failColor, succeedPrefix, failPrefix, indent }) => {
         let line;
         let prefixLength;
         if (status === 'spinning') {
           prefixLength = frame.length + 1;
-          text = breakText(text, prefixLength);
-          text = indentText(text, prefixLength, this.logs);
+          text = breakText(text, prefixLength, indent);
+          text = indentText(text, prefixLength, indent);
           line = `${chalk[spinnerColor](frame)} ${color ? chalk[color](text) : text}`;
         } else {
           if (status === 'succeed') {
             prefixLength = succeedPrefix.length + 1;
-            if (hasActiveSpinners) text = breakText(text, prefixLength);
-            text = indentText(text, prefixLength);
+            if (hasActiveSpinners) text = breakText(text, prefixLength, indent);
+            text = indentText(text, prefixLength, indent);
             line = `${chalk.green(succeedPrefix)} ${chalk[succeedColor](text)}`;
           } else if (status === 'fail') {
             prefixLength = failPrefix.length + 1;
-            if (hasActiveSpinners) text = breakText(text, prefixLength);
-            text = indentText(text, prefixLength);
+            if (hasActiveSpinners) text = breakText(text, prefixLength, indent);
+            text = indentText(text, prefixLength, indent);
             line = `${chalk.red(failPrefix)} ${chalk[failColor](text)}`;
           } else {
             prefixLength = 0;
-            if (hasActiveSpinners) text = breakText(text, prefixLength);
-            text = indentText(text, prefixLength);
+            if (hasActiveSpinners) text = breakText(text, prefixLength, indent);
+            text = indentText(text, prefixLength, indent);
             line = color ? chalk[color](text) : text;
           }
         }
 
-        linesLength.push(...getLinesLength(text, prefixLength));
-        output += `${line}\n`;
+        linesLength.push(...getLinesLength(text, prefixLength, indent));
+        output += `${secondStageIndent(line, indent)}\n`;
       });
 
     if(!hasActiveSpinners) readline.clearScreenDown(this.stream);
