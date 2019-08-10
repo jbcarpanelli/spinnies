@@ -99,14 +99,43 @@ Parameters:
   - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
   - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
 
-Return value: Returns the spinner's options.
+Return value: Returns the created spinner instance.
 
 Example:
 
 ```js
 const spinnies = new Spinnies();
 spinnies.add('spinner-1');
-spinnies.add('another-spinner', { text: 'Hello, I am a spinner!', color: 'greenBright' });
+const anotherSpinner = spinnies.add('another-spinner', { text: 'Hello, I am a spinner!', color: 'greenBright' });
+
+```
+
+#### get(name)
+
+Return the spinner instance of the spinner with the given `name`.
+
+Parameters:
+- **name** - `string`: spinner reference name.
+
+Return value: Return the spinner instance of the spinner with the given `name`.
+
+Example:
+
+```js
+const spinnies = new Spinnies();
+spinnies.add('apple-spinner');
+// do stuff
+const apple = spinnies.get('apple-spinner');
+// we can now do stuff with `apple`
+apple.update(options);
+apple.succeed();
+apple.fail();
+apple.remove();
+// same as doing
+spinnies.update('apple-spinner', options);
+spinnies.succeed('apple-spinner');
+spinnies.fail('apple-spinner');
+spinnies.remove('apple-spinner');
 
 ```
 
@@ -117,6 +146,16 @@ Parameters:
 - **name** - `string`: spinner reference name.
 
 Return value: Returns the spinner's options.
+
+Example:
+
+```js
+const spinnies = new Spinnies();
+spinnies.add('generic-spinner-name');
+// some code
+const genericSpinnerNameColor = spinnies.pick('generic-spinner-name').color;
+
+```
 
 #### setFrames(spinner)
 
@@ -144,6 +183,7 @@ const veggies = {
 const spinnies = new Spinnies({ spinner: fruits });
 // some code
 spinnies.setFrames(vegis);
+
 ```
 
 #### update(name, [options])
@@ -160,15 +200,19 @@ Parameters:
   - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
   - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
 
-Return value: Returns the spinner's options.
+Return value: Returns the updated spinner instance.
 
 Example:
 
 ```js
 const spinnies = new Spinnies();
-spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
 // some code
 spinnies.update('spinner-1', { text: 'Hello, I am an updated text!', color: 'blue' });
+// same as
+spinnies.get('spinner-1').update({ text: 'Hello, I am an updated text!', color: 'blue' });
+// same as
+spinner1.update({ text: 'Hello, I am an updated text!', color: 'blue' });
 
 ```
 
@@ -182,15 +226,19 @@ Parameters:
   - **text**: - `string`: Optional text to show in the spinner. If none is provided, the `name` field will be shown.
   - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
 
-Return value: Returns the spinner's options.
+Return value: Returns the succeeded spinner instance.
 
 Example:
 
 ```js
 const spinnies = new Spinnies();
-spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
 // some code
 spinnies.succeed('spinner-1', { text: 'Success!', successColor: 'greenBright' });
+// same as
+spinnies.get('spinner-1').succeed({ text: 'Success!', successColor: 'greenBright' });
+// same as
+spinner1.succeed({ text: 'Success!', successColor: 'greenBright' });
 
 ```
 
@@ -210,10 +258,13 @@ Example:
 
 ```js
 const spinnies = new Spinnies();
-spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
 // some code
 spinnies.fail('spinner-1', { text: 'I failed', failColor: 'redBright' });
-
+// same as
+spinnies.get('spinner-1').fail({ text: 'I failed', failColor: 'redBright' });
+// same as
+spinner1.fail({ text: 'I failed', failColor: 'redBright' });
 ```
 
 #### remove(name)
@@ -229,10 +280,14 @@ Example:
 
 ```js
 const spinnies = new Spinnies();
-spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
 spinnies.add('spinner-2', { text: 'Hello! I am a cool spinner', color: 'blue' });
 // some code
 spinnies.remove('spinner-1');
+// same as
+spinnies.get('spinner-1').remove();
+// same as
+spinner1.remove();
 
 ```
 
