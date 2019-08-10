@@ -33,20 +33,20 @@ describe('Spinnies', () => {
       describe('adding new spinners', () => {
         it('has initial variables defined', () => {
           const spinner = this.spinners.add('spinner');
-          expect(spinner).to.include(this.spinnersOptions);
+          expect(spinner.options).to.include(this.spinnersOptions);
         });
 
         context('when no initial text is specified', () => {
           it('takes the spinner name as text', () => {
             const spinner = this.spinners.add('spinner-name');
-            expect(spinner.text).to.eq('spinner-name');
+            expect(spinner.options.text).to.eq('spinner-name');
           });
         });
 
         context('when initial text is specified', () => {
           it('uses the specified spinner text', () => {
             const spinner = this.spinners.add('spinner-name', { text: 'Hello spinner-name' });
-            expect(spinner.text).to.eq('Hello spinner-name');
+            expect(spinner.options.text).to.eq('Hello spinner-name');
           });
         });
 
@@ -55,7 +55,7 @@ describe('Spinnies', () => {
             it('overrides the default options', () => {
               const options = { color: 'black', spinnerColor: 'black', succeedColor: 'black', failColor: 'black', status: 'non-spinnable' };
               const spinner = this.spinners.add('spinner-name', options);
-              expect(spinner).to.include({ ...this.spinnersOptions, ...options, status: 'non-spinnable' });
+              expect(spinner.options).to.include({ ...this.spinnersOptions, ...options, status: 'non-spinnable' });
             });
           });
 
@@ -63,7 +63,7 @@ describe('Spinnies', () => {
             it('mantains the default options', () => {
               const options = { color: 'foo', spinnerColor: 'bar', status: 'buz' };
               const spinner = this.spinners.add('spinner-name', options);
-              expect(spinner).to.include(this.spinnersOptions);
+              expect(spinner.options).to.include(this.spinnersOptions);
             });
           });
         });
@@ -86,14 +86,14 @@ describe('Spinnies', () => {
         beforeEach(() => {
           this.spinner = this.spinners.succeed('spinner');
           this.anotherSpinner = this.spinners.fail('another-spinner');
-          this.nonSpinnable = this.spinners.pick('non-spinnable');
-          this.thirdSpinner = this.spinners.pick('third-spinner');
+          this.nonSpinnable = this.spinners.get('non-spinnable');
+          this.thirdSpinner = this.spinners.get('third-spinner');
         });
 
         const expectToKeepFinishedSpinners = () => {
-          expect(this.spinner.status).to.eq('succeed');
-          expect(this.anotherSpinner.status).to.eq('fail');
-          expect(this.nonSpinnable.status).to.eq('non-spinnable');
+          expect(this.spinner.options.status).to.eq('succeed');
+          expect(this.anotherSpinner.options.status).to.eq('fail');
+          expect(this.nonSpinnable.options.status).to.eq('non-spinnable');
         };
 
         context('when providing a new status', () => {
@@ -101,24 +101,24 @@ describe('Spinnies', () => {
             this.spinners.stopAll('succeed');
 
             expectToKeepFinishedSpinners();
-            expect(this.thirdSpinner.status).to.eq('succeed');
-            expect(this.thirdSpinner.color).to.eq('green');
+            expect(this.thirdSpinner.options.status).to.eq('succeed');
+            expect(this.thirdSpinner.options.color).to.eq('green');
           });
 
           it('sets non-finished spinners as fail', () => {
             this.spinners.stopAll('fail');
 
             expectToKeepFinishedSpinners();
-            expect(this.thirdSpinner.status).to.eq('fail');
-            expect(this.thirdSpinner.color).to.eq('red');
+            expect(this.thirdSpinner.options.status).to.eq('fail');
+            expect(this.thirdSpinner.options.color).to.eq('red');
           });
 
           it('sets non-finished spinners as stopped', () => {
             this.spinners.stopAll('foobar');
 
             expectToKeepFinishedSpinners();
-            expect(this.thirdSpinner.status).to.eq('stopped');
-            expect(this.thirdSpinner.color).to.eq('grey');
+            expect(this.thirdSpinner.options.status).to.eq('stopped');
+            expect(this.thirdSpinner.options.color).to.eq('grey');
           });
         });
 
@@ -127,8 +127,8 @@ describe('Spinnies', () => {
             this.spinners.stopAll();
 
             expectToKeepFinishedSpinners();
-            expect(this.thirdSpinner.status).to.eq('stopped');
-            expect(this.thirdSpinner.color).to.eq('grey');
+            expect(this.thirdSpinner.options.status).to.eq('stopped');
+            expect(this.thirdSpinner.options.color).to.eq('grey');
           });
         });
       });

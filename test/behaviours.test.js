@@ -9,7 +9,7 @@ function expectToBehaveLikeAnUpdate(self, status) {
     it(`should change the status to ${currentStatus}`, () => {
       const spinner = self.spinners[currentStatus]('spinner');
       const anotherSpinner = self.spinners.pick('another-spinner');
-      expect(spinner.status).to.eq(currentStatus);
+      expect(spinner.options.status).to.eq(currentStatus);
       expect(anotherSpinner.status).to.eq('spinning');
     });
 
@@ -30,7 +30,7 @@ function expectToBehaveLikeAnUpdate(self, status) {
         it('overrides the default options', () => {
           const options = { text: 'updated text', color: 'black', spinnerColor: 'black' };
           const spinner = self.spinners[status]('spinner', options);
-          expect(spinner).to.include(options);
+          expect(spinner.options).to.include(options);
         });
       });
 
@@ -38,7 +38,7 @@ function expectToBehaveLikeAnUpdate(self, status) {
         it('mantains the previous options', () => {
           const options = { text: 42, color: 'foo', spinnerColor: 'bar' };
           const spinner = self.spinners[currentStatus]('spinner', options);
-          expect(spinner).to.include({ text: 'spinner', spinnerColor: 'greenBright' });
+          expect(spinner.options).to.include({ text: 'spinner', spinnerColor: 'greenBright' });
         });
       });
 
@@ -47,8 +47,8 @@ function expectToBehaveLikeAnUpdate(self, status) {
           const options = { text: 'updated text', color: 'black', spinnerColor: 'black' };
           const invalidOptions = { foo: 42, bar: 'bar'}
           const spinner = self.spinners[status]('spinner', options);
-          expect(spinner).to.include(options);
-          expect(spinner).to.not.have.any.keys('foo', 'bar');
+          expect(spinner.options).to.include(options);
+          expect(spinner.options).to.not.have.any.keys('foo', 'bar');
         });
       });
     });
