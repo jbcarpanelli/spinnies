@@ -31,19 +31,19 @@ setTimeout(() => {
 }, 8000)
 
 setTimeout(() => {
-  spinners.fail('second-spinner', { text: 'And I failed :\\' });
+  spinners.get('second-spinner').fail({ text: 'And I failed :\\' });
 }, 9000)
 
 setTimeout(() => {
-  spinners.update('indented', { indent: 4, text: 'Im an indented line I used to have 2 space but now i have 4!' });
+  spinners.get('indented').update({ indent: 4, text: 'Im an indented line I used to have 2 space but now i have 4!' });
 }, 9500)
 
 setTimeout(() => {
-  spinners.succeed('first-spinner', { text: 'I\'m the updated (and optional) success message', color: 'magenta' });
+  spinners.get('first-spinner').succeed({ text: 'I\'m the updated (and optional) success message', color: 'magenta' });
 }, 10000)
 
 setTimeout(() => {
-  spinners.update('first-spinner', { text: 'I\'m the updated (and very much optional) success message', color: 'magenta' });
+  spinners.get('first-spinner').update({ text: 'I\'m the updated (and very much optional) success message', color: 'magenta' });
 }, 13000)
 
 setTimeout(() => {
@@ -51,7 +51,7 @@ setTimeout(() => {
 }, 11000)
 
 setTimeout(() => {
-  spinners.succeed('indented');
+  spinners.get('indented').succeed();
 }, 11500)
 
 setTimeout(() => {
@@ -59,15 +59,15 @@ setTimeout(() => {
 }, 12000)
 
 setTimeout(() => {
-  spinners.update('third-spinner', { text: 'I have been updated :D', color: 'yellow', spinnerColor: 'blue' });
+  spinners.get('third-spinner').update({ text: 'I have been updated :D', color: 'yellow', spinnerColor: 'blue' });
 }, 12500)
 
 setTimeout(() => {
-  spinners.update('third-spinner', { text: 'I have been updated again :D', color: 'cyan' });
+  spinners.get('third-spinner').update({ text: 'I have been updated again :D', color: 'cyan' });
 }, 14000)
 
 setTimeout(() => {
-  spinners.update('spinner-that-changes', { indent: 4, text: 'I can be indented too! I am another spinner that would love to make some friends! Also I am very long, but I break into two or more lines if needed, i can break break break and break all day long, using word-wrap so words won\'t get teared up' });
+  spinners.get('spinner-that-changes').update({ indent: 4, text: 'I can be indented too! I am another spinner that would love to make some friends! Also I am very long, but I break into two or more lines if needed, i can break break break and break all day long, using word-wrap so words won\'t get teared up' });
 }, 14000)
 
 setTimeout(() => {
@@ -75,23 +75,23 @@ setTimeout(() => {
 }, 16000)
 
 setTimeout(() => {
-  spinners.update('third-spinner', { text: 'Again, with fancy colors!',  color: 'magenta' });
+  spinners.get('third-spinner').update({ text: 'Again, with fancy colors!',  color: 'magenta' });
 }, 17000)
 
 setTimeout(() => {
-  spinners.succeed('third-spinner');
+  spinners.get('third-spinner').succeed();
 }, 20000)
 
 setTimeout(() => {
-  spinners.update('third-spinner', { text: 'Im going to be removed', color: 'red' });
+  spinners.get('third-spinner').update({ text: 'Im going to be removed', color: 'red' });
 }, 21000)
 
 setTimeout(() => {
-  spinners.remove('third-spinner');
+  spinners.get('third-spinner').remove();
 }, 22000)
 
 setTimeout(() => {
-  spinners.succeed('spinner-that-changes', { text: 'Bye!', succeedColor: 'blue' });
+  spinners.get('spinner-that-changes').succeed({ text: 'Bye!', succeedColor: 'blue' });
   spinners.log();
 }, 26000);
 
