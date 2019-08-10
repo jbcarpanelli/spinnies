@@ -84,7 +84,7 @@ describe('utils', () => {
     describe('#breakText', () => {
       beforeEach(() => {
         this.columns = process.stderr.columns;
-        process.stderr.columns = 10;
+        process.stderr.columns = 15;
       });
 
       afterEach(() => {
@@ -92,12 +92,29 @@ describe('utils', () => {
       });
 
       context('when number of lines in text is greater than the columns length', () => {
-        it('adds line-breaks to the given text', () => {
-          const text = breakText(new Array(51).join('a'), 3);
-          const splitted = text.split('\n');
-          expect(splitted).to.have.lengthOf(6);
-          expect(splitted[0]).to.have.lengthOf(6); // 10 - 3 - 1
-          expect(splitted[1]).to.have.lengthOf(9); // 10 - 0 - 1
+        context('without indent', () => {
+          it('adds line-breaks to the given text', () => {
+            const text = breakText('im a very long sentence yay yay yay yay', 3);
+            const splitted = text.split('\n');
+            expect(splitted).to.have.lengthOf(5);
+            expect(splitted[0]).to.equal('im a very');
+            expect(splitted[1]).to.equal('long');
+            expect(splitted[2]).to.equal('sentence');
+            expect(splitted[3]).to.equal('yay yay yay');
+            expect(splitted[4]).to.equal('yay');
+          });
+        });
+
+        context('with indent', () => {
+          it('adds line-breaks to the given text taking indent into consideration', () => {
+            const text = breakText('im a very long sentence yay yay yay yay', 3, 4);
+            const splitted = text.split('\n');
+            expect(splitted).to.have.lengthOf(7);
+            expect(splitted[0]).to.equal('im a');
+            expect(splitted[1]).to.equal('very');
+            expect(splitted[2]).to.equal('long');
+            expect(splitted[3]).to.equal('sentence');
+          });
         });
       });
 
