@@ -170,21 +170,15 @@ class Spinnies {
   }
 
   update(name, options = {}) {
-    const spinner = this.get(name);
-    spinner.update(options);
-    return spinner;
+    return this.childFuction(name, 'update', options);
   }
 
   succeed(name, options = {}) {
-    const spinner = this.get(name);
-    spinner.succeed(options);
-    return spinner;
+    return this.childFuction(name, 'succeed', options);
   }
 
   fail(name, options = {}) {
-    const spinner = this.get(name);
-    spinner.fail(options);
-    return spinner;
+    return this.childFuction(name, 'fail', options);
   }
 
   remove(name) {
@@ -217,10 +211,7 @@ class Spinnies {
   }
 
   setSpinnerProperties(name, options, status) {
-    if (typeof name !== 'string') throw Error('A spinner reference name must be specified');
-    if (!this.spinners[name]) throw Error(`No spinner initialized with name ${name}`);
-
-    return this.get(name).setSpinnerProperties(options, status);
+    return this.childFuction(name, 'setSpinnerProperties', options, status);
   }
 
   updateSpinnerState(name, options = {}, status) {
@@ -279,6 +270,15 @@ class Spinnies {
       }
       this.spinners = {};
     }
+  }
+
+  childFuction(name, action, ...args) {
+    if (typeof name !== 'string') throw Error('A spinner reference name must be specified');
+    if (!this.get(name)) throw Error(`No spinner initialized with name ${name}`);
+
+    const spinner = this.get(name);
+    spinner[action](...args);
+    return spinner;
   }
 
   bindSigint(lines) {
