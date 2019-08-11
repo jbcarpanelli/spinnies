@@ -8,6 +8,10 @@ const { dashes, dots } = require('./spinners');
 const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped'];
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
 
+function isValidColor(color) {
+  return VALID_COLORS.includes(color);
+}
+
 function purgeSpinnerOptions(options) {
   const { text, status, indent } = options;
   const opts = { text, status, indent };
@@ -27,6 +31,41 @@ function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
   spinner = turnToValidSpinner(spinner);
 
   return { ...colors, ...prefixes, ...disableSpinsOption, spinner }
+}
+
+function purgeStatusOptions(opts) {
+  const {
+    prefix,
+    prefixColor,
+    spinnerColor,
+    textColor,
+    isStatic,
+    noSpaceAfterPrefix
+  } = opts;
+
+  const options = {
+    prefix,
+    prefixColor,
+    spinnerColor,
+    textColor,
+    isStatic,
+    noSpaceAfterPrefix
+  };
+
+  if (!prefix || (typeof prefix !== string && typeof prefix !== 'number')) {
+    delete options.prefix;
+    options.noSpaceAfterPrefix = true;
+  }
+  options.isStatic = !!options.isStatic;
+  options.noSpaceAfterPrefix = !!options.noSpaceAfterPrefix;
+
+  ['prefixColor', 'spinnerColor', 'textColor'].forEach((color) => {
+    if(!isValidColor(options[color])) {
+      delete options[color];
+    }
+  });
+
+  return options;
 }
 
 function turnToValidSpinner(spinner = {}) {
@@ -60,7 +99,7 @@ function turnToValidSpinner(spinner = {}) {
 function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
   const colors = { color, succeedColor, failColor, spinnerColor };
   Object.keys(colors).forEach(key => {
-    if (!VALID_COLORS.includes(colors[key])) delete colors[key];
+    if (!isValidColor(colors[key])) delete colors[key];
   });
 
   return colors;
@@ -133,6 +172,8 @@ function terminalSupportsUnicode() {
 module.exports = {
   purgeSpinnersOptions,
   purgeSpinnerOptions,
+  purgeStatusOptions,
+  prefixOptions,
   colorOptions,
   breakText,
   getLinesLength,

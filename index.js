@@ -5,8 +5,24 @@ const cliCursor = require('cli-cursor');
 const EventEmitter = require('events').EventEmitter;
 const { dashes, dots } = require('./spinners');
 
-const { secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
+const { secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, prefixOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
 const { isValidStatus, writeStream, cleanStream } = require('./utils');
+
+class SpinnieStatus {
+  constructor(options = {}) {
+    const opts = {
+      prefix: false,
+      isStatic: false,
+      noSpaceAfterPrefix: false,
+      spinnerColor: 'greenBright',
+      prefixColor: 'greenBright',
+      textColor: false,
+      ...purgeStatusOptions(options);
+    }
+
+    this.options = opts;
+  }
+}
 
 class Spinnie extends EventEmitter {
   constructor({ name, options, inheritedOptions, logs }) {
@@ -118,14 +134,37 @@ class Spinnies {
       disableSpins: false,
       ...options
     };
+
     this.logs = [];
     this.spinners = {};
+    this.statuses = {};
+
     this.isCursorHidden = false;
     this.currentInterval = null;
     this.stream = process.stderr;
     this.lineCount = 0;
     this.currentFrameIndex = 0;
     this.spin = !this.options.disableSpins && !process.env.CI && process.stderr && process.stderr.isTTY;
+    
+    this.addStatus(['spinning', 'spin', 'active'], new SpinnieStatus({
+      spinnerColor: this.options.spinnerColor,
+      textColor: this.options.color,
+    }));
+    this.addStatus(['success', 'succeed', 'done'], new SpinnieStatus({
+      prefix: this.options.succeedPrefix,
+      isStatic: true,
+      noSpaceAfterPrefix: false,
+      prefixColor: this.options.succeedColor,
+      textColor: this.options.succeedColor,
+    }));
+    this.addStatus(['fail', 'failed', 'error'], new SpinnieStatus({
+      prefix: this.options.failPrefix,
+      isStatic: true,
+      noSpaceAfterPrefix: false,
+      prefixColor: this.options.failColor,
+      textColor: this.options.failColor,
+    }));
+
     this.bindSigint();
   }
 
@@ -146,6 +185,23 @@ class Spinnies {
     this.options.spinner = spinner;
     this.currentFrameIndex = 0;
     this.updateSpinnerState();
+
+    return this;
+  }
+
+  addStatus(names, status, shouldUpdate = false) {
+    if (!(status instanceof SpinnieStatus)) throw new Error('Status must be an instance of SpinnieStatus, create status with \'new SpinnieStatus(options)\'');
+    if (!names) throw new Error('Status name must be a string or array of strings');  
+
+    names = Array.isArray(names) ? names : [names];
+    names.forEach(name => {
+      if (typeof name !== 'string') return;
+      this.statuses[name] = status;
+    });
+
+    if (shouldUpdate) {
+      this.updateSpinnerState();
+    }
 
     return this;
   }
