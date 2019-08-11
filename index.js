@@ -131,12 +131,12 @@ class Spinnies {
     this.currentFrameIndex = 0;
     this.spin = !this.options.disableSpins && !process.env.CI && process.stderr && process.stderr.isTTY;
     
-    this.setStatus('spinning', {
+    this.configureStatus('spinning', {
       aliases: ['spin', 'active', 'default'],
       spinnerColor: this.options.spinnerColor,
       textColor: this.options.color,
     });
-    this.setStatus('success', {
+    this.configureStatus('success', {
       aliases: ['succeed', 'done'],
       prefix: this.options.succeedPrefix,
       isStatic: true,
@@ -144,7 +144,7 @@ class Spinnies {
       prefixColor: this.options.succeedColor,
       textColor: this.options.succeedColor,
     });
-    this.setStatus('fail', {
+    this.configureStatus('fail', {
       aliases: ['failed', 'error'],
       prefix: this.options.failPrefix,
       isStatic: true,
@@ -177,7 +177,7 @@ class Spinnies {
     return this;
   }
 
-  setStatus(name, statusOptions = {}, shouldUpdate = false) {
+  configureStatus(name, statusOptions = {}, shouldUpdate = false) {
     if (!name) throw new Error('Status name must be a string');  
     let { aliases } = statusOptions;
     const existingStatus = this.statuses[name] || {};
