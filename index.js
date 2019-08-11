@@ -132,7 +132,7 @@ class Spinnies {
     this.spin = !this.options.disableSpins && !process.env.CI && process.stderr && process.stderr.isTTY;
     
     this.setStatus('spinning', {
-      aliases: ['spin', 'active'];
+      aliases: ['spin', 'active', 'default'],
       spinnerColor: this.options.spinnerColor,
       textColor: this.options.color,
     });
@@ -179,7 +179,7 @@ class Spinnies {
 
   setStatus(name, statusOptions = {}, shouldUpdate = false) {
     if (!name) throw new Error('Status name must be a string');  
-    const { aliases } = statusOptions;
+    let { aliases } = statusOptions;
     const existingStatus = this.statuses[name] || {};
     const opts = {
       prefix: false,
@@ -189,7 +189,7 @@ class Spinnies {
       prefixColor: 'greenBright',
       textColor: false,
       ...existingStatus,
-      ...purgeStatusOptions(statusOptions);
+      ...purgeStatusOptions(statusOptions)
     }
 
     this.statuses[name] = opts;
@@ -207,6 +207,20 @@ class Spinnies {
     }
 
     return this;
+  }
+
+  getStatus(name) {
+    const status = this.statuses[name];
+    if (status) {
+      return status;
+    }
+
+    const fromAlias = this.statusesAliases[name];
+    if (fromAlias && this.statuses[fromAlias]) {
+      return this.statuses[fromAlias];
+    }
+
+    return this.statuses.spinning;
   }
 
   add(name, options = {}) {

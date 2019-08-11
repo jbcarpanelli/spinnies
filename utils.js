@@ -52,7 +52,7 @@ function purgeStatusOptions(opts) {
     noSpaceAfterPrefix
   };
 
-  if (!prefix || (typeof prefix !== string && typeof prefix !== 'number')) {
+  if (!prefix || (typeof prefix !== 'string' && typeof prefix !== 'number')) {
     delete options.prefix;
     options.noSpaceAfterPrefix = true;
   }
