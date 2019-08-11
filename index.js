@@ -131,12 +131,12 @@ class Spinnies {
     this.currentFrameIndex = 0;
     this.spin = !this.options.disableSpins && !process.env.CI && process.stderr && process.stderr.isTTY;
     
-    this.addStatus('spinning', {
+    this.setStatus('spinning', {
       aliases: ['spin', 'active'];
       spinnerColor: this.options.spinnerColor,
       textColor: this.options.color,
     });
-    this.addStatus('success', {
+    this.setStatus('success', {
       aliases: ['succeed', 'done'],
       prefix: this.options.succeedPrefix,
       isStatic: true,
@@ -144,7 +144,7 @@ class Spinnies {
       prefixColor: this.options.succeedColor,
       textColor: this.options.succeedColor,
     });
-    this.addStatus('fail', {
+    this.setStatus('fail', {
       aliases: ['failed', 'error'],
       prefix: this.options.failPrefix,
       isStatic: true,
@@ -177,7 +177,7 @@ class Spinnies {
     return this;
   }
 
-  setStatus(name, statusOptions, shouldUpdate = false) {
+  setStatus(name, statusOptions = {}, shouldUpdate = false) {
     if (!name) throw new Error('Status name must be a string');  
     const { aliases } = statusOptions;
     const existingStatus = this.statuses[name] || {};
@@ -194,11 +194,13 @@ class Spinnies {
 
     this.statuses[name] = opts;
 
-    aliases = Array.isArray(aliases) ? aliases : [aliases];
-    aliases.forEach(aliasName => {
-      if (typeof aliasName !== 'string') return;
-      this.statusesAliases[aliasName] = name;
-    });
+    if (aliases) {
+      aliases = Array.isArray(aliases) ? aliases : [aliases];
+      aliases.forEach(aliasName => {
+        if (typeof aliasName !== 'string') return;
+        this.statusesAliases[aliasName] = name;
+      });
+    }
 
     if (shouldUpdate) {
       this.updateSpinnerState();
