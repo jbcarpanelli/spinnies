@@ -40,7 +40,8 @@ function purgeStatusOptions(opts) {
     spinnerColor,
     textColor,
     isStatic,
-    noSpaceAfterPrefix
+    noSpaceAfterPrefix,
+    rawRender
   } = opts;
 
   const options = {
@@ -49,8 +50,21 @@ function purgeStatusOptions(opts) {
     spinnerColor,
     textColor,
     isStatic,
-    noSpaceAfterPrefix
+    noSpaceAfterPrefix,
+    rawRender
   };
+
+  if (rawRender) {
+    // to improve static rendering on CI and when spin is disabled
+    if (typeof rawRender === 'function') {
+      // the function will return the message
+      const res = rawRender();
+      if (typeof res !== 'string') delete options.rawRender;
+    } else if (typeof rawRender !== 'string') {
+      // if it's not a function it must be a string, well if it isn't it's invalid
+      delete options.rawRender;
+    }
+  }
 
   if (!prefix || (typeof prefix !== 'string' && typeof prefix !== 'number')) {
     delete options.prefix;

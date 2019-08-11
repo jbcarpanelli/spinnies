@@ -135,6 +135,9 @@ class Spinnies {
       aliases: ['spin', 'active', 'default'],
       spinnerColor: this.options.spinnerColor,
       textColor: this.options.color,
+      rawRender({ text }) {
+        return `- ${text}`;
+      }
     });
     this.configureStatus('success', {
       aliases: ['succeed', 'done'],
@@ -143,6 +146,9 @@ class Spinnies {
       noSpaceAfterPrefix: false,
       prefixColor: this.options.succeedColor,
       textColor: this.options.succeedColor,
+      rawRender({ text, options, statusOptions }) {
+        return `${statusOptions.prefix} ${text}`;
+      }
     });
     this.configureStatus('fail', {
       aliases: ['failed', 'error'],
@@ -151,6 +157,9 @@ class Spinnies {
       noSpaceAfterPrefix: false,
       prefixColor: this.options.failColor,
       textColor: this.options.failColor,
+      rawRender({ text, options, statusOptions }) {
+        return `${statusOptions.prefix} ${text}`;
+      }
     });
 
     this.bindSigint();
@@ -181,6 +190,8 @@ class Spinnies {
     if (!name) throw new Error('Status name must be a string');  
     let { aliases } = statusOptions;
     const existingStatus = this.statuses[name] || {};
+    const purgedOptions = purgeStatusOptions(statusOptions);
+
     const opts = {
       prefix: false,
       isStatic: false,
@@ -189,7 +200,7 @@ class Spinnies {
       prefixColor: 'greenBright',
       textColor: false,
       ...existingStatus,
-      ...purgeStatusOptions(statusOptions)
+      ...purgedOptions
     }
 
     this.statuses[name] = opts;
