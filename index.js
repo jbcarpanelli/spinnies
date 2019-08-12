@@ -8,8 +8,63 @@ const { dashes, dots } = require('./spinners');
 const { secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, prefixOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
 const { isValidStatus, writeStream, cleanStream } = require('./utils');
 
+class StatusRegistry {
+  constructor(defaultStatus) {
+    this.defaultStatus = defaultStatus;
+    this.statuses = {};
+    this.statusesAliases = {};
+  }
+
+  configureStatus(name, statusOptions = {}) {
+    if (!name) throw new Error('Status name must be a string');  
+    let { aliases } = statusOptions;
+    const existingStatus = this.statuses[name] || {};
+    const purgedOptions = purgeStatusOptions(statusOptions);
+
+    const opts = {
+      prefix: false,
+      isStatic: false,
+      noSpaceAfterPrefix: false,
+      spinnerColor: 'greenBright',
+      prefixColor: 'greenBright',
+      textColor: false,
+      rawRender({ statusOptions }) {
+        return `${statusOptions.prefix} ${text}`;
+      },
+      ...existingStatus,
+      ...purgedOptions
+    }
+
+    this.statuses[name] = opts;
+
+    if (aliases) {
+      aliases = Array.isArray(aliases) ? aliases : [aliases];
+      aliases.forEach(aliasName => {
+        if (typeof aliasName !== 'string') return;
+        this.statusesAliases[aliasName] = name;
+      });
+    }
+
+    return this;
+  }
+
+  getStatus(name) {
+    const status = this.statuses[name];
+    if (status) {
+      return status;
+    }
+
+    const fromAlias = this.statusesAliases[name];
+    if (fromAlias && this.statuses[fromAlias]) {
+      return this.statuses[fromAlias];
+    }
+
+    return this.statuses[this.defaultStatus];
+  }
+};
+
 class Spinnie extends EventEmitter {
-  constructor({ name, options, inheritedOptions, logs }) {
+  constructor({ name, options, inheritedOptions, statusRegistry, logs }) {
     super();
 
     if (!options.text) options.text = name;
@@ -23,6 +78,7 @@ class Spinnie extends EventEmitter {
 
     this.logs = logs;
     this.options = spinnerProperties;
+    this.statusRegistry = statusRegistry;
 
     return this;
   }
@@ -121,8 +177,7 @@ class Spinnies {
 
     this.logs = [];
     this.spinners = {};
-    this.statuses = {};
-    this.statusesAliases = {};
+    this.statusRegistry = new StatusRegistry('spinning');
 
     this.isCursorHidden = false;
     this.currentInterval = null;
@@ -131,7 +186,7 @@ class Spinnies {
     this.currentFrameIndex = 0;
     this.spin = !this.options.disableSpins && !process.env.CI && process.stderr && process.stderr.isTTY;
     
-    this.configureStatus('spinning', {
+    this.statusRegistry.configureStatus('spinning', {
       aliases: ['spin', 'active', 'default'],
       spinnerColor: this.options.spinnerColor,
       textColor: this.options.color,
@@ -139,7 +194,7 @@ class Spinnies {
         return `- ${text}`;
       }
     });
-    this.configureStatus('success', {
+    this.statusRegistry.configureStatus('success', {
       aliases: ['succeed', 'done'],
       prefix: this.options.succeedPrefix,
       isStatic: true,
@@ -150,7 +205,7 @@ class Spinnies {
         return `${statusOptions.prefix} ${text}`;
       }
     });
-    this.configureStatus('fail', {
+    this.statusRegistry.configureStatus('fail', {
       aliases: ['failed', 'error'],
       prefix: this.options.failPrefix,
       isStatic: true,
@@ -186,59 +241,11 @@ class Spinnies {
     return this;
   }
 
-  configureStatus(name, statusOptions = {}, shouldUpdate = false) {
-    if (!name) throw new Error('Status name must be a string');  
-    let { aliases } = statusOptions;
-    const existingStatus = this.statuses[name] || {};
-    const purgedOptions = purgeStatusOptions(statusOptions);
-
-    const opts = {
-      prefix: false,
-      isStatic: false,
-      noSpaceAfterPrefix: false,
-      spinnerColor: 'greenBright',
-      prefixColor: 'greenBright',
-      textColor: false,
-      ...existingStatus,
-      ...purgedOptions
-    }
-
-    this.statuses[name] = opts;
-
-    if (aliases) {
-      aliases = Array.isArray(aliases) ? aliases : [aliases];
-      aliases.forEach(aliasName => {
-        if (typeof aliasName !== 'string') return;
-        this.statusesAliases[aliasName] = name;
-      });
-    }
-
-    if (shouldUpdate) {
-      this.updateSpinnerState();
-    }
-
-    return this;
-  }
-
-  getStatus(name) {
-    const status = this.statuses[name];
-    if (status) {
-      return status;
-    }
-
-    const fromAlias = this.statusesAliases[name];
-    if (fromAlias && this.statuses[fromAlias]) {
-      return this.statuses[fromAlias];
-    }
-
-    return this.statuses.spinning;
-  }
-
   add(name, options = {}) {
     if (typeof name !== 'string') throw new Error('A spinner reference name must be specified');
     if (this.spinners[name] !== undefined) throw new Error(`A spinner named '${name}' already exists`);
 
-    const spinnie = new Spinnie({ name, options, inheritedOptions: this.options, logs: this.logs });
+    const spinnie = new Spinnie({ name, options, inheritedOptions: this.options, statusRegistry: this.statusRegistry, logs: this.logs });
 
     spinnie.on('removeMe', () => {
       this.remove(name);

@@ -58,12 +58,14 @@ function purgeStatusOptions(opts) {
     // to improve static rendering on CI and when spin is disabled
     if (typeof rawRender === 'function') {
       // the function will return the message
-      const res = rawRender();
+      const res = rawRender({ statusOptions : {}}); // TODO: placeholder
       if (typeof res !== 'string') delete options.rawRender;
     } else if (typeof rawRender !== 'string') {
       // if it's not a function it must be a string, well if it isn't it's invalid
       delete options.rawRender;
     }
+  } else {
+    delete options.rawRender;
   }
 
   if (!prefix || (typeof prefix !== 'string' && typeof prefix !== 'number')) {
