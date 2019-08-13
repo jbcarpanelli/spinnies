@@ -360,7 +360,7 @@ spinner.update({ status: 'statusName' })
 // or
 spinners.update('spinnerName', { status: 'statusName' });
 ```
-2.
+2. If you are just setting the status without changing any other options (text, indent...) you should use this method, it skips a bunch of option purging and checks.
 ```js
 spinner.status('statusName')
 // or

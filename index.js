@@ -99,6 +99,14 @@ class Spinnie extends EventEmitter {
     return this;
   }
 
+  status(statusName) {
+    if (!statusName || typeof statusName !== 'string') return this;
+    this.options.status = statusName;
+    this.updateSpinnerState();
+
+    return this;
+  }
+
   succeed(options = {}) {
     this.setSpinnerProperties(options, 'succeed');
     this.updateSpinnerState();
@@ -166,7 +174,7 @@ class Spinnie extends EventEmitter {
   setSpinnerProperties(options, status) {
     options = purgeSpinnerOptions(options);
     status = status || this.options.status || 'spinning';
-    const { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet } = options;
+    const { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet } = statusOptionsFromNormalUpdate(options);
 
     if (shouldSetDefault) {
       this.statusOverrides['spinning'] = defaultSet;
@@ -286,6 +294,10 @@ class Spinnies {
 
   update(name, options = {}) {
     return this.childFuction(name, 'update', options);
+  }
+
+  status(name, statusName) {
+    return this.childFuction(name, 'status', statusName);
   }
 
   succeed(name, options = {}) {
