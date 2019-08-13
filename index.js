@@ -5,8 +5,10 @@ const cliCursor = require('cli-cursor');
 const EventEmitter = require('events').EventEmitter;
 const { dashes, dots } = require('./spinners');
 
-const { secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, prefixOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
+const { statusOptionsFromNormalUpdate, secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, prefixOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
 const { isValidStatus, writeStream, cleanStream } = require('./utils');
+
+const DEFAULT_STATUS = 'spinning';
 
 class StatusRegistry {
   constructor(defaultStatus) {
@@ -16,7 +18,7 @@ class StatusRegistry {
   }
 
   configureStatus(name, statusOptions = {}) {
-    if (!name) throw new Error('Status name must be a string');  
+    if (!name) throw new Error('Status name must be a string');
     let { aliases } = statusOptions;
     const existingStatus = this.statuses[name] || {};
     const purgedOptions = purgeStatusOptions(statusOptions);
@@ -61,6 +63,11 @@ class StatusRegistry {
 
     return this.statuses[this.defaultStatus];
   }
+
+  actualName(nameOrAlias) {
+    if(this.statuses[nameOrAlias]) return nameOrAlias;
+    return this.statusesAliases[nameOrAlias];
+  }
 };
 
 class Spinnie extends EventEmitter {
@@ -79,6 +86,7 @@ class Spinnie extends EventEmitter {
     this.logs = logs;
     this.options = spinnerProperties;
     this.statusRegistry = statusRegistry;
+    this.statusOverrides = {};
 
     return this;
   }
@@ -150,9 +158,25 @@ class Spinnie extends EventEmitter {
     this.logs.push(log);
   }
 
+  getStatus(name) {
+    const override = this.statusOverrides[this.statusRegistry.actualName(name)] || {};
+    return { ...this.statusRegistry.getStatus(name), ...override };
+  }
+
   setSpinnerProperties(options, status) {
     options = purgeSpinnerOptions(options);
     status = status || this.options.status || 'spinning';
+    const { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet } = options;
+
+    if (shouldSetDefault) {
+      this.statusOverrides['spinning'] = defaultSet;
+    }
+    if (shouldSetFail) {
+      this.statusOverrides['fail'] = failSet;
+    }
+    if (shouldSetSucceed) {
+      this.statusOverrides['succeed'] = succeedSet;
+    }
 
     this.options = { ...this.options, ...options, status };
     return this;
@@ -177,7 +201,7 @@ class Spinnies {
 
     this.logs = [];
     this.spinners = {};
-    this.statusRegistry = new StatusRegistry('spinning');
+    this.statusRegistry = new StatusRegistry(DEFAULT_STATUS);
 
     this.isCursorHidden = false;
     this.currentInterval = null;
@@ -185,10 +209,10 @@ class Spinnies {
     this.lineCount = 0;
     this.currentFrameIndex = 0;
     this.spin = !this.options.disableSpins && !process.env.CI && process.stderr && process.stderr.isTTY;
-    
+
     this.statusRegistry.configureStatus('spinning', {
       aliases: ['spin', 'active', 'default'],
-      spinnerColor: this.options.spinnerColor,
+      spinnerColor: this.options.color,
       textColor: this.options.color,
       rawRender({ text }) {
         return `- ${text}`;

@@ -353,6 +353,7 @@ The "legit" way is to use [configureStatus](#configureStatus)
 
 #### Setting status
 There are 3 ways to set the status of a spinner.
+
 1.
 ```js
 spinner.update({ status: 'statusName' })

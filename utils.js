@@ -33,6 +33,44 @@ function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
   return { ...colors, ...prefixes, ...disableSpinsOption, spinner }
 }
 
+function statusOptionsFromNormalUpdate(opts) {
+  // for compatibility with update();
+  const { succeedColor, succeedPrefix, failColor, failPrefix, textColor, spinnerColor } = opts;
+
+  let shouldSetFail = false;
+  const failSet = {};
+  let shouldSetSucceed = false;
+  const succeedSet = {};
+  let shouldSetDefault = false;
+  const defaultSet = {};
+
+  if(failPrefix) {
+    shouldSetFail = true;
+    failSet.prefix = failPrefix;
+  }
+  if(failColor) {
+    shouldSetFail = true;
+    failSet.prefixColor = failColor;
+  }
+
+  if(succeedPrefix) {
+    shouldSetSucceed = true;
+    succeedSet.prefix = succeedPrefix;
+  }
+  if(succeedColor) {
+    shouldSetSucceed = true;
+    succeedSet.prefixColor = succeedColor;
+  }
+
+  if(color) {
+    shouldSetDefault = true;
+    defaultSet.textColor = color;
+    defaultSet.spinnerColor = color;
+  }
+
+  return { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet };
+}
+
 function purgeStatusOptions(opts) {
   const {
     prefix,
@@ -197,5 +235,6 @@ module.exports = {
   terminalSupportsUnicode,
   turnToValidSpinner,
   indentText,
-  secondStageIndent
+  secondStageIndent,
+  statusOptionsFromNormalUpdate
 }
