@@ -2,7 +2,7 @@
 
 const expect = require('chai').expect
 
-const { purgeSpinnersOptions, purgeSpinnerOptions, colorOptions, breakText } = require('../utils');
+const { statusOptionsFromNormalUpdate, purgeStatusOptions, purgeSpinnersOptions, purgeSpinnerOptions, colorOptions, breakText } = require('../utils');
 const { dots } = require('../spinners');
 
 describe('utils', () => {
@@ -77,6 +77,88 @@ describe('utils', () => {
           const options = purgeSpinnerOptions({ ...this.colors, text: 3, status: 'foo' });
           expect(options).to.include(this.colors);
           expect(options).to.not.have.any.keys('text', 'status');
+        });
+      });
+    });
+
+    describe('#purgeStatusOptions', () => {
+      context('rawRender', () => {
+        context('when it\'s not a string', () => {
+          it('removes it', () => {
+            const status = { rawRender: 90 };
+            const options = purgeStatusOptions(status);
+            expect(options).to.not.have.property('rawRender');
+          });
+        });
+
+        context('when it\'s a function that returns a number', () => {
+          it('removes it', () => {
+            const status = { rawRender: () => 90 };
+            const options = purgeStatusOptions(status);
+            expect(options).to.not.have.property('rawRender');
+          });
+        });
+
+        context('when it\'s a string', () => {
+          it('keeps it', () => {
+            const status = { rawRender: 'actual render' };
+            const options = purgeStatusOptions(status);
+            expect(options).to.have.property('rawRender');
+          });
+        });
+
+        context('when it\'s a function that returns a string', () => {
+          it('keeps it', () => {
+            const status = { rawRender: () => 'actual render' };
+            const options = purgeStatusOptions(status);
+            expect(options).to.have.property('rawRender');
+          });
+        });
+      });
+
+      context('prefix', () => {
+        context('when it\'s a number', () => {
+          it('keeps it', () => {
+            const status = { prefix: 111 };
+            const options = purgeStatusOptions(status);
+            expect(options).to.have.property('prefix');
+          });
+        });
+
+        context('when it\'s a string', () => {
+          it('keeps it', () => {
+            const status = { prefix: '*' };
+            const options = purgeStatusOptions(status);
+            expect(options).to.have.property('prefix');
+          });
+        });
+
+        context('when it\'s not a string or a number', () => {
+          it('removes it', () => {
+            const status = { prefix: true };
+            const options = purgeStatusOptions(status);
+            expect(options).to.not.have.property('prefix');
+          });
+        });
+      });
+
+      it('removes invalid colors', () => {
+        const colors = purgeStatusOptions({ textColor: 'foo', prefixColor: 'bar', spinnerColor: 'blue' });
+        expect(colors).to.include({ spinnerColor: 'blue' });
+        expect(colors).to.not.have.any.keys('textColor', 'prefixColor');
+      });
+    });
+
+    describe('#statusOptionsFromNormalUpdate', () => {
+      it('reports what to update and provide options', () => {
+        const res = statusOptionsFromNormalUpdate({ ...this.colors, text: 'text', status: 'succeed' });
+        expect(res).to.deep.equal({
+          shouldSetDefault: true,
+          shouldSetFail: true,
+          shouldSetSucceed: true,
+          defaultSet: { textColor: 'blue', spinnerColor: 'blue' },
+          failSet: { prefixColor: 'blue' },
+          succeedSet: { prefixColor: 'blue' }
         });
       });
     });

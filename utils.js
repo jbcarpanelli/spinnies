@@ -35,7 +35,7 @@ function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
 
 function statusOptionsFromNormalUpdate(opts) {
   // for compatibility with update();
-  const { succeedColor, succeedPrefix, failColor, failPrefix, textColor, spinnerColor } = opts;
+  const { succeedColor, succeedPrefix, failColor, failPrefix, color } = opts;
 
   let shouldSetFail = false;
   const failSet = {};
