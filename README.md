@@ -93,7 +93,7 @@ Parameters:
 - **name** - `string`: spinner reference name.
 - **options** - `object`:
   - **text**: - `string`: Optional text to show in the spinner. If none is provided, the `name` field will be shown.
-  - **status** - `string`: Initial status of the spinner. Valid statuses are: `succeed`, `fail`, `spinning`, `non-spinnable`and `stopped`.
+  - **status** - `string`: Initial status of the spinner. For valid statuses see [statuses](#valid-statuses).
   - **indent**: - `number`: Optional number of spaces to add before the spinner.
   - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
   - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
@@ -194,7 +194,7 @@ Parameters:
 - **name** - `string`: spinner reference name.
 - **options** - `object`:
   - **text**: - `string`: Optional text to show in the spinner. If none is provided, the `name` field will be shown.
-  - **status** - `string`: New status of the spinner. Valid statuses are: `succeed`, `fail`, `spinning`, `non-spinnable`and `stopped`.
+  - **status** - `string`: New status of the spinner. For valid statuses see [statuses](#valid-statuses).
   - **indent**: - `number`: Optional number of spaces to add before the spinner.
   - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
   - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
@@ -265,6 +265,7 @@ spinnies.fail('spinner-1', { text: 'I failed', failColor: 'redBright' });
 spinnies.get('spinner-1').fail({ text: 'I failed', failColor: 'redBright' });
 // same as
 spinner1.fail({ text: 'I failed', failColor: 'redBright' });
+
 ```
 
 #### remove(name)
@@ -336,6 +337,102 @@ spinnies.add('spinner-1');
 const logs = spinnies.getLogs();
 ```
 
+### Statuses
+
+#### Valid statuses
+The default statuses are:
+- `spinning`, *aliases:* `default, active, spin`, *static:* `false`
+- `fail`, *aliases:* `failed, error`, *static:* `true`, *default color:* `green`
+- `success`, *aliases:* `succeed, done`, *static:* `true`, *default color:* `red`
+Also any status you manually set using [configureStatus](#configureStatus) is valid.
+
+#### Compatibility
+For backwards compatibility reasons and convenient: passing succeedColor, failColor, failPrefix ect...
+To spinnies will set the status options.
+The "legit" way is to use [configureStatus](#configureStatus)
+
+#### Setting status
+There are 3 ways to set the status of a spinner.
+1.
+```js
+spinner.update({ status: 'statusName' })
+// or
+spinners.update('spinnerName', { status: 'statusName' });
+```
+2.
+```js
+spinner.status('statusName')
+// or
+spinners.status('spinnerName', 'statusName')
+```
+3. When possible
+```js
+spinner.statusName()
+// or
+spinners.statusName('spinnerName')
+```
+
+### StatusRegistry
+Status registry is used to create and configure spinner statuses.
+A single instance of StatusRegistry is shared between the main `spinners` instance
+and the rest of the spinners.
+
+**Note: StatusRegistry is not used to set the status of a spinner just to store information about statuses, like prefixes,colors, ect...**
+**To set the status of a spinner see [setting statuses](#setting-status)**
+
+#### configureStatus
+
+Configure a status with the `name`. Will create a status with that `name` if it doesn't exist or modify the status options if it does exist.
+Will try to set the spinnies instance[`name`] as a function to set that status.
+
+Parameters:
+- **name** - `string`: The name of the status.
+- **options** - `object`:
+  - **aliases**: - `string` || `string[]`: Optional string or array of string, an alias will be created to this status `name` for every string. Modifying the original status will also apply for the aliases.
+  - **textColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). This color will be applied to the spinner's text whenever this status is the spinner's active status.
+  - **spinnerColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). This color will be applied to the spinner's spinner whenever this status is the spinner's active status. The default value is `greenBright`.
+  - **prefixColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). This color will be applied to the spinner's prefix whenever this status is the spinner's active status. The default value is `greenBright`.
+  - **prefix** - `string`: The prefix for the spinner.
+  - **isStatic** - `boolean`: A static status will not spin and show the `prefix` at the start of the spinner. If this is set to `true` the `prefix` will be rendered with the `prefixColor` and an optional space after it as long as `noSpaceAfterPrefix` is set to `false`. If this option is `false`, The spinner will spin (use the current frame...) and the prefix will not render. Meaning when this is false, `prefix`, `prefixColor` and `noSpaceAfterPrefix` are completely meaningless. Defaults to `false`.
+Return value: Returns the spinnies instance (`this`).
+
+Example:
+
+```js
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I use the default status which is "spinning" my "color" option is set to yellow which just means my default status color is yellow', color: 'yellow' });
+spinnies.statusRegistry.configureStatus('pinkify', {
+  aliases: ['pinky', 'pinkful'],
+  textColor: 'magenta',
+  spinnerColor: 'magenta'
+});
+
+spinnies.statusRegistry.configureStatus('santa', {
+  textColor: 'red',
+  isStatic: true,
+  prefix: '🎅'
+});
+// some code
+spinner1.update({
+  status: 'pinkful',
+  text: 'Hi there! I am now completely pink (magenta but you know), my text and my spinner. I still spin since this status is not "static"',
+});
+spinner1.update({
+  status: 'spinning',
+  text: 'I\'m yellow again! Back to my default status'
+});
+spinner1.pinkify();
+
+// some code
+spinner1.status('santa');
+// or
+spinner1.santa();
+
+```
+
+#### getStatus(nameOrAlias)
+
+Return the status options for the specified status.
 
 ## Contribute
 

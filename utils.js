@@ -70,7 +70,6 @@ function purgeStatusOptions(opts) {
 
   if (!prefix || (typeof prefix !== 'string' && typeof prefix !== 'number')) {
     delete options.prefix;
-    options.noSpaceAfterPrefix = true;
   }
   options.isStatic = !!options.isStatic;
   options.noSpaceAfterPrefix = !!options.noSpaceAfterPrefix;
