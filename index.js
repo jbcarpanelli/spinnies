@@ -417,3 +417,4 @@ class Spinnies {
 module.exports = Spinnies;
 module.exports.dots = dots;
 module.exports.dashes = dashes;
+module.exports.StatusRegistry = StatusRegistry;

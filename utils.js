@@ -109,8 +109,18 @@ function purgeStatusOptions(opts) {
   if (!prefix || (typeof prefix !== 'string' && typeof prefix !== 'number')) {
     delete options.prefix;
   }
-  options.isStatic = !!options.isStatic;
-  options.noSpaceAfterPrefix = !!options.noSpaceAfterPrefix;
+
+  if(options.isStatic !== undefined) {
+    options.isStatic = !!options.isStatic;
+  } else {
+    delete options.isStatic
+  }
+
+  if(options.noSpaceAfterPrefix !== undefined) {
+    options.noSpaceAfterPrefix = !!options.noSpaceAfterPrefix;
+  } else {
+    delete options.noSpaceAfterPrefix
+  }
 
   ['prefixColor', 'spinnerColor', 'textColor'].forEach((color) => {
     if(!isValidColor(options[color])) {
