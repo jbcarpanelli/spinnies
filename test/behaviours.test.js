@@ -90,7 +90,58 @@ function expectToBehaveLikeAnUpdate(self, status) {
   });
 }
 
+function expectToBehaveLikeAStatusChange(self, status) {
+  describe(`#status(${status})`, () => {
+    it(`should change the status to ${status}`, () => {
+      const spinner = self.spinners.status('spinner', status);
+      const anotherSpinner = self.spinners.pick('another-spinner');
+      expect(spinner.options.status).to.eq(status);
+      expect(anotherSpinner.status).to.eq('spinning');
+    });
+
+    context('with spinner instance', () => {
+      it(`should change the status to ${status}`, () => {
+        const spinner = self.spinners.get('spinner').status(status);
+        const anotherSpinner = self.spinners.pick('another-spinner');
+        expect(spinner.options.status).to.eq(status);
+        expect(anotherSpinner.status).to.eq('spinning');
+      });
+    });
+
+    context('when status is undefined', () => {
+      it(`silently ignores the error and doesn't modify the status`, () => {
+        const spinner = self.spinners.get('spinner').status();
+        const anotherSpinner = self.spinners.pick('another-spinner');
+        expect(spinner.options.status).to.eq('spinning');
+        expect(anotherSpinner.status).to.eq('spinning');
+      });
+    });
+
+    context('when status is a boolean (not a string)', () => {
+      it(`silently ignores the error and doesn't modify the status`, () => {
+        const spinner = self.spinners.get('spinner').status(false);
+        const anotherSpinner = self.spinners.pick('another-spinner');
+        expect(spinner.options.status).to.eq('spinning');
+        expect(anotherSpinner.status).to.eq('spinning');
+      });
+    });
+
+    context('when not specifying a spinner name', () => {
+      it('throws an error', () => {
+          expect(() => self.spinners.status()).to.throw('A spinner reference name must be specified');
+      });
+    });
+
+    context('when specifying a non-existent spinner name', () => {
+      it('throws an error', () => {
+        expect(() => self.spinners.status('i-dont-exist')).to.throw('No spinner initialized with name i-dont-exist')
+      });
+    });
+  });
+}
+
 module.exports = {
   expectToBehaveLikeAnUpdate,
+  expectToBehaveLikeAStatusChange
 }
 

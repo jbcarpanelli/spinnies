@@ -3,7 +3,7 @@
 const expect = require('chai').expect
 
 const Spinnies = require('..');
-const { expectToBehaveLikeAnUpdate } = require('./behaviours.test');
+const { expectToBehaveLikeAnUpdate, expectToBehaveLikeAStatusChange } = require('./behaviours.test');
 
 setInterval = (fn) => fn();
 setTimeout = (fn) => fn();
@@ -76,6 +76,14 @@ describe('Spinnies', () => {
         this.spinners.add('another-spinner');
         this.spinners.add('third-spinner');
         this.spinners.add('non-spinnable', { status: 'non-spinnable' });
+      });
+
+      describe('#status()', () => {
+        expectToBehaveLikeAStatusChange(this, 'success');
+        expectToBehaveLikeAStatusChange(this, 'fail');
+        expectToBehaveLikeAStatusChange(this, 'spin');
+        expectToBehaveLikeAStatusChange(this, 'error');
+        expectToBehaveLikeAStatusChange(this, 'default');
       });
 
       expectToBehaveLikeAnUpdate(this, 'succeed');
