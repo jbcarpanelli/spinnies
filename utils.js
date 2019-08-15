@@ -2,7 +2,8 @@
 
 const readline = require('readline');
 const stripAnsi = require('strip-ansi');
-const wordwrapjs = require("wordwrapjs")
+const wordwrapjs = require('wordwrapjs')
+const EOL = require('os').EOL;
 const { dashes, dots } = require('./spinners');
 
 const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped'];
@@ -198,9 +199,9 @@ function indentText(text, prefixLength, indent = 0) {
   const repeater = (index) => ' '.repeat((index !== 0) ? (prefixLength + indent) : 0);
 
   return text
-    .split('\n')
+    .split(EOL)
     .map((line, index) => `${repeater(index)}${line}`)
-    .join('\n');
+    .join(EOL);
 }
 
 function secondStageIndent(str, indent = 0) {
@@ -210,7 +211,7 @@ function secondStageIndent(str, indent = 0) {
 
 function getLinesLength(text, prefixLength, indent = 0) {
   return stripAnsi(text)
-    .split('\n')
+    .split(EOL)
     .map((line, index) => index === 0 ? line.length + prefixLength + indent : line.length);
 }
 

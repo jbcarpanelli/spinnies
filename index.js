@@ -3,6 +3,7 @@ const readline = require('readline');
 const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const EventEmitter = require('events').EventEmitter;
+const EOL = require('os').EOL;
 const { dashes, dots } = require('./spinners');
 
 const { statusOptionsFromNormalUpdate, secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, prefixOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
@@ -158,7 +159,7 @@ class Spinnie extends EventEmitter {
     }
 
     const linesLength = getLinesLength(text, prefixLength, indent);
-    const output = `${secondStageIndent(line, indent)}\n`;
+    const output = `${secondStageIndent(line, indent)}${EOL}`;
     return { output, linesLength };
   }
 
@@ -383,7 +384,7 @@ class Spinnies {
 
   setRawStreamOutput() {
     Object.values(this.spinners).forEach(i => {
-      process.stderr.write(`- ${i.text}\n`);
+      process.stderr.write(`- ${i.text}${EOL}`);
     });
   }
 

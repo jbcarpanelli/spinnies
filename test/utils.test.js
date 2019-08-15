@@ -2,8 +2,10 @@
 
 const expect = require('chai').expect
 
-const { statusOptionsFromNormalUpdate, purgeStatusOptions, purgeSpinnersOptions, purgeSpinnerOptions, colorOptions, breakText } = require('../utils');
-const { dots } = require('../spinners');
+const EOL = require('os').EOL;
+const { statusOptionsFromNormalUpdate, purgeStatusOptions, purgeSpinnersOptions, purgeSpinnerOptions, colorOptions, breakText, terminalSupportsUnicode } = require('../utils');
+const { dots, dashes } = require('../spinners');
+const platformSpinner = terminalSupportsUnicode() ? dots : dashes;
 
 describe('utils', () => {
   beforeEach('set options', () => {
@@ -34,7 +36,7 @@ describe('utils', () => {
           it('picks the default spinner', () => {
             const spinner = { interval: 'foo', frames: 'bar' };
             const options = purgeSpinnersOptions({ ...this.colors, spinner });
-            expect(options).to.deep.include({ ...this.colors, spinner: dots });
+            expect(options).to.deep.include({ ...this.colors, spinner: platformSpinner });
           });
         });
 
@@ -42,7 +44,7 @@ describe('utils', () => {
           it('picks the interval from the default spinner', () => {
             const spinner = { interval: 'foo', frames: ['-', '+'] };
             const options = purgeSpinnersOptions({ ...this.colors, spinner });
-            expect(options).to.deep.include({ ...this.colors, spinner: { interval: dots.interval, frames: ['-', '+'] } });
+            expect(options).to.deep.include({ ...this.colors, spinner: { interval: platformSpinner.interval, frames: ['-', '+'] } });
           });
         });
 
@@ -50,7 +52,7 @@ describe('utils', () => {
           it('picks frames from the default spinner', () => {
             const spinner = { interval: 100, frames: 'foo' };
             const options = purgeSpinnersOptions({ ...this.colors, spinner });
-            expect(options).to.deep.include({ ...this.colors, spinner: { interval: 100, frames: dots.frames } });
+            expect(options).to.deep.include({ ...this.colors, spinner: { interval: 100, frames: platformSpinner.frames } });
           });
         });
 
@@ -177,7 +179,7 @@ describe('utils', () => {
         context('without indent', () => {
           it('adds line-breaks to the given text', () => {
             const text = breakText('im a very long sentence yay yay yay yay', 3);
-            const splitted = text.split('\n');
+            const splitted = text.split(EOL);
             expect(splitted).to.have.lengthOf(5);
             expect(splitted[0]).to.equal('im a very');
             expect(splitted[1]).to.equal('long');
@@ -190,7 +192,7 @@ describe('utils', () => {
         context('with indent', () => {
           it('adds line-breaks to the given text taking indent into consideration', () => {
             const text = breakText('im a very long sentence yay yay yay yay', 3, 4);
-            const splitted = text.split('\n');
+            const splitted = text.split(EOL);
             expect(splitted).to.have.lengthOf(7);
             expect(splitted[0]).to.equal('im a');
             expect(splitted[1]).to.equal('very');
@@ -203,7 +205,7 @@ describe('utils', () => {
       context('when number of lines in text is less than the columns length', () => {
         it('does not add line-breaks to the given text', () => {
           const text = '12345';
-          expect(text.split('\n')).to.have.lengthOf(1);
+          expect(text.split(EOL)).to.have.lengthOf(1);
         });
       });
     });
