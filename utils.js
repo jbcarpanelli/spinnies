@@ -8,6 +8,10 @@ const { dashes, dots } = require('./spinners');
 const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped'];
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
 
+function isValidPrefix(prefix) {
+  return (typeof prefix === 'string' || typeof prefix === 'number');
+}
+
 function isValidColor(color) {
   return VALID_COLORS.includes(color);
 }
@@ -44,25 +48,27 @@ function statusOptionsFromNormalUpdate(opts) {
   let shouldSetDefault = false;
   const defaultSet = {};
 
-  if(failPrefix) {
+  if(isValidPrefix(failPrefix)) {
     shouldSetFail = true;
     failSet.prefix = failPrefix;
   }
-  if(failColor) {
+  if(isValidColor(failColor)) {
     shouldSetFail = true;
     failSet.prefixColor = failColor;
+    failSet.textColor = failColor;
   }
 
-  if(succeedPrefix) {
+  if(isValidPrefix(succeedPrefix)) {
     shouldSetSucceed = true;
     succeedSet.prefix = succeedPrefix;
   }
-  if(succeedColor) {
+  if(isValidColor(succeedColor)) {
     shouldSetSucceed = true;
     succeedSet.prefixColor = succeedColor;
+    succeedSet.textColor = succeedColor;
   }
 
-  if(color) {
+  if(isValidColor(color)) {
     shouldSetDefault = true;
     defaultSet.textColor = color;
     defaultSet.spinnerColor = color;
@@ -106,7 +112,7 @@ function purgeStatusOptions(opts) {
     delete options.rawRender;
   }
 
-  if (!prefix || (typeof prefix !== 'string' && typeof prefix !== 'number')) {
+  if (!isValidPrefix(options.prefix)) {
     delete options.prefix;
   }
 

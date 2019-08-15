@@ -344,6 +344,7 @@ The default statuses are:
 - `spinning`, *aliases:* `default, active, spin`, *static:* `false`
 - `fail`, *aliases:* `failed, error`, *static:* `true`, *default color:* `green`
 - `success`, *aliases:* `succeed, done`, *static:* `true`, *default color:* `red`
+
 Also any status you manually set using [configureStatus](#configureStatus) is valid.
 
 #### Compatibility

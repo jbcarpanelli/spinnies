@@ -157,8 +157,8 @@ describe('utils', () => {
           shouldSetFail: true,
           shouldSetSucceed: true,
           defaultSet: { textColor: 'blue', spinnerColor: 'blue' },
-          failSet: { prefixColor: 'blue' },
-          succeedSet: { prefixColor: 'blue' }
+          failSet: { prefixColor: 'blue', textColor: 'blue' },
+          succeedSet: { prefixColor: 'blue', textColor: 'blue' }
         });
       });
     });

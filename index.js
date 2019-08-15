@@ -172,9 +172,9 @@ class Spinnie extends EventEmitter {
   }
 
   setSpinnerProperties(options, status) {
+    const { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet } = statusOptionsFromNormalUpdate(options);
     options = purgeSpinnerOptions(options);
     status = status || this.options.status || 'spinning';
-    const { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet } = statusOptionsFromNormalUpdate(options);
 
     if (shouldSetDefault) {
       this.statusOverrides['spinning'] = defaultSet;
@@ -183,7 +183,7 @@ class Spinnie extends EventEmitter {
       this.statusOverrides['fail'] = failSet;
     }
     if (shouldSetSucceed) {
-      this.statusOverrides['succeed'] = succeedSet;
+      this.statusOverrides['success'] = succeedSet;
     }
 
     this.options = { ...this.options, ...options, status };
@@ -199,6 +199,7 @@ class Spinnies {
   constructor(options = {}) {
     options = purgeSpinnersOptions(options);
     this.options = {
+      color: 'white',
       spinnerColor: 'greenBright',
       succeedColor: 'green',
       failColor: 'red',
