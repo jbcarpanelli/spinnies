@@ -344,6 +344,8 @@ The default statuses are:
 - `spinning`, *aliases:* `default, active, spin`, *static:* `false`
 - `fail`, *aliases:* `failed, error`, *static:* `true`, *default color:* `green`
 - `success`, *aliases:* `succeed, done`, *static:* `true`, *default color:* `red`
+- `non-spinnable`, *aliases:* `static, inactive`, *static:* `true`, *prefix* `false`
+- `stopped`, *aliases:* `stop, cancel`, *static:* `true`, *prefix* `false`, *default color:* `grey`
 
 Also any status you manually set using [configureStatus](#configureStatus) is valid.
 
@@ -367,7 +369,7 @@ spinner.status('statusName')
 // or
 spinners.status('spinnerName', 'statusName')
 ```
-3. When possible
+3. When possible. If a property with that status name exists on the spinnies constructor (add, update, get, pick etc...) it would not override that property and you wouldn't be able to set that status using this method.
 ```js
 spinner.statusName()
 // or

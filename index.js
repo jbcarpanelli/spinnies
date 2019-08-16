@@ -250,6 +250,23 @@ class Spinnies {
         return `${statusOptions.prefix} ${text}`;
       }
     });
+    this.statusRegistry.configureStatus('non-spinnable', {
+      aliases: ['static', 'inactive'],
+      prefix: false,
+      isStatic: true,
+      rawRender({ text, options, statusOptions }) {
+        return text;
+      }
+    });
+    this.statusRegistry.configureStatus('stopped', {
+      aliases: ['stop', 'cancel'],
+      prefix: false,
+      isStatic: true,
+      textColor: 'grey',
+      rawRender({ text, options, statusOptions }) {
+        return text;
+      }
+    });
 
     this.bindSigint();
   }
