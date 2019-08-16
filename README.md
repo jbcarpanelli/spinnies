@@ -394,7 +394,7 @@ Parameters:
   - **textColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). This color will be applied to the spinner's text whenever this status is the spinner's active status.
   - **spinnerColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). This color will be applied to the spinner's spinner whenever this status is the spinner's active status. The default value is `greenBright`.
   - **prefixColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). This color will be applied to the spinner's prefix whenever this status is the spinner's active status. The default value is `greenBright`.
-  - **prefix** - `string`: The prefix for the spinner.
+  - **prefix** - `string` || `false`: The prefix for the spinner. Can be set to false to not render a prefix.
   - **isStatic** - `boolean`: A static status will not spin and show the `prefix` at the start of the spinner. If this is set to `true` the `prefix` will be rendered with the `prefixColor` and an optional space after it as long as `noSpaceAfterPrefix` is set to `false`. If this option is `false`, The spinner will spin (use the current frame...) and the prefix will not render. Meaning when this is false, `prefix`, `prefixColor` and `noSpaceAfterPrefix` are completely meaningless. Defaults to `false`.
 Return value: Returns the spinnies instance (`this`).
 

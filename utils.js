@@ -10,7 +10,7 @@ const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
 
 function isValidPrefix(prefix) {
-  return (typeof prefix === 'string' || typeof prefix === 'number');
+  return (prefix === false || typeof prefix === 'string' || typeof prefix === 'number');
 }
 
 function isValidColor(color) {

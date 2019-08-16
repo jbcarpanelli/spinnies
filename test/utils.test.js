@@ -135,7 +135,23 @@ describe('utils', () => {
           });
         });
 
-        context('when it\'s not a string or a number', () => {
+        context('when it\'s false', () => {
+          it('keeps it', () => {
+            const status = { prefix: false };
+            const options = purgeStatusOptions(status);
+            expect(options).to.have.property('prefix');
+          });
+        });
+
+        context('when it\'s an object', () => {
+          it('removes it', () => {
+            const status = { prefix: {} };
+            const options = purgeStatusOptions(status);
+            expect(options).to.not.have.property('prefix');
+          });
+        });
+
+        context('when it\'s true', () => {
           it('removes it', () => {
             const status = { prefix: true };
             const options = purgeStatusOptions(status);
