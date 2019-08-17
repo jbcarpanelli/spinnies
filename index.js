@@ -284,19 +284,13 @@ class Spinnies {
     this.statusRegistry.configureStatus('non-spinnable', {
       aliases: ['static', 'inactive'],
       prefix: false,
-      isStatic: true,
-      rawRender({ text, options, statusOptions }) {
-        return text;
-      }
+      isStatic: true
     });
     this.statusRegistry.configureStatus('stopped', {
       aliases: ['stop', 'cancel'],
       prefix: false,
       isStatic: true,
-      textColor: 'grey',
-      rawRender({ text, options, statusOptions }) {
-        return text;
-      }
+      textColor: 'grey'
     });
 
     this.bindSigint();
