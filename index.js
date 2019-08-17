@@ -28,12 +28,9 @@ class StatusRegistry {
       prefix: false,
       isStatic: false,
       noSpaceAfterPrefix: false,
-      spinnerColor: 'greenBright',
-      prefixColor: 'greenBright',
+      spinnerColor: 'cyan',
+      prefixColor: 'cyan',
       textColor: false,
-      rawRender({ statusOptions }) {
-        return `${statusOptions.prefix} ${text}`;
-      },
       ...existingStatus,
       ...purgedOptions
     }
@@ -89,6 +86,8 @@ class Spinnie extends EventEmitter {
     this.statusRegistry = statusRegistry;
     this.statusOverrides = {};
 
+    this.applyStatusOverrides(spinnerProperties);
+
     return this;
   }
 
@@ -126,8 +125,57 @@ class Spinnie extends EventEmitter {
     this.emit('removeMe');
   }
 
+  applyStatusOverrides(opts) {
+    const { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet } = statusOptionsFromNormalUpdate(opts);
+
+    if (shouldSetDefault) {
+      this.statusOverrides['spinning'] = defaultSet;
+    }
+    if (shouldSetFail) {
+      this.statusOverrides['fail'] = failSet;
+    }
+    if (shouldSetSucceed) {
+      this.statusOverrides['success'] = succeedSet;
+    }
+  }
+
   isActive() {
     return this.options.status === 'spinning';
+  }
+
+  rawRender() {
+    const status = this.getStatus(this.options.status);
+    const defaultRawRender = ({ statusOptions, text }) => {
+      return `${statusOptions.prefix ? (chalk[statusOptions.prefixColor](statusOptions.prefix) + (status.noSpaceAfterPrefix ? '' : ' ')) : ''}${statusOptions.textColor ? chalk[statusOptions.textColor](text) : text}`;
+    };
+    const rawRenderFromStatus = status.rawRender;
+    const render = rawRenderFromStatus ? rawRenderFromStatus : defaultRawRender;
+    
+    let output = render({
+      text: this.options.text,
+      options: this.options,
+      statusOptions: status
+    });
+
+    const indent = this.options.indent;
+    let prefixLengthToIndent = 0;
+    if (!rawRenderFromStatus) {
+      // if we use the default rawRender: indent by the prefix length, else by 0
+      if (status.prefix) {
+        // only if we have a prefix...
+        prefixLengthToIndent = status.prefix.length;
+        if (!status.noSpaceAfterPrefix) {
+          // if we have a space after the prefix add 1 to the prefix length
+          prefixLengthToIndent += 1;
+        }
+      }
+    }
+
+    output = breakText(output, 0, indent);
+    output = indentText(output, prefixLengthToIndent, indent);
+    output = secondStageIndent(output, indent);
+
+    return output;
   }
 
   render(frame) {
@@ -173,19 +221,9 @@ class Spinnie extends EventEmitter {
   }
 
   setSpinnerProperties(options, status) {
-    const { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet } = statusOptionsFromNormalUpdate(options);
+    this.applyStatusOverrides(options);
     options = purgeSpinnerOptions(options);
     status = status || this.options.status || 'spinning';
-
-    if (shouldSetDefault) {
-      this.statusOverrides['spinning'] = defaultSet;
-    }
-    if (shouldSetFail) {
-      this.statusOverrides['fail'] = failSet;
-    }
-    if (shouldSetSucceed) {
-      this.statusOverrides['success'] = succeedSet;
-    }
 
     this.options = { ...this.options, ...options, status };
     return this;
@@ -224,9 +262,8 @@ class Spinnies {
       aliases: ['spin', 'active', 'default'],
       spinnerColor: this.options.color,
       textColor: this.options.color,
-      rawRender({ text }) {
-        return `- ${text}`;
-      }
+      prefix: '-',
+      prefixColor: this.options.color
     });
     this.statusRegistry.configureStatus('success', {
       aliases: ['succeed', 'done'],
@@ -234,10 +271,7 @@ class Spinnies {
       isStatic: true,
       noSpaceAfterPrefix: false,
       prefixColor: this.options.succeedColor,
-      textColor: this.options.succeedColor,
-      rawRender({ text, options, statusOptions }) {
-        return `${statusOptions.prefix} ${text}`;
-      }
+      textColor: this.options.succeedColor
     });
     this.statusRegistry.configureStatus('fail', {
       aliases: ['failed', 'error'],
@@ -245,10 +279,7 @@ class Spinnies {
       isStatic: true,
       noSpaceAfterPrefix: false,
       prefixColor: this.options.failColor,
-      textColor: this.options.failColor,
-      rawRender({ text, options, statusOptions }) {
-        return `${statusOptions.prefix} ${text}`;
-      }
+      textColor: this.options.failColor
     });
     this.statusRegistry.configureStatus('non-spinnable', {
       aliases: ['static', 'inactive'],
@@ -400,8 +431,9 @@ class Spinnies {
   }
 
   setRawStreamOutput() {
-    Object.values(this.spinners).forEach(i => {
-      process.stderr.write(`- ${i.text}${EOL}`);
+    Object.keys(this.spinners).forEach(name => {
+      const spinner = this.get(name);
+      process.stderr.write(spinner.rawRender() + EOL);
     });
   }
 

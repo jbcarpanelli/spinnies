@@ -40,7 +40,7 @@ function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
 
 function statusOptionsFromNormalUpdate(opts) {
   // for compatibility with update();
-  const { succeedColor, succeedPrefix, failColor, failPrefix, color } = opts;
+  const { succeedColor, succeedPrefix, failColor, failPrefix, color, spinnerColor } = opts;
 
   let shouldSetFail = false;
   const failSet = {};
@@ -69,10 +69,15 @@ function statusOptionsFromNormalUpdate(opts) {
     succeedSet.textColor = succeedColor;
   }
 
+  if(isValidColor(spinnerColor)) {
+    shouldSetDefault = true;
+    defaultSet.spinnerColor = spinnerColor;
+    defaultSet.prefixColor = spinnerColor;
+  }
+
   if(isValidColor(color)) {
     shouldSetDefault = true;
     defaultSet.textColor = color;
-    defaultSet.spinnerColor = color;
   }
 
   return { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet };
