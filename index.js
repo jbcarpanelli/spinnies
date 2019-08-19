@@ -131,27 +131,25 @@ class Spinnies {
       .values(this.spinners)
       .map(({ text, status, color, spinnerColor, succeedColor, failColor, succeedPrefix, failPrefix, indent }) => {
         let line;
-        let prefixLength;
+        let prefixLength = indent || 0;
         if (status === 'spinning') {
-          prefixLength = frame.length + 1;
+          prefixLength += frame.length + 1;
           text = breakText(text, prefixLength);
           line = `${chalk[spinnerColor](frame)} ${color ? chalk[color](text) : text}`;
         } else {
           if (status === 'succeed') {
-            prefixLength = succeedPrefix.length + 1;
+            prefixLength += succeedPrefix.length + 1;
             if (hasActiveSpinners) text = breakText(text, prefixLength);
             line = `${chalk.green(succeedPrefix)} ${chalk[succeedColor](text)}`;
           } else if (status === 'fail') {
-            prefixLength = failPrefix.length + 1;
+            prefixLength += failPrefix.length + 1;
             if (hasActiveSpinners) text = breakText(text, prefixLength);
             line = `${chalk.red(failPrefix)} ${chalk[failColor](text)}`;
           } else {
-            prefixLength = 0;
             if (hasActiveSpinners) text = breakText(text, prefixLength);
             line = color ? chalk[color](text) : text;
           }
         }
-        if (indent) prefixLength += indent;
         linesLength.push(...getLinesLength(text, prefixLength));
         output += indent ? `${" ".repeat(indent)}${line}\n` : `${line}\n`;
       });
