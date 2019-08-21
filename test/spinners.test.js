@@ -1,6 +1,7 @@
 'use strict';
 
 const expect = require('chai').expect
+const sinon = require('sinon');
 
 const Spinnies = require('..');
 const { expectToBehaveLikeAnUpdate, expectToBehaveLikeAStatusChange } = require('./behaviours.test');
@@ -65,6 +66,80 @@ describe('Spinnies', () => {
               const spinner = this.spinners.add('spinner-name', options);
               expect(spinner.options).to.include(this.spinnersOptions);
             });
+          });
+        });
+      });
+    });
+
+    describe('#remove', () => {
+      describe('validations', () => {
+        context('when no spinner name specified', () => {
+          it('throws an error', () => {
+            expect(() => this.spinners.remove()).to.throw('A spinner reference name must be specified');
+          });
+        });
+
+        context('when a spinner with that name does not exist', () => {
+          it('throws an error', () => {
+            expect(() => this.spinners.remove(`im-an-illusion`)).to.throw('No spinner initialized with name im-an-illusion');
+          });
+        });
+      });
+
+      describe('removing a spinner', () => {
+        context('when using the spinnies instance', () => {
+          it('deletes it from the spinners object', () => {
+            this.spinners.add('spinner');
+            expect(this.spinners.get('spinner')).to.not.be.undefined;
+            this.spinners.remove('spinner');
+            expect(this.spinners.get('spinner')).to.be.undefined;
+          });
+
+          it('stops listening to events from that spinner', () => {
+            const calls = () => this.spinners.updateSpinnerState.callCount;
+
+            sinon.spy(this.spinners, 'updateSpinnerState');
+            expect(calls()).to.be.equal(0); // not called yet
+
+            const spinner = this.spinners.add('spinner');
+            expect(calls()).to.be.equal(1); // updated once when we added that spinner
+
+            spinner.update();
+            expect(calls()).to.be.equal(2); // updated again when we 'updated' that spinner
+
+            this.spinners.remove('spinner');
+            expect(calls()).to.be.equal(3); // updated again when we removed that spinner
+
+            spinner.update();
+            expect(calls()).to.be.equal(3); // not reacting to the updates since the spinner was deleted...
+          });
+        });
+
+        context('when using the spinner instance', () => {
+          it('deletes it from the spinners object', () => {
+            const spinner = this.spinners.add('spinner');
+            expect(this.spinners.get('spinner')).to.not.be.undefined;
+            spinner.remove('spinner');
+            expect(this.spinners.get('spinner')).to.be.undefined;
+          });
+
+          it('stops listening to events from that spinner', () => {
+            const calls = () => this.spinners.updateSpinnerState.callCount;
+
+            sinon.spy(this.spinners, 'updateSpinnerState');
+            expect(calls()).to.be.equal(0); // not called yet
+
+            const spinner = this.spinners.add('spinner');
+            expect(calls()).to.be.equal(1); // updated once when we added that spinner
+
+            spinner.update();
+            expect(calls()).to.be.equal(2); // updated again when we 'updated' that spinner
+
+            spinner.remove();
+            expect(calls()).to.be.equal(3); // updated again when we removed that spinner
+
+            spinner.update();
+            expect(calls()).to.be.equal(3); // not reacting to the updates since the spinner was deleted...
           });
         });
       });
