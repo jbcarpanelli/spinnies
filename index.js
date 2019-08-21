@@ -449,8 +449,8 @@ class Spinnies {
   }
 
   childFuction(name, action, ...args) {
-    if (typeof name !== 'string') throw Error('A spinner reference name must be specified');
-    if (!this.get(name)) throw Error(`No spinner initialized with name ${name}`);
+    if (typeof name !== 'string') throw new Error('A spinner reference name must be specified');
+    if (!this.get(name)) throw new Error(`No spinner initialized with name ${name}`);
 
     const spinner = this.get(name);
     spinner[action](...args);
