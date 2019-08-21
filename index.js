@@ -63,7 +63,7 @@ class StatusRegistry {
   }
 
   actualName(nameOrAlias) {
-    if(this.statuses[nameOrAlias]) return nameOrAlias;
+    if (this.statuses[nameOrAlias]) return nameOrAlias;
     return this.statusesAliases[nameOrAlias];
   }
 };
@@ -422,7 +422,7 @@ class Spinnies {
         output += renderedSpinner.output;
       });
 
-    if(!hasActiveSpinners) readline.clearScreenDown(this.stream);
+    if (!hasActiveSpinners) readline.clearScreenDown(this.stream);
     writeStream(this.stream, output, linesLength);
     if (hasActiveSpinners) cleanStream(this.stream, linesLength);
     this.lineCount = linesLength.length;

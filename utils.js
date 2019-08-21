@@ -49,33 +49,33 @@ function statusOptionsFromNormalUpdate(opts) {
   let shouldSetDefault = false;
   const defaultSet = {};
 
-  if(isValidPrefix(failPrefix)) {
+  if (isValidPrefix(failPrefix)) {
     shouldSetFail = true;
     failSet.prefix = failPrefix;
   }
-  if(isValidColor(failColor)) {
+  if (isValidColor(failColor)) {
     shouldSetFail = true;
     failSet.prefixColor = failColor;
     failSet.textColor = failColor;
   }
 
-  if(isValidPrefix(succeedPrefix)) {
+  if (isValidPrefix(succeedPrefix)) {
     shouldSetSucceed = true;
     succeedSet.prefix = succeedPrefix;
   }
-  if(isValidColor(succeedColor)) {
+  if (isValidColor(succeedColor)) {
     shouldSetSucceed = true;
     succeedSet.prefixColor = succeedColor;
     succeedSet.textColor = succeedColor;
   }
 
-  if(isValidColor(spinnerColor)) {
+  if (isValidColor(spinnerColor)) {
     shouldSetDefault = true;
     defaultSet.spinnerColor = spinnerColor;
     defaultSet.prefixColor = spinnerColor;
   }
 
-  if(isValidColor(color)) {
+  if (isValidColor(color)) {
     shouldSetDefault = true;
     defaultSet.textColor = color;
   }
@@ -122,20 +122,20 @@ function purgeStatusOptions(opts) {
     delete options.prefix;
   }
 
-  if(options.isStatic !== undefined) {
+  if (options.isStatic !== undefined) {
     options.isStatic = !!options.isStatic;
   } else {
     delete options.isStatic
   }
 
-  if(options.noSpaceAfterPrefix !== undefined) {
+  if (options.noSpaceAfterPrefix !== undefined) {
     options.noSpaceAfterPrefix = !!options.noSpaceAfterPrefix;
   } else {
     delete options.noSpaceAfterPrefix
   }
 
   ['prefixColor', 'spinnerColor', 'textColor'].forEach((color) => {
-    if(!isValidColor(options[color])) {
+    if (!isValidColor(options[color])) {
       delete options[color];
     }
   });
@@ -151,13 +151,13 @@ function turnToValidSpinner(spinner = {}) {
       const cliSpinners = require('cli-spinners');
       const selectedSpinner = cliSpinners[spinner];
 
-      if(selectedSpinner) {
+      if (selectedSpinner) {
         return selectedSpinner;
       }
 
       return platformSpinner; // The spinner doesn't exist in the cli-spinners library
     } catch {
-      // cli-spinners is not installed, ignore error
+      // cli-spinners is not installed, ignore :
       return platformSpinner;
     }
 
@@ -181,7 +181,7 @@ function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
 }
 
 function prefixOptions({ succeedPrefix, failPrefix }) {
-  if(terminalSupportsUnicode()) {
+  if (terminalSupportsUnicode()) {
     succeedPrefix = succeedPrefix || '✓';
     failPrefix = failPrefix || '✖';
   } else {
@@ -199,7 +199,7 @@ function breakText(text, prefixLength, indent = 0) {
 }
 
 function indentText(text, prefixLength, indent = 0) {
-  if(!prefixLength && !indent) return text;
+  if (!prefixLength && !indent) return text;
 
   const repeater = (index) => ' '.repeat((index !== 0) ? (prefixLength + indent) : 0);
 
