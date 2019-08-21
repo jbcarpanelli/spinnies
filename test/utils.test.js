@@ -174,7 +174,7 @@ describe('utils', () => {
           shouldSetDefault: true,
           shouldSetFail: true,
           shouldSetSucceed: true,
-          defaultSet: { textColor: 'blue', spinnerColor: 'blue' },
+          defaultSet: { textColor: 'blue', spinnerColor: 'blue', prefixColor: 'blue' },
           failSet: { prefixColor: 'blue', textColor: 'blue' },
           succeedSet: { prefixColor: 'blue', textColor: 'blue' }
         });

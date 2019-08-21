@@ -151,64 +151,95 @@ describe('Spinnies', () => {
         this.spinners.add('non-spinnable', { status: 'non-spinnable' });
       });
 
-      context('when not specifying options that should override status to update', () => {
-          it('returns the status options with the override options but doesn\'t modify the status of other spinners' , () => {
-            const spinner = this.spinners.get('spinner');
-            const anotherSpinner = this.spinners.get('another-spinner');
-            expect(spinner.getStatus('fail')).to.include({
-              prefix: spinner.options.failPrefix,
-              isStatic: true,
-              noSpaceAfterPrefix: false,
-              prefixColor: spinner.options.failColor,
-              textColor: spinner.options.failColor
-            });
-
-            expect(spinner.getStatus('success')).to.include({
-              prefix: spinner.options.succeedPrefix,
-              isStatic: true,
-              noSpaceAfterPrefix: false,
-              prefixColor: spinner.options.succeedColor,
-              textColor: spinner.options.succeedColor
-            });
-
-            expect(spinner.getStatus('spin')).to.include({
-              spinnerColor: spinner.options.color,
-              textColor: spinner.options.color,
-            });
-
-            spinner.update({
-              color: 'magenta',
-              failColor: 'redBright',
-              succeedPrefix: 'V'
-            });
-
-            // use different names/aliases to make sure everything updates
-            expect(spinner.getStatus('failed')).to.include({
-              prefixColor: 'redBright',
-              textColor: 'redBright'
-            });
-            expect(spinner.getStatus('done')).to.include({
-              prefix: 'V'
-            });
-            expect(spinner.getStatus('default')).to.include({
-              spinnerColor: 'magenta',
-              textColor: 'magenta',
-            });
-
-            // other spinners stay the same
-            expect(anotherSpinner.getStatus('error')).to.not.include({
-              spinnerColor: 'magenta',
-              textColor: 'magenta',
-            });
-            expect(anotherSpinner.getStatus('done')).to.not.include({
-              prefix: 'V'
-            });
-            expect(anotherSpinner.getStatus('default')).to.not.include({
-              spinnerColor: 'magenta',
-              textColor: 'magenta',
-            });
-
+      describe('statusOverrides', () => {
+        it('keeps previous overrides', () => {
+          const spinner = this.spinners.get('spinner');
+          expect(spinner.getStatus('fail')).to.include({
+            prefix: spinner.options.failPrefix,
+            isStatic: true,
+            noSpaceAfterPrefix: false,
+            prefixColor: spinner.options.failColor,
+            textColor: spinner.options.failColor
           });
+
+          spinner.update({
+            failColor: 'redBright',
+          });
+
+          expect(spinner.getStatus('fail')).to.include({
+            prefixColor: 'redBright',
+            textColor: 'redBright'
+          });
+
+          spinner.update({
+            failPrefix: 'x',
+          });
+
+          // it keeps previous overrides...
+          expect(spinner.getStatus('fail')).to.include({
+            prefixColor: 'redBright',
+            textColor: 'redBright',
+            prefix: 'x'
+          });
+        });
+      });
+
+      context('when specifying options that should override status to update', () => {
+        it('returns the status options with the override options but doesn\'t modify the status of other spinners' , () => {
+          const spinner = this.spinners.get('spinner');
+          const anotherSpinner = this.spinners.get('another-spinner');
+          expect(spinner.getStatus('fail')).to.include({
+            prefix: spinner.options.failPrefix,
+            isStatic: true,
+            noSpaceAfterPrefix: false,
+            prefixColor: spinner.options.failColor,
+            textColor: spinner.options.failColor
+          });
+
+          expect(spinner.getStatus('success')).to.include({
+            prefix: spinner.options.succeedPrefix,
+            isStatic: true,
+            noSpaceAfterPrefix: false,
+            prefixColor: spinner.options.succeedColor,
+            textColor: spinner.options.succeedColor
+          });
+
+          expect(spinner.getStatus('spin')).to.include({
+            spinnerColor: spinner.options.spinnerColor,
+            textColor: spinner.options.color,
+          });
+
+          spinner.update({
+            color: 'magenta',
+            failColor: 'redBright',
+            succeedPrefix: 'V'
+          });
+
+          // use different names/aliases to make sure everything updates
+          expect(spinner.getStatus('failed')).to.include({
+            prefixColor: 'redBright',
+            textColor: 'redBright'
+          });
+          expect(spinner.getStatus('done')).to.include({
+            prefix: 'V'
+          });
+          expect(spinner.getStatus('default')).to.include({
+            textColor: 'magenta',
+          });
+
+          // other spinners stay the same
+          expect(anotherSpinner.getStatus('error')).to.not.include({
+            spinnerColor: 'magenta',
+            textColor: 'magenta',
+          });
+          expect(anotherSpinner.getStatus('done')).to.not.include({
+            prefix: 'V'
+          });
+          expect(anotherSpinner.getStatus('default')).to.not.include({
+            spinnerColor: 'magenta',
+            textColor: 'magenta',
+          });
+        });
       });
     });
   });

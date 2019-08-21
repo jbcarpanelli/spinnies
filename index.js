@@ -129,13 +129,16 @@ class Spinnie extends EventEmitter {
     const { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet } = statusOptionsFromNormalUpdate(opts);
 
     if (shouldSetDefault) {
-      this.statusOverrides['spinning'] = defaultSet;
+      const current = this.statusOverrides['spinning'] || {};
+      this.statusOverrides['spinning'] = { ...current, ...defaultSet };
     }
     if (shouldSetFail) {
-      this.statusOverrides['fail'] = failSet;
+      const current = this.statusOverrides['fail'] || {};
+      this.statusOverrides['fail'] = { ...current, ...failSet };
     }
     if (shouldSetSucceed) {
-      this.statusOverrides['success'] = succeedSet;
+      const current = this.statusOverrides['success'] || {};
+      this.statusOverrides['success'] = { ...current, ...succeedSet };
     }
   }
 
@@ -150,7 +153,7 @@ class Spinnie extends EventEmitter {
     };
     const rawRenderFromStatus = status.rawRender;
     const render = rawRenderFromStatus ? rawRenderFromStatus : defaultRawRender;
-    
+
     let output = render({
       text: this.options.text,
       options: this.options,
