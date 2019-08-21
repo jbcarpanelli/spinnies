@@ -356,7 +356,9 @@ class Spinnies {
   }
 
   remove(name) {
+    if (typeof name !== 'string') throw new Error('A spinner reference name must be specified');
     if (!this.get(name)) throw new Error(`No spinner initialized with name ${name}`);
+
     this.get(name).removeAllListeners();
     delete this.spinners[name];
     this.updateSpinnerState();
