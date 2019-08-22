@@ -93,6 +93,7 @@ describe('utils', () => {
           expect(options).to.not.have.key('indent');
         });
       });
+      
     });
 
     describe('#breakText', () => {
