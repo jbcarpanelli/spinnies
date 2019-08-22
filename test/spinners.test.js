@@ -53,15 +53,15 @@ describe('Spinnies', () => {
         context('when specifying options', () => {
           context('when options are correct', () => {
             it('overrides the default options', () => {
-              const options = { color: 'black', spinnerColor: 'black', succeedColor: 'black', failColor: 'black', status: 'non-spinnable' };
+              const options = { color: 'black', spinnerColor: 'black', succeedColor: 'black', failColor: 'black', status: 'non-spinnable', indent: 2 };
               const spinner = this.spinners.add('spinner-name', options);
-              expect(spinner).to.include({ ...this.spinnersOptions, ...options, status: 'non-spinnable' });
+              expect(spinner).to.include({ ...this.spinnersOptions, ...options });
             });
           });
 
           context('when options are not valid', () => {
             it('mantains the default options', () => {
-              const options = { color: 'foo', spinnerColor: 'bar', status: 'buz' };
+              const options = { color: 'foo', spinnerColor: 'bar', status: 'buz', indent: 'baz' };
               const spinner = this.spinners.add('spinner-name', options);
               expect(spinner).to.include(this.spinnersOptions);
             });
