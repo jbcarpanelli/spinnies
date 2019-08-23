@@ -8,12 +8,13 @@ const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
 
 function purgeSpinnerOptions(options) {
-  const { text, status } = options;
-  const opts = { text, status };
+  const { text, status, indent } = options;
+  const opts = { text, status, indent };
   const colors = colorOptions(options);
 
   if (!VALID_STATUSES.includes(status)) delete opts.status;
   if (typeof text !== 'string') delete opts.text;
+  if (typeof indent !== 'number') delete opts.indent;
 
   return { ...colors, ...opts };
 }

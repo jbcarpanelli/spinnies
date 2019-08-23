@@ -27,12 +27,20 @@ setTimeout(() => {
 }, 7000)
 
 setTimeout(() => {
+  spinners.add('indented', { text: 'Im an indented line with 3 spaces',  indent: 3 });
+}, 7500)
+
+setTimeout(() => {
   spinners.add('non-spinnable', { text: 'Im a non-spinnable line',  status: 'non-spinnable' });
 }, 8000)
 
 setTimeout(() => {
   spinners.fail('second-spinner', { text: 'And I failed :\\' });
 }, 9000)
+
+setTimeout(() => {
+  spinners.succeed('indented', { text: 'Im an indented line with 3 spaces',  indent: 3 });
+}, 9500)
 
 setTimeout(() => {
   spinners.succeed('first-spinner', { text: 'I\'m the updated (and optional) success message', color: 'magenta' });

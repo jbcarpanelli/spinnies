@@ -79,6 +79,21 @@ describe('utils', () => {
           expect(options).to.not.have.any.keys('text', 'status');
         });
       });
+
+      context('when providing valid indent value', () => {
+        it('persist it', () => {
+          const options = purgeSpinnerOptions({ indent: 2 });
+          expect(options).to.include({ indent: 2 });
+        });
+      });
+
+      context('when providing invalid indent value', () => {
+        it('does not persist it', () => {
+          const options = purgeSpinnerOptions({ indent: 'bar' });
+          expect(options).to.not.have.key('indent');
+        });
+      });
+      
     });
 
     describe('#breakText', () => {
