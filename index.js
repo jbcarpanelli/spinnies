@@ -17,6 +17,7 @@ class Spinnies {
       failColor: 'red',
       spinner: terminalSupportsUnicode() ? dots : dashes,
       disableSpins: false,
+      continuous: false,
       ...options
     };
     this.spinners = {};
@@ -155,7 +156,7 @@ class Spinnies {
         output += `${line}\n`;
       });
 
-    if(!hasActiveSpinners) readline.clearScreenDown(this.stream);
+    if (!hasActiveSpinners) readline.clearScreenDown(this.stream);
     writeStream(this.stream, output, linesLength);
     if (hasActiveSpinners) cleanStream(this.stream, linesLength);
     this.lineCount = linesLength.length;
@@ -168,7 +169,7 @@ class Spinnies {
   }
 
   checkIfActiveSpinners() {
-    if (!this.hasActiveSpinners()) {
+    if (!this.hasActiveSpinners() && !this.options.continuous) {
       if (this.spin) {
         this.setStreamOutput();
         readline.moveCursor(this.stream, 0, this.lineCount);

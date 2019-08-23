@@ -18,13 +18,14 @@ function purgeSpinnerOptions(options) {
   return { ...colors, ...opts };
 }
 
-function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
+function purgeSpinnersOptions({ spinner, continuous, disableSpins, ...others }) {
   const colors = colorOptions(others);
   const prefixes = prefixOptions(others);
+  const continuousOption = typeof continuous === 'boolean' ? { continuous } : {};
   const disableSpinsOption = typeof disableSpins === 'boolean' ? { disableSpins } : {};
   spinner = turnToValidSpinner(spinner);
 
-  return { ...colors, ...prefixes, ...disableSpinsOption, spinner }
+  return { ...colors, ...prefixes, ...continuousOption, ...disableSpinsOption, spinner }
 }
 
 function turnToValidSpinner(spinner = {}) {
@@ -47,7 +48,7 @@ function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
 }
 
 function prefixOptions({ succeedPrefix, failPrefix }) {
-  if(terminalSupportsUnicode()) {
+  if (terminalSupportsUnicode()) {
     succeedPrefix = succeedPrefix || '✓';
     failPrefix = failPrefix || '✖';
   } else {
@@ -66,9 +67,9 @@ function breakText(text, prefixLength) {
 
 function breakLine(line, prefixLength) {
   const columns = process.stderr.columns || 95;
-  return line.length  >= columns - prefixLength
+  return line.length >= columns - prefixLength
     ? `${line.substring(0, columns - prefixLength - 1)}\n${
-      breakLine(line.substring(columns - prefixLength - 1, line.length), 0)
+    breakLine(line.substring(columns - prefixLength - 1, line.length), 0)
     }`
     : line;
 }
@@ -96,11 +97,11 @@ function cleanStream(stream, rawLines) {
 }
 
 function terminalSupportsUnicode() {
-    // The default command prompt and powershell in Windows do not support Unicode characters.
-    // However, the VSCode integrated terminal and the Windows Terminal both do.
-    return process.platform !== 'win32'
-      || process.env.TERM_PROGRAM === 'vscode'
-      || !!process.env.WT_SESSION
+  // The default command prompt and powershell in Windows do not support Unicode characters.
+  // However, the VSCode integrated terminal and the Windows Terminal both do.
+  return process.platform !== 'win32'
+    || process.env.TERM_PROGRAM === 'vscode'
+    || !!process.env.WT_SESSION
 }
 
 module.exports = {
