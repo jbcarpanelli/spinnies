@@ -50,7 +50,8 @@ Parameters
     - **frames** - `string[]`
 
     You can see the already provided spinner [here](https://github.com/jcarpanelli/spinnies/blob/master/spinners.json).
-  - **disableSpins** - `boolean`: Disable spins (will still print raw messages).
+  - **disableSpins** - `boolean`: Disable spins (will still print raw messages). The default value is `false`.
+  - **continuous** - `boolean`: Run spinners indefinitely until process is terminated (useful for some development tools). The default value is `false`.
 
 *Note: If you are working in any `win32` platform, the default spin animation will be overriden. You can get rid of this defining a different spinner animation manually, or by using the integrated VSCode terminal or Windows Terminal.*
 
