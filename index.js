@@ -2,6 +2,7 @@
 const readline = require('readline');
 const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
+const onExit = require('signal-exit')
 const EventEmitter = require('events').EventEmitter;
 const EOL = require('os').EOL;
 const { dashes, dots } = require('./spinners');
@@ -284,7 +285,7 @@ class Spinnies {
       textColor: 'grey'
     });
 
-    this.bindSigint();
+    this.bindExitEvent();
   }
 
   addLog(str) {
@@ -435,6 +436,7 @@ class Spinnies {
         cliCursor.show();
       }
       this.spinners = {};
+      this.removeExitListener();
     }
   }
 
@@ -447,13 +449,11 @@ class Spinnies {
     return spinner;
   }
 
-  bindSigint(lines) {
-    process.removeAllListeners('SIGINT');
-    process.on('SIGINT', () => {
-      cliCursor.show();
+  bindExitEvent() {
+    this.removeExitListener = onExit(() => {
+      // cli-cursor will automatically show the cursor...
       readline.moveCursor(process.stderr, 0, this.lineCount);
-      process.exit(0);
-    });
+    }, { alwaysLast: true });
   }
 
   log(method = console.log) {
