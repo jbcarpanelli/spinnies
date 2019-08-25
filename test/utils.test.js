@@ -63,6 +63,22 @@ describe('utils', () => {
             expect(options).to.deep.include({ ...this.colors, spinner });
           });
         })
+
+        context('when providing invalid spinner name from `cli-spinners`', () => {
+          it('picks the default spinner', () => {
+            const spinner = 'i-dont-exist';
+            const options = purgeSpinnersOptions({ ...this.colors, spinner });
+            expect(options).to.deep.include({ ...this.colors, spinner: platformSpinner });
+          });
+        });
+
+        context('when providing a valid spinner name from `cli-spinners`', () => {
+          it('picks that spinner from the `cli-spinners` library', () => {
+            const spinner = 'dots3';
+            const options = purgeSpinnersOptions({ ...this.colors, spinner });
+            expect(options).to.deep.include({ ...this.colors, spinner: require('cli-spinners')[spinner] });
+          });
+        });
       });
     });
 
