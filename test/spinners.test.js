@@ -12,12 +12,14 @@ process.stderr.write = () => {};
 
 describe('Spinnies', () => {
   beforeEach('initialize', () => {
-    this.spinners = new Spinnies();
+    this.spinners = new Spinnies({
+      spinner: { interval: 130, frames: ['O', 'o', '.', 'o', 'O'] }
+    });
     this.spinnersOptions = {
       succeedColor: 'green',
       failColor: 'red',
       spinnerColor: 'greenBright',
-      status: 'spinning',
+      status: 'spinning'
     };
   });
 
@@ -141,6 +143,43 @@ describe('Spinnies', () => {
             spinner.update();
             expect(calls()).to.be.equal(3); // not reacting to the updates since the spinner was deleted...
           });
+        });
+      });
+    });
+
+    describe('#setFrames', () => {
+      describe('setting frames', () => {
+        it('sets the options.spinner property on the spinnies instance', () => {
+          expect(this.spinners.options.spinner).to.have.keys({
+            interval: 130,
+            frames: ['O', 'o', '.', 'o', 'O']
+          });
+
+          this.spinners.setFrames({
+            interval: 50,
+            frames: ['a', 'b', 'c']
+          });
+
+          expect(this.spinners.options.spinner).to.have.keys({
+            interval: 50,
+            frames: ['a', 'b', 'c']
+          });
+        });
+
+        it('sets the resets the currentFrameIndex property on the spinnies instance', () => {
+          expect(this.spinners.options.spinner).to.have.keys({
+            interval: 130,
+            frames: ['O', 'o', '.', 'o', 'O']
+          });
+
+          this.spinners.currentFrameIndex = 9;
+
+          this.spinners.setFrames({
+            interval: 50,
+            frames: ['a', 'b', 'c']
+          });
+
+          expect(this.spinners.currentFrameIndex).to.equal(1);
         });
       });
     });
