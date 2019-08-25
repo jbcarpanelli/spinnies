@@ -144,7 +144,7 @@ class Spinnie extends EventEmitter {
   }
 
   isActive() {
-    return this.options.status === 'spinning';
+    return !this.getStatus(this.options.status).isStatic;
   }
 
   rawRender() {
@@ -353,15 +353,9 @@ class Spinnies {
   stopAll(newStatus = 'stopped') {
     Object.keys(this.spinners).forEach(name => {
       const currentSpinner = this.get(name);
-      const currentStatus = currentSpinner.options.status;
-      if (currentStatus !== 'fail' && currentStatus !== 'succeed' && currentStatus !== 'non-spinnable') {
-        if (newStatus === 'succeed' || newStatus === 'fail') {
-          currentSpinner.options.status = newStatus;
-          currentSpinner.options.color = this.options[`${newStatus}Color`];
-        } else {
-          currentSpinner.options.status = 'stopped';
-          currentSpinner.options.color = 'grey';
-        }
+      const currentStatus = currentSpinner.getStatus(currentSpinner.options.status);
+      if (!currentStatus.isStatic) {
+        currentSpinner.options.status = newStatus;
       }
     });
     this.checkIfActiveSpinners();
