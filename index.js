@@ -171,32 +171,29 @@ class Spinnie extends EventEmitter {
   }
 
   render(frame) {
-    let { text, status, color, spinnerColor, succeedColor, failColor, succeedPrefix, failPrefix, indent } = this.options;
+    let { text, status, indent } = this.options;
+    const statusOptions = this.getStatus(status);
     let line;
-    let prefixLength;
-    if (status === 'spinning') {
-      prefixLength = frame.length + 1;
-      text = breakText(text, prefixLength, indent);
-      text = indentText(text, prefixLength, indent);
-      line = `${chalk[spinnerColor](frame)} ${color ? chalk[color](text) : text}`;
-    } else {
-      if (status === 'succeed') {
-        prefixLength = succeedPrefix.length + 1;
-        text = breakText(text, prefixLength, indent);
-        text = indentText(text, prefixLength, indent);
-        line = `${chalk.green(succeedPrefix)} ${chalk[succeedColor](text)}`;
-      } else if (status === 'fail') {
-        prefixLength = failPrefix.length + 1;
-        text = breakText(text, prefixLength, indent);
-        text = indentText(text, prefixLength, indent);
-        line = `${chalk.red(failPrefix)} ${chalk[failColor](text)}`;
-      } else {
-        prefixLength = 0;
-        text = breakText(text, prefixLength, indent);
-        text = indentText(text, prefixLength, indent);
-        line = color ? chalk[color](text) : text;
+    let prefix = '';
+
+    if (!statusOptions.isStatic) {
+      prefix = frame;
+      if (!statusOptions.noSpaceAfterPrefix) {
+        prefix += ' ';
+      }
+    } else if (statusOptions.prefix) {
+      prefix = statusOptions.prefix;
+      if (!statusOptions.noSpaceAfterPrefix) {
+        prefix += ' ';
       }
     }
+    const prefixLength = prefix.length;
+    const textColor = statusOptions.textColor;
+    const prefixColor = statusOptions.isStatic ? statusOptions.prefixColor : statusOptions.spinnerColor;
+
+    text = breakText(text, prefixLength, indent);
+    text = indentText(text, prefixLength, indent);
+    line = `${prefixLength ? chalk[prefixColor](prefix) : ''}${textColor ? chalk[textColor](text) : text}`;
 
     const linesLength = getLinesLength(text, prefixLength, indent);
     const output = `${secondStageIndent(line, indent)}${EOL}`;
@@ -282,7 +279,7 @@ class Spinnies {
       aliases: ['stop', 'cancel'],
       prefix: false,
       isStatic: true,
-      textColor: 'grey'
+      textColor: 'gray'
     });
 
     this.bindExitEvent();
