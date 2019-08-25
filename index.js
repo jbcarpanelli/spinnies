@@ -148,29 +148,17 @@ class Spinnie extends EventEmitter {
 
   rawRender() {
     const status = this.getStatus(this.options.status);
-    const defaultRawRender = ({ statusOptions, text }) => {
-      return `${statusOptions.prefix ? (chalk[statusOptions.prefixColor](statusOptions.prefix) + (status.noSpaceAfterPrefix ? '' : ' ')) : ''}${statusOptions.textColor ? chalk[statusOptions.textColor](text) : text}`;
-    };
-    const rawRenderFromStatus = status.rawRender;
-    const render = rawRenderFromStatus ? rawRenderFromStatus : defaultRawRender;
-
-    let output = render({
-      text: this.options.text,
-      options: this.options,
-      statusOptions: status
-    });
+    const text = this.options.text;
+    let output = `${status.prefix ? (chalk[status.prefixColor](status.prefix) + (status.noSpaceAfterPrefix ? '' : ' ')) : ''}${status.textColor ? chalk[status.textColor](text) : text}`;
 
     const indent = this.options.indent;
     let prefixLengthToIndent = 0;
-    if (!rawRenderFromStatus) {
-      // if we use the default rawRender: indent by the prefix length, else by 0
-      if (status.prefix) {
-        // only if we have a prefix...
-        prefixLengthToIndent = status.prefix.length;
-        if (!status.noSpaceAfterPrefix) {
-          // if we have a space after the prefix add 1 to the prefix length
-          prefixLengthToIndent += 1;
-        }
+    if (status.prefix) {
+      // only if we have a prefix...
+      prefixLengthToIndent = status.prefix.length;
+      if (!status.noSpaceAfterPrefix) {
+        // if we have a space after the prefix add 1 to the prefix length
+        prefixLengthToIndent += 1;
       }
     }
 
