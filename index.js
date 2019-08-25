@@ -72,6 +72,14 @@ class Spinnies {
     return this.spinners[name];
   }
 
+  remove(name) {
+    if (typeof name !== 'string') throw Error('A spinner reference name must be specified');
+    const spinner = this.spinners[name];
+    delete this.spinners[name];
+
+    return spinner;
+  }
+
   stopAll(newStatus = 'stopped') {
     Object.keys(this.spinners).forEach(name => {
       const { status: currentStatus } = this.spinners[name];

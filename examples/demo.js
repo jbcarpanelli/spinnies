@@ -23,6 +23,10 @@ setTimeout(() => {
 }, 5000)
 
 setTimeout(() => {
+  spinners.add('ephemeral-spinner', { text: 'Im an ephemeral spinner and will dissapear soon :(' })
+}, 6000);
+
+setTimeout(() => {
   spinners.add('spinner-that-changes', { text: 'I am another spinner that would love to make some friends! Also I am very long, but I break into two or more lines if needed' });
 }, 7000)
 
@@ -53,6 +57,11 @@ setTimeout(() => {
 setTimeout(() => {
   spinners.update('third-spinner', { text: 'I have been updated again :D', color: 'cyan' });
 }, 14500)
+
+
+setTimeout(() => {
+  spinners.remove('ephemeral-spinner');
+}, 16000);
 
 setTimeout(() => {
   spinners.update('third-spinner', { text: 'Again, with fancy colors!',  color: 'magenta' });

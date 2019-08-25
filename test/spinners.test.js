@@ -10,8 +10,8 @@ setTimeout = (fn) => fn();
 process.stderr.write = () => {};
 
 describe('Spinnies', () => {
-  beforeEach('initialize', () => {
-    this.spinners = new Spinnies();
+  beforeEach('constructor', () => {
+    this.spinnies = new Spinnies();
     this.spinnersOptions = {
       succeedColor: 'green',
       failColor: 'red',
@@ -25,27 +25,27 @@ describe('Spinnies', () => {
       describe('validations', () => {
         context('when no spinner name specified', () => {
           it('throws an error', () => {
-            expect(() => this.spinners.add()).to.throw('A spinner reference name must be specified');
+            expect(() => this.spinnies.add()).to.throw('A spinner reference name must be specified');
           });
         });
       });
 
       describe('adding new spinners', () => {
         it('has initial variables defined', () => {
-          const spinner = this.spinners.add('spinner');
+          const spinner = this.spinnies.add('spinner');
           expect(spinner).to.include(this.spinnersOptions);
         });
 
         context('when no initial text is specified', () => {
           it('takes the spinner name as text', () => {
-            const spinner = this.spinners.add('spinner-name');
+            const spinner = this.spinnies.add('spinner-name');
             expect(spinner.text).to.eq('spinner-name');
           });
         });
 
         context('when initial text is specified', () => {
           it('uses the specified spinner text', () => {
-            const spinner = this.spinners.add('spinner-name', { text: 'Hello spinner-name' });
+            const spinner = this.spinnies.add('spinner-name', { text: 'Hello spinner-name' });
             expect(spinner.text).to.eq('Hello spinner-name');
           });
         });
@@ -54,7 +54,7 @@ describe('Spinnies', () => {
           context('when options are correct', () => {
             it('overrides the default options', () => {
               const options = { color: 'black', spinnerColor: 'black', succeedColor: 'black', failColor: 'black', status: 'non-spinnable', indent: 2 };
-              const spinner = this.spinners.add('spinner-name', options);
+              const spinner = this.spinnies.add('spinner-name', options);
               expect(spinner).to.include({ ...this.spinnersOptions, ...options });
             });
           });
@@ -62,7 +62,7 @@ describe('Spinnies', () => {
           context('when options are not valid', () => {
             it('mantains the default options', () => {
               const options = { color: 'foo', spinnerColor: 'bar', status: 'buz', indent: 'baz' };
-              const spinner = this.spinners.add('spinner-name', options);
+              const spinner = this.spinnies.add('spinner-name', options);
               expect(spinner).to.include(this.spinnersOptions);
             });
           });
@@ -70,12 +70,31 @@ describe('Spinnies', () => {
       });
     });
 
+    describe('#remove', () => {
+      describe('validations', () => {
+        context('when no spinner name specified', () => {
+          it('throws an error', () => {
+            expect(() => this.spinnies.remove()).to.throw('A spinner reference name must be specified');
+          });
+        });
+      });
+
+      it('removes the spinner from the spinners object', () => {
+        this.spinnies.add('spinner-name', this.spinnerOptions);
+        expect(this.spinnies.spinners).to.have.keys('spinner-name');
+
+        const spinner = this.spinnies.remove('spinner-name');
+        expect(spinner).to.include(this.spinnersOptions);
+        expect(this.spinnies.spinners).to.not.have.keys('spinner-name');
+      });
+    });
+
     describe('methods that modify the status of a spinner', () => {
       beforeEach('initialize some spinners', () => {
-        this.spinners.add('spinner');
-        this.spinners.add('another-spinner');
-        this.spinners.add('third-spinner');
-        this.spinners.add('non-spinnable', { status: 'non-spinnable' });
+        this.spinnies.add('spinner');
+        this.spinnies.add('another-spinner');
+        this.spinnies.add('third-spinner');
+        this.spinnies.add('non-spinnable', { status: 'non-spinnable' });
       });
 
       expectToBehaveLikeAnUpdate(this, 'succeed');
@@ -84,10 +103,10 @@ describe('Spinnies', () => {
 
       describe('#stopAll', () => {
         beforeEach(() => {
-          this.spinner = this.spinners.succeed('spinner');
-          this.anotherSpinner = this.spinners.fail('another-spinner');
-          this.nonSpinnable = this.spinners.pick('non-spinnable');
-          this.thirdSpinner = this.spinners.pick('third-spinner');
+          this.spinner = this.spinnies.succeed('spinner');
+          this.anotherSpinner = this.spinnies.fail('another-spinner');
+          this.nonSpinnable = this.spinnies.pick('non-spinnable');
+          this.thirdSpinner = this.spinnies.pick('third-spinner');
         });
 
         const expectToKeepFinishedSpinners = () => {
@@ -98,7 +117,7 @@ describe('Spinnies', () => {
 
         context('when providing a new status', () => {
           it('sets non-finished spinners as succeed', () => {
-            this.spinners.stopAll('succeed');
+            this.spinnies.stopAll('succeed');
 
             expectToKeepFinishedSpinners();
             expect(this.thirdSpinner.status).to.eq('succeed');
@@ -106,7 +125,7 @@ describe('Spinnies', () => {
           });
 
           it('sets non-finished spinners as fail', () => {
-            this.spinners.stopAll('fail');
+            this.spinnies.stopAll('fail');
 
             expectToKeepFinishedSpinners();
             expect(this.thirdSpinner.status).to.eq('fail');
@@ -114,7 +133,7 @@ describe('Spinnies', () => {
           });
 
           it('sets non-finished spinners as stopped', () => {
-            this.spinners.stopAll('foobar');
+            this.spinnies.stopAll('foobar');
 
             expectToKeepFinishedSpinners();
             expect(this.thirdSpinner.status).to.eq('stopped');
@@ -124,7 +143,7 @@ describe('Spinnies', () => {
 
         context('when not providing a new status', () => {
           it('sets non-finished spinners as stopped', () => {
-            this.spinners.stopAll();
+            this.spinnies.stopAll();
 
             expectToKeepFinishedSpinners();
             expect(this.thirdSpinner.status).to.eq('stopped');

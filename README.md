@@ -96,6 +96,14 @@ Parameters:
 
 Return value: Returns the spinner's options.
 
+#### remove(name)
+Removes a spinner.
+
+Parameters:
+- **name** - `string`: spinner reference name.
+
+Return value: Returns the spinner's options.
+
 #### update(name, [options])
 
 Updates the spinner with name `name` with the provided options.
