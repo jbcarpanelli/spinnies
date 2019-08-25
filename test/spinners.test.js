@@ -224,7 +224,6 @@ describe('Spinnies', () => {
 
             expectToKeepFinishedSpinners();
             expect(this.thirdSpinner.options.status).to.eq('succeed');
-            expect(this.thirdSpinner.options.color).to.eq('green');
           });
 
           it('sets non-finished spinners as fail', () => {
@@ -232,7 +231,6 @@ describe('Spinnies', () => {
 
             expectToKeepFinishedSpinners();
             expect(this.thirdSpinner.options.status).to.eq('fail');
-            expect(this.thirdSpinner.options.color).to.eq('red');
           });
 
           it('sets non-finished spinners as stopped', () => {
@@ -240,7 +238,6 @@ describe('Spinnies', () => {
 
             expectToKeepFinishedSpinners();
             expect(this.thirdSpinner.options.status).to.eq('stopped');
-            expect(this.thirdSpinner.options.color).to.eq('grey');
           });
         });
 
@@ -250,7 +247,6 @@ describe('Spinnies', () => {
 
             expectToKeepFinishedSpinners();
             expect(this.thirdSpinner.options.status).to.eq('stopped');
-            expect(this.thirdSpinner.options.color).to.eq('grey');
           });
         });
       });

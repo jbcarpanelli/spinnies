@@ -341,6 +341,7 @@ class Spinnies {
   }
 
   stopAll(newStatus = 'stopped') {
+    if (this.statusRegistry.actualName(newStatus) === undefined) newStatus = 'stopped';
     Object.keys(this.spinners).forEach(name => {
       const currentSpinner = this.get(name);
       const currentStatus = currentSpinner.getStatus(currentSpinner.options.status);
