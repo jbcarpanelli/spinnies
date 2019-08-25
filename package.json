@@ -37,13 +37,13 @@
   "dependencies": {
     "chalk": "^2.4.2",
     "cli-cursor": "^3.0.0",
-    "sinon": "^7.4.1",
     "strip-ansi": "^5.2.0",
     "wordwrapjs": "^4.0.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.1.4"
+    "mocha": "^6.1.4",
+    "sinon": "^7.4.1"
   },
   "optionalDependencies": {
     "cli-spinners": "^2.2.0"
