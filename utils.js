@@ -188,7 +188,7 @@ function indentText(text, prefixLength, indent = 0) {
   const repeater = (index) => ' '.repeat((index !== 0) ? (prefixLength + indent) : 0);
 
   return text
-    .split(EOL)
+    .split(/\r\n|\r|\n/)
     .map((line, index) => `${repeater(index)}${line}`)
     .join(EOL);
 }
@@ -200,7 +200,7 @@ function secondStageIndent(str, indent = 0) {
 
 function getLinesLength(text, prefixLength, indent = 0) {
   return stripAnsi(text)
-    .split(EOL)
+    .split(/\r\n|\r|\n/)
     .map((line, index) => index === 0 ? line.length + prefixLength + indent : line.length);
 }
 
