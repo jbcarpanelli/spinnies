@@ -84,40 +84,6 @@ describe('utils', () => {
     });
 
     describe('#purgeStatusOptions', () => {
-      context('rawRender', () => {
-        context('when it\'s not a string', () => {
-          it('removes it', () => {
-            const status = { rawRender: 90 };
-            const options = purgeStatusOptions(status);
-            expect(options).to.not.have.property('rawRender');
-          });
-        });
-
-        context('when it\'s a function that returns a number', () => {
-          it('removes it', () => {
-            const status = { rawRender: () => 90 };
-            const options = purgeStatusOptions(status);
-            expect(options).to.not.have.property('rawRender');
-          });
-        });
-
-        context('when it\'s a string', () => {
-          it('keeps it', () => {
-            const status = { rawRender: 'actual render' };
-            const options = purgeStatusOptions(status);
-            expect(options).to.have.property('rawRender');
-          });
-        });
-
-        context('when it\'s a function that returns a string', () => {
-          it('keeps it', () => {
-            const status = { rawRender: () => 'actual render' };
-            const options = purgeStatusOptions(status);
-            expect(options).to.have.property('rawRender');
-          });
-        });
-      });
-
       context('prefix', () => {
         context('when it\'s a number', () => {
           it('keeps it', () => {
