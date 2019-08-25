@@ -94,7 +94,7 @@ describe('Spinnies', () => {
             this.spinners.add('spinner');
             expect(this.spinners.get('spinner')).to.not.be.undefined;
             this.spinners.remove('spinner');
-            expect(this.spinners.get('spinner')).to.be.undefined;
+            expect(() => this.spinners.get('spinner')).to.throw('No spinner initialized with name spinner');
           });
 
           it('stops listening to events from that spinner', () => {
@@ -122,7 +122,7 @@ describe('Spinnies', () => {
             const spinner = this.spinners.add('spinner');
             expect(this.spinners.get('spinner')).to.not.be.undefined;
             spinner.remove('spinner');
-            expect(this.spinners.get('spinner')).to.be.undefined;
+            expect(() => this.spinners.get('spinner')).to.throw('No spinner initialized with name spinner');
           });
 
           it('stops listening to events from that spinner', () => {

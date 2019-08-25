@@ -282,6 +282,10 @@ class Spinnies {
       textColor: 'gray'
     });
 
+    ['update', 'status', 'succeed', 'fail', 'setSpinnerProperties'].forEach(method => {
+      this.aliasChildMethod(method);
+    });
+
     this.bindExitEvent();
   }
 
@@ -290,11 +294,13 @@ class Spinnies {
   }
 
   get(name) {
+    if (typeof name !== 'string') throw new Error('A spinner reference name must be specified');
+    if (!this.spinners[name]) throw new Error(`No spinner initialized with name ${name}`);
     return this.spinners[name];
   }
 
   pick(name) {
-    return this.spinners[name].options;
+    return this.get(name).options;
   }
 
   setFrames(frames) {
@@ -325,22 +331,6 @@ class Spinnies {
     return spinnie;
   }
 
-  update(name, options = {}) {
-    return this.childFuction(name, 'update', options);
-  }
-
-  status(name, statusName) {
-    return this.childFuction(name, 'status', statusName);
-  }
-
-  succeed(name, options = {}) {
-    return this.childFuction(name, 'succeed', options);
-  }
-
-  fail(name, options = {}) {
-    return this.childFuction(name, 'fail', options);
-  }
-
   remove(name) {
     if (typeof name !== 'string') throw new Error('A spinner reference name must be specified');
     if (!this.get(name)) throw new Error(`No spinner initialized with name ${name}`);
@@ -365,10 +355,6 @@ class Spinnies {
 
   hasActiveSpinners() {
     return !!Object.values(this.spinners).find((spinner) => spinner.isActive());
-  }
-
-  setSpinnerProperties(name, options, status) {
-    return this.childFuction(name, 'setSpinnerProperties', options, status);
   }
 
   updateSpinnerState(name, options = {}, status) {
@@ -431,13 +417,13 @@ class Spinnies {
     }
   }
 
-  childFuction(name, action, ...args) {
-    if (typeof name !== 'string') throw new Error('A spinner reference name must be specified');
-    if (!this.get(name)) throw new Error(`No spinner initialized with name ${name}`);
+  aliasChildMethod(method) {
+    if (this[method] !== undefined) return;
 
-    const spinner = this.get(name);
-    spinner[action](...args);
-    return spinner;
+    this[method] = (name, ...args) => {
+      const spinner = this.get(name);
+      return spinner[method](...args);
+    };
   }
 
   bindExitEvent() {
