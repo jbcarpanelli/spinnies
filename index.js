@@ -12,8 +12,10 @@ const { isValidStatus, writeStream, cleanStream } = require('./utils');
 
 const DEFAULT_STATUS = 'spinning';
 
-class StatusRegistry {
+class StatusRegistry extends EventEmitter {
   constructor(defaultStatus) {
+    super();
+
     this.defaultStatus = defaultStatus;
     this.statuses = {};
     this.statusesAliases = {};
@@ -36,12 +38,19 @@ class StatusRegistry {
       ...purgedOptions
     }
 
+    if (this.statuses[name] === undefined) {
+      this.emit('statusAdded', name);
+    }
     this.statuses[name] = opts;
 
     if (aliases) {
       aliases = Array.isArray(aliases) ? aliases : [aliases];
       aliases.forEach(aliasName => {
         if (typeof aliasName !== 'string') return;
+
+        if (this.statusesAliases[aliasName] === undefined) {
+          this.emit('statusAdded', aliasName);
+        }
         this.statusesAliases[aliasName] = name;
       });
     }
@@ -87,6 +96,14 @@ class Spinnie extends EventEmitter {
     this.statusRegistry = statusRegistry;
     this.statusOverrides = {};
 
+    Object.keys(this.statusRegistry.statuses).forEach(name => {
+      this.aliasStatusAsMethod(name);
+    });
+
+    Object.keys(this.statusRegistry.statusesAliases).forEach(name => {
+      this.aliasStatusAsMethod(name);
+    });
+
     this.applyStatusOverrides(spinnerProperties);
 
     return this;
@@ -94,6 +111,9 @@ class Spinnie extends EventEmitter {
 
   update(options = {}) {
     const { status } = options;
+    const keys = Object.keys(options);
+    if (keys.length === 1 && keys[0] === 'status') return this.status(status); // skip all options purging...
+
     this.setSpinnerProperties(options, status);
     this.updateSpinnerState();
 
@@ -103,20 +123,6 @@ class Spinnie extends EventEmitter {
   status(statusName) {
     if (!statusName || typeof statusName !== 'string') return this;
     this.options.status = statusName;
-    this.updateSpinnerState();
-
-    return this;
-  }
-
-  succeed(options = {}) {
-    this.setSpinnerProperties(options, 'succeed');
-    this.updateSpinnerState();
-
-    return this;
-  }
-
-  fail(options = {}) {
-    this.setSpinnerProperties(options, 'fail');
     this.updateSpinnerState();
 
     return this;
@@ -218,6 +224,12 @@ class Spinnie extends EventEmitter {
     return this;
   }
 
+  aliasStatusAsMethod(name) {
+    if (this[name] !== undefined) return;
+
+    this[name] = (options) => this.update({ ...options, status: name });
+  }
+
   updateSpinnerState() {
     this.emit('updateSpinnerState');
   }
@@ -246,6 +258,13 @@ class Spinnies {
     this.lineCount = 0;
     this.currentFrameIndex = 0;
     this.spin = !this.options.disableSpins && !process.env.CI && process.stderr && process.stderr.isTTY;
+
+    this.statusRegistry.on('statusAdded', name => {
+      Object.values(this.spinners).forEach(spinner => {
+        spinner.aliasStatusAsMethod(name);
+      });
+      this.aliasChildMethod(name);
+    });
 
     this.statusRegistry.configureStatus('spinning', {
       aliases: ['spin', 'active', 'default'],
@@ -282,7 +301,7 @@ class Spinnies {
       textColor: 'gray'
     });
 
-    ['update', 'status', 'succeed', 'fail', 'setSpinnerProperties'].forEach(method => {
+    ['update', 'status', 'setSpinnerProperties'].forEach(method => {
       this.aliasChildMethod(method);
     });
 
