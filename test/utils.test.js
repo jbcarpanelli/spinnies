@@ -142,6 +142,58 @@ describe('utils', () => {
         });
       });
 
+      describe('isStatic', () => {
+        context('when it\'s true', () => {
+          it('keeps it', () => {
+            const status = { isStatic: true };
+            const options = purgeStatusOptions(status);
+            expect(options).to.have.property('isStatic');
+          });
+        });
+
+        context('when it\'s false', () => {
+          it('keeps it', () => {
+            const status = { isStatic: false };
+            const options = purgeStatusOptions(status);
+            expect(options).to.have.property('isStatic');
+          });
+        });
+
+        context('when it\'s a number', () => {
+          it('removes it', () => {
+            const status = { isStatic: 99 };
+            const options = purgeStatusOptions(status);
+            expect(options).to.not.have.property('isStatic');
+          });
+        });
+      });
+
+      describe('noSpaceAfterPrefix', () => {
+        context('when it\'s true', () => {
+          it('keeps it', () => {
+            const status = { noSpaceAfterPrefix: true };
+            const options = purgeStatusOptions(status);
+            expect(options).to.have.property('noSpaceAfterPrefix');
+          });
+        });
+
+        context('when it\'s false', () => {
+          it('keeps it', () => {
+            const status = { noSpaceAfterPrefix: false };
+            const options = purgeStatusOptions(status);
+            expect(options).to.have.property('noSpaceAfterPrefix');
+          });
+        });
+
+        context('when it\'s a number', () => {
+          it('removes it', () => {
+            const status = { noSpaceAfterPrefix: 99 };
+            const options = purgeStatusOptions(status);
+            expect(options).to.not.have.property('noSpaceAfterPrefix');
+          });
+        });
+      });
+
       it('removes invalid colors', () => {
         const colors = purgeStatusOptions({ textColor: 'foo', prefixColor: 'bar', spinnerColor: 'blue' });
         expect(colors).to.include({ spinnerColor: 'blue' });
