@@ -5,16 +5,15 @@ const stripAnsi = require('strip-ansi');
 const wordwrapjs = require('wordwrapjs')
 const EOL = require('os').EOL;
 const { dashes, dots } = require('./spinners');
+const { some, equal, type, oneOf } = require('./purgeOptions');
 
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
-
-function isValidPrefix(prefix) {
-  return (prefix === false || typeof prefix === 'string' || typeof prefix === 'number');
-}
-
-function isValidColor(color) {
-  return VALID_COLORS.includes(color);
-}
+const isValidPrefix = some([
+  equal(false),
+  type('string'),
+  type('number')
+]);
+const isValidColor = oneOf(VALID_COLORS);
 
 function purgeSpinnerOptions(options) {
   const { text, status, indent } = options;
