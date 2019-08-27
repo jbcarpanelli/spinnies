@@ -5,7 +5,7 @@ const stripAnsi = require('strip-ansi');
 const wordwrapjs = require('wordwrapjs')
 const EOL = require('os').EOL;
 const { dashes, dots } = require('./spinners');
-const { some, equal, type, oneOf } = require('./purgeOptions');
+const { purgeOptions, some, equal, type, oneOf } = require('./purgeOptions');
 
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
 const isValidPrefix = some([
@@ -153,13 +153,13 @@ function turnToValidSpinner(spinner = {}) {
   return { interval, frames };
 }
 
-function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
-  const colors = { color, succeedColor, failColor, spinnerColor };
-  Object.keys(colors).forEach(key => {
-    if (!isValidColor(colors[key])) delete colors[key];
-  });
-
-  return colors;
+function colorOptions(options) {
+  return purgeOptions({
+    color: isValidColor,
+    succeedColor: isValidColor,
+    failColor: isValidColor,
+    spinnerColor: isValidColor
+  }, options);
 }
 
 function prefixOptions({ succeedPrefix, failPrefix }) {
