@@ -81,48 +81,15 @@ function statusOptionsFromNormalUpdate(opts) {
   return { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet };
 }
 
-function purgeStatusOptions(opts) {
-  const {
-    prefix,
-    prefixColor,
-    spinnerColor,
-    textColor,
-    isStatic,
-    noSpaceAfterPrefix
-  } = opts;
-
-  const options = {
-    prefix,
-    prefixColor,
-    spinnerColor,
-    textColor,
-    isStatic,
-    noSpaceAfterPrefix
-  };
-
-  if (!isValidPrefix(options.prefix)) {
-    delete options.prefix;
-  }
-
-  if (options.isStatic !== undefined) {
-    options.isStatic = !!options.isStatic;
-  } else {
-    delete options.isStatic
-  }
-
-  if (options.noSpaceAfterPrefix !== undefined) {
-    options.noSpaceAfterPrefix = !!options.noSpaceAfterPrefix;
-  } else {
-    delete options.noSpaceAfterPrefix
-  }
-
-  ['prefixColor', 'spinnerColor', 'textColor'].forEach((color) => {
-    if (!isValidColor(options[color])) {
-      delete options[color];
-    }
-  });
-
-  return options;
+function purgeStatusOptions(options) {
+  return purgeOptions({
+    prefix: isValidPrefix,
+    prefixColor: isValidColor,
+    spinnerColor: isValidColor,
+    textColor: isValidColor,
+    isStatic: type('boolean'),
+    noSpaceAfterPrefix: type('boolean'),
+  }, options);
 }
 
 function turnToValidSpinner(spinner = {}) {
