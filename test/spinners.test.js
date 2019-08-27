@@ -64,7 +64,7 @@ describe('Spinnies', () => {
 
           context('when options are not valid', () => {
             it('mantains the default options', () => {
-              const options = { color: 'foo', spinnerColor: 'bar', status: 'buz' };
+              const options = { color: 'foo', spinnerColor: 'bar' };
               const spinner = this.spinners.add('spinner-name', options);
               expect(spinner.options).to.include(this.spinnersOptions);
             });
