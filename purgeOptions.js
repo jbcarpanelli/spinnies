@@ -41,6 +41,10 @@ function some(requirements) {
 	return (value) => requirements.some(req => req(value));
 }
 
+function isArray() {
+	return (value) => Array.isArray(value);
+}
+
 module.exports = {
 	purgeOptions,
 	type,
