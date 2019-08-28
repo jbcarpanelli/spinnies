@@ -397,6 +397,7 @@ Parameters:
   - **spinnerColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). This color will be applied to the spinner's spinner whenever this status is the spinner's active status. The default value is `greenBright`.
   - **prefixColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). This color will be applied to the spinner's prefix whenever this status is the spinner's active status. The default value is `greenBright`.
   - **prefix** - `string` || `false`: The prefix for the spinner. Can be set to false to not render a prefix.
+  - **noSpaceAfterPrefix** - `boolean`: By default the spinner/prefix will have a space rendered. Set this to `false` to disable this behavior.
   - **isStatic** - `boolean`: A static status will not spin and show the `prefix` at the start of the spinner. If this is set to `true` the `prefix` will be rendered with the `prefixColor` and an optional space after it as long as `noSpaceAfterPrefix` is set to `false`. If this option is `false`, The spinner will spin (use the current frame...) and the prefix will not render. Meaning when this is false, `prefix`, `prefixColor` and `noSpaceAfterPrefix` are completely meaningless. Defaults to `false`.
   - **isDone** - `booolean`: By default statuses are treated as 'done'
   if the `isStatic` option is `true`. For example statuses like success, fail and stopped are treated as done, while the *spinning* status is not treated as 'done'.
