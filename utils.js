@@ -16,15 +16,14 @@ const isValidPrefix = some([
 const isValidColor = oneOf(VALID_COLORS);
 
 function purgeSpinnerOptions(options) {
-  const { text, status, indent } = options;
-  const opts = { text, status, indent };
+  const purged = purgeOptions({
+    status: type('string'),
+    text: type('string'),
+    indent: type('number')
+  }, options);
   const colors = colorOptions(options);
 
-  if (typeof status !== 'string') delete opts.status;
-  if (typeof text !== 'string') delete opts.text;
-  if (typeof indent !== 'number') delete opts.indent;
-
-  return { ...colors, ...opts };
+  return { ...colors, ...purged };
 }
 
 function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
