@@ -7,6 +7,19 @@ const EOL = require('os').EOL;
 const { dashes, dots } = require('./spinners');
 const { purgeOptions, some, equal, type, oneOf } = require('./purgeOptions');
 
+let symbols;
+if (terminalSupportsUnicode()) {
+  symbols = {
+    succeedPrefix: '✓',
+    failPrefix: '✖'
+  };
+} else {
+  symbols = {
+    succeedPrefix: '√',
+    failPrefix: '×'
+  };
+}
+
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
 const isValidPrefix = some([
   equal(false),
@@ -128,16 +141,13 @@ function colorOptions(options) {
   }, options);
 }
 
-function prefixOptions({ succeedPrefix, failPrefix }) {
-  if (terminalSupportsUnicode()) {
-    succeedPrefix = succeedPrefix || '✓';
-    failPrefix = failPrefix || '✖';
-  } else {
-    succeedPrefix = succeedPrefix || '√';
-    failPrefix = failPrefix || '×';
-  }
+function prefixOptions(prefixes) {
+  const purgedPrefixes = purgeOptions({
+    succeedPrefix: isValidPrefix,
+    failPrefix: isValidPrefix
+  }, prefixes);
 
-  return { succeedPrefix, failPrefix };
+  return { ...symbols, ...purgedPrefixes };
 }
 
 function breakText(text, prefixLength, indent = 0) {
