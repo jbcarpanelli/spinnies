@@ -350,9 +350,8 @@ The default statuses are:
 Also any status you manually set using [configureStatus](#configureStatus) is valid.
 
 #### Compatibility
-For backwards compatibility reasons and convenient: passing succeedColor, failColor, failPrefix ect...
-To spinnies will set the status options.
-The "legit" way is to use [configureStatus](#configureStatus)
+For backwards compatibility reasons and convenient: passing `succeedColor`, `failColor`, `failPrefix`, `succeedPrefix`, `color` and `spinnerColor`
+To the [spinnies constructor](#new-spinniesoptions), [spinnies.add()](#addname-options) and [spinnies.update()](#updatename-options) will set the status options.
 
 #### Setting status
 There are 3 ways to set the status of a spinner.
