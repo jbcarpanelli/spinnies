@@ -38,6 +38,10 @@ class StatusRegistry extends EventEmitter {
       ...purgedOptions
     }
 
+    if (opts.isDone === undefined)  {
+      opts.isDone = opts.isStatic;
+    }
+
     if (this.statuses[name] === undefined) {
       this.emit('statusAdded', name);
     }
@@ -150,7 +154,7 @@ class Spinnie extends EventEmitter {
   }
 
   isActive() {
-    return !this.getStatus(this.options.status).isStatic;
+    return !this.getStatus(this.options.status).isDone;
   }
 
   rawRender() {
@@ -364,7 +368,7 @@ class Spinnies {
     Object.keys(this.spinners).forEach(name => {
       const currentSpinner = this.get(name);
       const currentStatus = currentSpinner.getStatus(currentSpinner.options.status);
-      if (!currentStatus.isStatic) {
+      if (!currentStatus.isDone) {
         currentSpinner.options.status = newStatus;
       }
     });

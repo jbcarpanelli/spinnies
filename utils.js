@@ -101,6 +101,7 @@ function purgeStatusOptions(options) {
     textColor: isValidColor,
     isStatic: type('boolean'),
     noSpaceAfterPrefix: type('boolean'),
+    isDone: type('boolean')
   }, options);
 }
 
