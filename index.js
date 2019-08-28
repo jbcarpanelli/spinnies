@@ -340,12 +340,12 @@ class Spinnies {
     spinnie.on('removeMe', () => {
       this.remove(name);
     }).on('updateSpinnerState', () => {
-      this.updateSpinnerState();
+      this.updateSpinnerState(name);
     });
 
     this.spinners[name] = spinnie;
 
-    this.updateSpinnerState();
+    this.updateSpinnerState(name);
 
     return spinnie;
   }
@@ -385,7 +385,9 @@ class Spinnies {
       this.isCursorHidden = true;
       this.checkIfActiveSpinners();
     } else {
-      this.setRawStreamOutput();
+      if (!name) return;
+      const spinner = this.get(name);
+      process.stderr.write(spinner.rawRender() + EOL);
     }
   }
 
@@ -414,13 +416,6 @@ class Spinnies {
     writeStream(this.stream, output, linesLength);
     if (hasActiveSpinners) cleanStream(this.stream, linesLength);
     this.lineCount = linesLength.length;
-  }
-
-  setRawStreamOutput() {
-    Object.keys(this.spinners).forEach(name => {
-      const spinner = this.get(name);
-      process.stderr.write(spinner.rawRender() + EOL);
-    });
   }
 
   checkIfActiveSpinners() {
