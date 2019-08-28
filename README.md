@@ -399,12 +399,12 @@ Parameters:
   - **prefix** - `string` || `false`: The prefix for the spinner. Can be set to false to not render a prefix.
   - **isStatic** - `boolean`: A static status will not spin and show the `prefix` at the start of the spinner. If this is set to `true` the `prefix` will be rendered with the `prefixColor` and an optional space after it as long as `noSpaceAfterPrefix` is set to `false`. If this option is `false`, The spinner will spin (use the current frame...) and the prefix will not render. Meaning when this is false, `prefix`, `prefixColor` and `noSpaceAfterPrefix` are completely meaningless. Defaults to `false`.
   - **isDone** - `booolean`: By default statuses are treated as 'done'
-  if the `isStatic` option is `true`. For example statuses like success, fail and stopped are treated as done, while the *spinning* is not treated as 'done'.
+  if the `isStatic` option is `true`. For example statuses like success, fail and stopped are treated as done, while the *spinning* status is not treated as 'done'.
   Whenever a status of a spinner is treated as 'done' spinnies will know
   to complete that spinner and to stop spinning when ever all spinners are done.
-  By default any *static* status with `isStatic` set to true will also be treated as 'done'. This option is rarely ever used since the default behavior suits most statuses. This is good for example if we want to create a **pending** status. The pending status can be good for tasks that will be executed in the future but are not running yet. We don't want spinnies the think a spinner with the **pending** status is 'done' but we also don't want a spinner with a **pending** status to spin.
+  By default any *static* status with `isStatic` set to true will also be treated as 'done'. The `isDone` option is rarely ever used since the default behavior suits most statuses. This is good for example if we want to create a **pending** status. The **pending** status can be good for tasks that will be executed in the future but are not running yet. We don't want spinnies to think a spinner with the **pending** status is 'done' but we also don't want a spinner with a **pending** status to spin.
 
-Return value: Returns the spinnies instance (`this`).
+Return value: Returns the StatusRegistry instance (`this`).
 
 Example:
 
@@ -443,6 +443,7 @@ spinner1.santa();
 #### getStatus(nameOrAlias)
 
 Return the status options for the specified status.
+
 
 ## Contribute
 
