@@ -50,14 +50,14 @@ Follow this protocol:
   If you are intrested in using this feature.
 
   *If cli-spinners was not installed and a string was passed as the `spinner` option*
-  *the spinner will default to the platformDefaultSpinner*
+  *the spinner will default to the default spinner*
 - If `spinner` is an object
   It should have keys: `frames` and `interval`
   Where `frames` is an array of characters and `interval` is a number of milliseconds.
 
 #### Statuses
 To fully understand how spinner statuses like `success, fail, stopped, spinning` or any other custom status works
-you should check out the [statues section](statuses)
+you should check out the [statues section](#statuses)
 
 #### new Spinnies([options])
 
