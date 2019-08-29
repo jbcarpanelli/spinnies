@@ -55,17 +55,20 @@ Follow this protocol:
   It should have keys: `frames` and `interval`
   Where `frames` is an array of characters and `interval` is a number of milliseconds.
 
+#### Statuses
+To fully understand how spinner statuses like `success, fail, stopped, spinning` or any other custom status works
+you should check out the [statues section](statuses)
 
 #### new Spinnies([options])
 
 Parameters
 - **options** - `object`:
-  - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `white`.
-  - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `green`.
-  - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `red`.
-  - **spinnerColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `greenBright`.
-  - **succeedPrefix** - `string`: The default value is ✓.
-  - **failPrefix** - `string`: The default value is ✖.
+  - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `white`. Will set the *color* option for the `spinning` (default) status.
+  - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `green`. Will set the *color* option for the `success` status.
+  - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `red`. Will set the *color* option for the `fail` status.
+  - **spinnerColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `greenBright`. Will set the *spinnerColor* option for the `spinning` (default) status.
+  - **succeedPrefix** - `string`: The default value is ✓. Will set the *prefix* for the `success` status.
+  - **failPrefix** - `string`: The default value is ✖. Will set the *prefix* for the `fail` status.
   - **spinner** - **spinnerNameFromCliSpinners** = `string`
     or `object`:
       - **interval** - `number`
@@ -95,9 +98,9 @@ Parameters:
   - **text**: - `string`: Optional text to show in the spinner. If none is provided, the `name` field will be shown.
   - **status** - `string`: Initial status of the spinner. For valid statuses see [statuses](#valid-statuses).
   - **indent**: - `number`: Optional number of spaces to add before the spinner.
-  - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
-  - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
-  - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
+  - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `white`. Will set the *color* option for the `spinning` (default) status. This will only modify the status options for this spinner.
+  - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `green`. Will set the *color* option for the `success` status. This will only modify the status options for this spinner.
+  - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `red`. Will set the *color* option for the `fail` status. This will only modify the status options for this spinner.
 
 Return value: Returns the created spinner instance.
 
@@ -196,9 +199,9 @@ Parameters:
   - **text**: - `string`: Optional text to show in the spinner. If none is provided, the `name` field will be shown.
   - **status** - `string`: New status of the spinner. For valid statuses see [statuses](#valid-statuses).
   - **indent**: - `number`: Optional number of spaces to add before the spinner.
-  - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
-  - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
-  - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
+  - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `white`. Will set the *color* option for the `spinning` (default) status. This will only modify the status options for this spinner.
+  - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `green`. Will set the *color* option for the `success` status. This will only modify the status options for this spinner.
+  - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `red`. Will set the *color* option for the `fail` status. This will only modify the status options for this spinner.
 
 Return value: Returns the updated spinner instance.
 
@@ -213,58 +216,6 @@ spinnies.update('spinner-1', { text: 'Hello, I am an updated text!', color: 'blu
 spinnies.get('spinner-1').update({ text: 'Hello, I am an updated text!', color: 'blue' });
 // same as
 spinner1.update({ text: 'Hello, I am an updated text!', color: 'blue' });
-
-```
-
-#### succeed(name, [options])
-
-Sets the specified spinner status as `succeed`.
-
-Parameters:
-- **name** - `string`: spinner reference name.
-- **options** - `object`:
-  - **text**: - `string`: Optional text to show in the spinner. If none is provided, the `name` field will be shown.
-  - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
-
-Return value: Returns the succeeded spinner instance.
-
-Example:
-
-```js
-const spinnies = new Spinnies();
-const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
-// some code
-spinnies.succeed('spinner-1', { text: 'Success!', successColor: 'greenBright' });
-// same as
-spinnies.get('spinner-1').succeed({ text: 'Success!', successColor: 'greenBright' });
-// same as
-spinner1.succeed({ text: 'Success!', successColor: 'greenBright' });
-
-```
-
-#### fail(name, [options])
-
-Sets the specified spinner status as `fail`.
-
-Parameters:
-- **name** - `string`: spinner reference name.
-- **options** - `object`:
-  - **text**: - `string`: Optional text to show in the spinner. If none is provided, the `name` field will be shown.
-  - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors).
-
-Return value: Returns the spinner's options.
-
-Example:
-
-```js
-const spinnies = new Spinnies();
-const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
-// some code
-spinnies.fail('spinner-1', { text: 'I failed', failColor: 'redBright' });
-// same as
-spinnies.get('spinner-1').fail({ text: 'I failed', failColor: 'redBright' });
-// same as
-spinner1.fail({ text: 'I failed', failColor: 'redBright' });
 
 ```
 
@@ -345,13 +296,16 @@ The default statuses are:
 - `fail`, *aliases:* `failed, error`, *static:* `true`, *default color:* `green`
 - `success`, *aliases:* `succeed, done`, *static:* `true`, *default color:* `red`
 - `non-spinnable`, *aliases:* `static, inactive`, *static:* `true`, *prefix* `false`
-- `stopped`, *aliases:* `stop, cancel`, *static:* `true`, *prefix* `false`, *default color:* `grey`
+- `stopped`, *aliases:* `stop, cancel`, *static:* `true`, *prefix* `false`, *default color:* `gray`
 
 Also any status you manually set using [configureStatus](#configureStatus) is valid.
 
 #### Compatibility
 For backwards compatibility reasons and convenient: passing `succeedColor`, `failColor`, `failPrefix`, `succeedPrefix`, `color` and `spinnerColor`
 To the [spinnies constructor](#new-spinniesoptions), [spinnies.add()](#addname-options) and [spinnies.update()](#updatename-options) will set the status options.
+
+Passing those options to [spinnies.add()](#addname-options) and [spinnies.update()](#updatename-options)
+will set those options for the status specific to these spinners. That way every spinner can have a different `succeedColor` for example.
 
 #### Setting status
 There are 3 ways to set the status of a spinner.
@@ -361,18 +315,30 @@ There are 3 ways to set the status of a spinner.
 spinner.update({ status: 'statusName' })
 // or
 spinners.update('spinnerName', { status: 'statusName' });
+// e.g
+spinner.update({ status: 'success' });
 ```
 2.
 ```js
 spinner.status('statusName')
 // or
 spinners.status('spinnerName', 'statusName')
+// e.g
+spinner.status('fail');
 ```
 3. When possible. If a property with that status name exists on the spinnies constructor (add, update, get, pick etc...) it would not override that property and you wouldn't be able to set that status using this method.
 ```js
 spinner.statusName()
 // or
 spinners.statusName('spinnerName')
+
+// e.g
+spinner.success();
+// using alias
+spinner.succeed();
+// stopping a spinner
+spinner.cancel();
+
 ```
 
 ### StatusRegistry
@@ -422,6 +388,16 @@ spinnies.statusRegistry.configureStatus('santa', {
   isStatic: true,
   prefix: '🎅'
 });
+
+/* When modifying an existing status
+   it is important to use the original name of the status
+   and not an alias name.
+   Any changes to the original status will also apply to that status aliases */
+spinnies.statusRegistry.configureStatus('fail' /* GOOD */, {
+  prefixColor: 'cyan' // same as `new Spinnies({ failColor: 'cyan' })`
+});
+// spinnies.statusRegistry.configureStatus('failed' /* BAD: don't use alias names */);
+
 // some code
 spinner1.update({
   status: 'pinkful',
@@ -437,6 +413,10 @@ spinner1.pinkify();
 spinner1.status('santa');
 // or
 spinner1.santa();
+
+spinner1.fail();
+// or
+spinner1.failed();
 
 ```
 
