@@ -55,7 +55,7 @@ Follow this protocol:
   It should have keys: `frames` and `interval`
   Where `frames` is an array of characters and `interval` is a number of milliseconds.
 
-#### Statuses
+#### About statuses
 To fully understand how spinner statuses like `success, fail, stopped, spinning` or any other custom status works
 you should check out the [statues section](#statuses)
 
