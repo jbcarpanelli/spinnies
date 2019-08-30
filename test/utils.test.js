@@ -83,18 +83,18 @@ describe('utils', () => {
     });
 
     describe('#purgeSpinnerOptions', () => {
-      context('when providing valid name', () => {
+      context('when providing valid name, status and indent', () => {
         it('persist them', () => {
-          const options = purgeSpinnerOptions({ ...this.colors, text: 'text', status: 'succeed' });
-          expect(options).to.include({ ...this.colors, text: 'text', status: 'succeed' });
+          const options = purgeSpinnerOptions({ ...this.colors, text: 'text', status: 'some-status', indent: 9 });
+          expect(options).to.include({ ...this.colors, text: 'text', status: 'some-status', indent: 9 });
         });
       });
 
-      context('when providing invalid name', () => {
+      context('when providing invalid name, status and indent', () => {
         it('does not persist them', () => {
-          const options = purgeSpinnerOptions({ ...this.colors, text: 3 });
+          const options = purgeSpinnerOptions({ ...this.colors, text: true, status: 555, indent: [] });
           expect(options).to.include(this.colors);
-          expect(options).to.not.have.any.keys('text');
+          expect(options).to.not.have.any.keys(['text', 'status', 'indent']);
         });
       });
     });
