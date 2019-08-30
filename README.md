@@ -295,6 +295,8 @@ The default statuses are:
 - `spinning`, *aliases:* `default, active, spin`, *static:* `false`
 - `fail`, *aliases:* `failed, error`, *static:* `true`, *default color:* `green`
 - `success`, *aliases:* `succeed, done`, *static:* `true`, *default color:* `red`
+- `warn`, *alias* `warning`, *static:* `true`, *default color:* `yellow`
+- `info`, *alias* `information`, *static:* `true`, *default color:* `blue`
 - `non-spinnable`, *aliases:* `static, inactive`, *static:* `true`, *prefix* `false`
 - `stopped`, *aliases:* `stop, cancel`, *static:* `true`, *prefix* `false`, *default color:* `gray`
 
