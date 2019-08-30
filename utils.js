@@ -36,7 +36,8 @@ function purgeSpinnerOptions(options) {
   const purged = purgeOptions({
     status: type('string'),
     text: type('string'),
-    indent: type('number')
+    indent: type('number'),
+    hidden: type('boolean')
   }, options);
   const colors = colorOptions(options);
 

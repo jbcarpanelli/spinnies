@@ -92,6 +92,7 @@ class Spinnie extends EventEmitter {
       succeedPrefix: inheritedOptions.succeedPrefix,
       failPrefix: inheritedOptions.failPrefix,
       status: 'spinning',
+      hidden: false,
       ...purgeSpinnerOptions(options),
     };
 
@@ -134,6 +135,22 @@ class Spinnie extends EventEmitter {
 
   remove() {
     this.emit('removeMe');
+  }
+
+  hidden(bool) {
+    if (typeof bool === 'boolean' && this.options.hidden !== bool) {
+      this.options.hidden = bool;
+      this.updateSpinnerState();
+    }
+    return this.options.hidden;
+  }
+
+  hide() {
+    return this.hidden(true);
+  }
+
+  show() {
+    return this.hidden(false);
   }
 
   applyStatusOverrides(opts) {
@@ -331,7 +348,7 @@ class Spinnies {
       textColor: 'gray'
     });
 
-    ['update', 'status', 'setSpinnerProperties'].forEach(method => {
+    ['update', 'status', 'setSpinnerProperties', 'hidden', 'hide', 'show'].forEach(method => {
       this.aliasChildMethod(method);
     });
 
@@ -417,6 +434,8 @@ class Spinnies {
     } else {
       if (!name) return;
       const spinner = this.get(name);
+
+      if (spinner.hidden()) return;
       process.stderr.write(spinner.rawRender() + EOL);
     }
   }
@@ -434,9 +453,10 @@ class Spinnies {
     const linesLength = [];
     const hasActiveSpinners = this.hasActiveSpinners();
     Object
-      .keys(this.spinners)
-      .forEach((name) => {
-        const renderedSpinner = this.get(name).render(frame);
+      .values(this.spinners)
+      .filter(spinner => !spinner.hidden())
+      .forEach((spinner) => {
+        const renderedSpinner = spinner.render(frame);
 
         linesLength.push(...renderedSpinner.linesLength);
         output += renderedSpinner.output;

@@ -36,6 +36,7 @@ setTimeout(() => {
 
 setTimeout(() => {
   spinners.update('indented', { indent: 4, text: 'Im an indented line I used to have 2 space but now i have 4!' });
+  spinners.hide('second-spinner');
 }, 9500)
 
 setTimeout(() => {
@@ -44,6 +45,7 @@ setTimeout(() => {
 
 setTimeout(() => {
   spinners.setFrames('star');
+  spinners.show('second-spinner');
 }, 11000)
 
 setTimeout(() => {
