@@ -9,7 +9,7 @@ const platformSpinner = terminalSupportsUnicode() ? dots : dashes;
 
 describe('utils', () => {
   beforeEach('set options', () => {
-    this.colors = { color: 'blue', spinnerColor: 'blue', succeedColor: 'blue', failColor: 'blue' };
+    this.colors = { color: 'blue', spinnerColor: 'blue', succeedColor: 'blue', failColor: 'blue', warnColor: 'blue', infoColor: 'cyan' };
   });
 
   describe('functions', () => {
@@ -208,9 +208,13 @@ describe('utils', () => {
           shouldSetDefault: true,
           shouldSetFail: true,
           shouldSetSucceed: true,
+          shouldSetInfo: true,
+          shouldSetWarn: true,
           defaultSet: { textColor: 'blue', spinnerColor: 'blue', prefixColor: 'blue' },
           failSet: { prefixColor: 'blue', textColor: 'blue' },
-          succeedSet: { prefixColor: 'blue', textColor: 'blue' }
+          succeedSet: { prefixColor: 'blue', textColor: 'blue' },
+          warnSet: { prefixColor: 'blue', textColor: 'blue' },
+          infoSet: { prefixColor: 'cyan', textColor: 'cyan' }
         });
       });
     });

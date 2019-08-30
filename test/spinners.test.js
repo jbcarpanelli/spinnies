@@ -197,11 +197,15 @@ describe('Spinnies', () => {
         expectToBehaveLikeAStatusChange(this, 'fail');
         expectToBehaveLikeAStatusChange(this, 'spin');
         expectToBehaveLikeAStatusChange(this, 'error');
+        expectToBehaveLikeAStatusChange(this, 'warning');
+        expectToBehaveLikeAStatusChange(this, 'information');
         expectToBehaveLikeAStatusChange(this, 'default');
       });
 
       expectToBehaveLikeAnUpdate(this, 'succeed');
       expectToBehaveLikeAnUpdate(this, 'fail');
+      expectToBehaveLikeAnUpdate(this, 'info');
+      expectToBehaveLikeAnUpdate(this, 'warn');
       expectToBehaveLikeAnUpdate(this, 'update');
 
       describe('#stopAll', () => {
@@ -322,16 +326,35 @@ describe('Spinnies', () => {
           spinner.update({
             color: 'magenta',
             failColor: 'redBright',
-            succeedPrefix: 'V'
+            failPrefix: 'bad',
+            succeedPrefix: 'V',
+            succeedColor: 'cyan',
+            infoColor: 'cyan',
+            infoPrefix: 'Ii',
+            warnColor: 'cyan',
+            warnPrefix: 'WARN'
           });
 
           // use different names/aliases to make sure everything updates
           expect(spinner.getStatus('failed')).to.include({
             prefixColor: 'redBright',
-            textColor: 'redBright'
+            textColor: 'redBright',
+            prefix: 'bad'
           });
           expect(spinner.getStatus('done')).to.include({
-            prefix: 'V'
+            prefix: 'V',
+            prefixColor: 'cyan',
+            textColor: 'cyan'
+          });
+          expect(spinner.getStatus('info')).to.include({
+            prefixColor: 'cyan',
+            textColor: 'cyan',
+            prefix: 'Ii'
+          });
+          expect(spinner.getStatus('warn')).to.include({
+            prefixColor: 'cyan',
+            textColor: 'cyan',
+            prefix: 'WARN'
           });
           expect(spinner.getStatus('default')).to.include({
             textColor: 'magenta',
