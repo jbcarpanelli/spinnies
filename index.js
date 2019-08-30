@@ -137,7 +137,7 @@ class Spinnie extends EventEmitter {
   }
 
   applyStatusOverrides(opts) {
-    const { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet } = statusOptionsFromNormalUpdate(opts);
+    const { shouldSetDefault, shouldSetFail, shouldSetSucceed, shouldSetWarn, shouldSetInfo, defaultSet, failSet, succeedSet, warnSet, infoSet } = statusOptionsFromNormalUpdate(opts);
 
     if (shouldSetDefault) {
       const current = this.statusOverrides['spinning'] || {};
@@ -150,6 +150,14 @@ class Spinnie extends EventEmitter {
     if (shouldSetSucceed) {
       const current = this.statusOverrides['success'] || {};
       this.statusOverrides['success'] = { ...current, ...succeedSet };
+    }
+    if (shouldSetWarn) {
+      const current = this.statusOverrides['warn'] || {};
+      this.statusOverrides['warn'] = { ...current, ...warnSet };
+    }
+    if (shouldSetInfo) {
+      const current = this.statusOverrides['info'] || {};
+      this.statusOverrides['info'] = { ...current, ...infoSet };
     }
   }
 
@@ -247,6 +255,8 @@ class Spinnies {
       spinnerColor: 'greenBright',
       succeedColor: 'green',
       failColor: 'red',
+      warnColor: 'yellow',
+      infoColor: 'blue',
       spinner: terminalSupportsUnicode() ? dots : dashes,
       disableSpins: false,
       ...options
@@ -292,6 +302,22 @@ class Spinnies {
       noSpaceAfterPrefix: false,
       prefixColor: this.options.failColor,
       textColor: this.options.failColor
+    });
+    this.statusRegistry.configureStatus('warn', {
+      aliases: 'warning',
+      prefix: this.options.warnPrefix,
+      isStatic: true,
+      noSpaceAfterPrefix: false,
+      prefixColor: this.options.warnColor,
+      textColor: this.options.warnColor
+    });
+    this.statusRegistry.configureStatus('info', {
+      aliases: 'information',
+      prefix: this.options.infoPrefix,
+      isStatic: true,
+      noSpaceAfterPrefix: false,
+      prefixColor: this.options.infoColor,
+      textColor: this.options.infoColor
     });
     this.statusRegistry.configureStatus('non-spinnable', {
       aliases: ['static', 'inactive'],

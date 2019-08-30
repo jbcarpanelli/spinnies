@@ -11,12 +11,16 @@ let symbols;
 if (terminalSupportsUnicode()) {
   symbols = {
     succeedPrefix: '✓',
-    failPrefix: '✖'
+    failPrefix: '✖',
+    warnPrefix: '⚠',
+    infoPrefix: 'ℹ'
   };
 } else {
   symbols = {
     succeedPrefix: '√',
-    failPrefix: '×'
+    failPrefix: '×',
+    warnPrefix: '!!',
+    infoPrefix: 'i'
   };
 }
 
@@ -50,7 +54,7 @@ function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
 
 function statusOptionsFromNormalUpdate(opts) {
   // for compatibility with update();
-  const { succeedColor, succeedPrefix, failColor, failPrefix, color, spinnerColor } = opts;
+  const { succeedColor, succeedPrefix, failColor, failPrefix, warnColor, warnPrefix, infoColor, infoPrefix, color, spinnerColor } = opts;
 
   let shouldSetFail = false;
   const failSet = {};
@@ -58,6 +62,10 @@ function statusOptionsFromNormalUpdate(opts) {
   const succeedSet = {};
   let shouldSetDefault = false;
   const defaultSet = {};
+  let shouldSetWarn = false;
+  const warnSet = {};
+  let shouldSetInfo = false;
+  const infoSet = {};
 
   if (isValidPrefix(failPrefix)) {
     shouldSetFail = true;
@@ -79,6 +87,26 @@ function statusOptionsFromNormalUpdate(opts) {
     succeedSet.textColor = succeedColor;
   }
 
+  if (isValidPrefix(warnPrefix)) {
+    shouldSetWarn = true;
+    warnSet.prefix = warnPrefix;
+  }
+  if (isValidColor(warnColor)) {
+    shouldSetWarn = true;
+    warnSet.prefixColor = warnColor;
+    warnSet.textColor = warnColor;
+  }
+
+  if (isValidPrefix(infoPrefix)) {
+    shouldSetInfo = true;
+    infoSet.prefix = infoPrefix;
+  }
+  if (isValidColor(infoColor)) {
+    shouldSetInfo = true;
+    infoSet.prefixColor = infoColor;
+    infoSet.textColor = infoColor;
+  }
+
   if (isValidColor(spinnerColor)) {
     shouldSetDefault = true;
     defaultSet.spinnerColor = spinnerColor;
@@ -90,7 +118,7 @@ function statusOptionsFromNormalUpdate(opts) {
     defaultSet.textColor = color;
   }
 
-  return { shouldSetDefault, shouldSetFail, shouldSetSucceed, defaultSet, failSet, succeedSet };
+  return { shouldSetDefault, shouldSetFail, shouldSetSucceed, shouldSetWarn, shouldSetInfo, defaultSet, failSet, succeedSet, warnSet, infoSet };
 }
 
 function purgeStatusOptions(options) {
@@ -138,6 +166,8 @@ function colorOptions(options) {
     color: isValidColor,
     succeedColor: isValidColor,
     failColor: isValidColor,
+    warnColor: isValidColor,
+    infoColor: isValidColor,
     spinnerColor: isValidColor
   }, options);
 }
@@ -145,7 +175,9 @@ function colorOptions(options) {
 function prefixOptions(prefixes) {
   const purgedPrefixes = purgeOptions({
     succeedPrefix: isValidPrefix,
-    failPrefix: isValidPrefix
+    failPrefix: isValidPrefix,
+    warnPrefix: isValidPrefix,
+    infoPrefix: isValidPrefix
   }, prefixes);
 
   return { ...symbols, ...purgedPrefixes };

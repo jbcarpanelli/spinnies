@@ -43,15 +43,11 @@ setTimeout(() => {
 }, 10000)
 
 setTimeout(() => {
-  spinners.update('first-spinner', { text: 'I\'m the updated (and very much optional) success message', color: 'magenta' });
-}, 13000)
-
-setTimeout(() => {
   spinners.setFrames('star');
 }, 11000)
 
 setTimeout(() => {
-  spinners.succeed('indented');
+  spinners.info('indented');
 }, 11500)
 
 setTimeout(() => {
@@ -79,7 +75,7 @@ setTimeout(() => {
 }, 17000)
 
 setTimeout(() => {
-  spinners.succeed('third-spinner');
+  spinners.warn('third-spinner');
 }, 20000)
 
 setTimeout(() => {
