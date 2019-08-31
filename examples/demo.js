@@ -1,11 +1,11 @@
 const Spinners = require('..');
 
-const fruits = {
-  interval: 150,
-  frames: ['🍇', '🍈', '🍉', '🍋']
+function wait(ms, cb) {
+  setTimeout(cb, ms);
 }
+
 const spinners = new Spinners({
-  // spinner: fruits,
+  spinner: 'dots',
   color: 'blue',
   succeedColor: 'green',
   failColor: 'red',
@@ -14,82 +14,74 @@ const spinners = new Spinners({
 
 spinners.add('first-spinner', { text: 'Lorem Ipsum is simply dummy text', color: 'white' });
 
-setTimeout(() => {
+wait(2500, () => {
   spinners.add('second-spinner', { text: 'I\'m line 2' });
-}, 3000)
+})
 
-setTimeout(() => {
-  spinners.add('third-spinner', { text: 'And I\'m ironman', color: 'yellowBright' });
-}, 5000)
+wait(5000, () => {
+  spinners.add('third-spinner', { text: 'And I\'m ironman', color: 'yellowBright', spinnerColor: 'yellowBright' });
+})
 
-setTimeout(() => {
-  spinners.add('indented', { color: 'magenta', text: 'Im an indented line with 2 spaces',  indent: 2 });
-}, 7000)
+wait(7500, () => {
+  spinners.add('spiderman', { text: 'And I\'m spiderman', color: 'redBright', spinnerColor: 'redBright' });
+})
 
-setTimeout(() => {
-  spinners.add('non-spinnable', { text: 'Im a non-spinnable line',  status: 'non-spinnable' });
-}, 8000)
+wait(9000, () => {
+  spinners.add('indented', { color: 'magenta', text: 'Im an indented line with 2 spaces', indent: 2 });
+})
 
-setTimeout(() => {
-  spinners.fail('second-spinner', { text: 'And I failed :\\' });
-}, 9000)
+wait(11000, () => {
+  spinners.add('non-spinnable', { text: "Im a line that doesn't spin. Don't judge me :(",  status: 'non-spinnable' });
+})
 
-setTimeout(() => {
-  spinners.update('indented', { indent: 4, text: 'Im an indented line I used to have 2 space but now i have 4!' });
-  spinners.hide('second-spinner');
-}, 9500)
+wait(13500, () => {
+  spinners.add('spinner-that-changes', { color: 'cyan', text: 'I am another spinner that would love to make some friends! Also I am very long, but I break into two or more lines if needed.' });
+})
 
-setTimeout(() => {
-  spinners.succeed('first-spinner', { text: 'I\'m the updated (and optional) success message', color: 'magenta' });
-}, 10000)
-
-setTimeout(() => {
-  spinners.setFrames('star');
-  spinners.show('second-spinner');
-}, 11000)
-
-setTimeout(() => {
-  spinners.info('indented');
-}, 11500)
-
-setTimeout(() => {
-  spinners.add('spinner-that-changes', { text: 'I am another spinner that would love to make some friends! Also I am very long, but I break into two or more lines if needed, i can break break break and break all day long, using word-wrap so words won\'t get teared up' });
-}, 12000)
-
-setTimeout(() => {
-  spinners.update('third-spinner', { text: 'I have been updated :D', color: 'yellow', spinnerColor: 'blue' });
-}, 12500)
-
-setTimeout(() => {
-  spinners.update('third-spinner', { text: 'I have been updated again :D', color: 'cyan' });
-}, 14000)
-
-setTimeout(() => {
-  spinners.update('spinner-that-changes', { indent: 4, text: 'I can be indented too! I am another spinner that would love to make some friends! Also I am very long, but I break into two or more lines if needed, i can break break break and break all day long, using word-wrap so words won\'t get teared up' });
-}, 14000)
-
-setTimeout(() => {
+wait(16000, () => {
   spinners.setFrames('arrow');
-}, 16000)
+})
 
-setTimeout(() => {
-  spinners.update('third-spinner', { text: 'Again, with fancy colors!',  color: 'magenta' });
-}, 17000)
+wait(17000, () => {
+  spinners.info('second-spinner', { text: 'Second line is a bit confused :p Give it some INFO' });
+})
 
-setTimeout(() => {
-  spinners.warn('third-spinner');
-}, 20000)
+wait(19500, () => {
+  spinners.warn('third-spinner', { text: 'Ironman got a warning for using illegal weapons :C' });
+})
 
-setTimeout(() => {
-  spinners.update('third-spinner', { text: 'Im going to be removed', color: 'red' });
-}, 21000)
+wait(21000, () => {
+  spinners.success('spiderman', { text: 'Spiderman has won the battle!' });
+})
 
-setTimeout(() => {
-  spinners.remove('third-spinner');
-}, 22000)
+wait(23000, () => {
+  spinners.fail('first-spinner', { text: 'I failed OwO' });
+})
 
-setTimeout(() => {
-  spinners.succeed('spinner-that-changes', { text: 'Bye!', succeedColor: 'blue' });
-  spinners.log();
-}, 26000);
+wait(25000, () => {
+  spinners.stop('indented', { text: 'I have been stopped ^-^' });
+})
 
+wait(26500, () => {
+  spinners.update('spinner-that-changes', { text: 'I have been updated :D'});
+})
+
+wait(28000, () => {
+  spinners.update('spinner-that-changes', { text: 'I have been updated again :D' });
+})
+
+wait(30000, () => {
+  spinners.update('spinner-that-changes', { text: 'Again, with fancy colors!',  color: 'magenta', spinnerColor: 'magenta' });
+})
+
+wait(32000, () => {
+  spinners.add('ephemeral-spinner', { text: 'Im an ephemeral spinner and will dissapear soon :(' })
+})
+
+wait(34500, () => {
+  spinners.remove('ephemeral-spinner');
+});
+
+wait(36500, () => {
+  spinners.succeed('spinner-that-changes', { text: 'Bye!', succeedColor: 'magentaBright' });
+});
