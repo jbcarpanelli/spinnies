@@ -371,11 +371,11 @@ spinnies.stopAll('failed'); // Fail all active spinners
 ```
 
 #### hasActiveSpinners()
-Return value: returns `false` if all spinners have succeeded, failed or have been stopped.
+Return value: returns `true` if there are still active spinners.
 
 #### log(optionalLogFunction = console.log)
 
-Logs the debug logs that were logged by spinnies instance, using console.log or a custom log function
+Logs the **debug** logs that were logged by spinnies instance, using console.log or a custom log function
 
 Parameters:
 - **optionalLogFunction** - `function`: If specified, will be used instead of console.log.
@@ -398,7 +398,7 @@ spinnies.log(customLogFunction);
 
 #### getLogs()
 
-Returns an array with all of the debug logs that were logged by the spinnies instance.
+Returns an array with all of the **debug** logs that were logged by the spinnies instance.
 
 Return value: Returns the logs array.
 
