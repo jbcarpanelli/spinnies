@@ -352,7 +352,23 @@ spinner1.remove();
 
 #### stopAll([status])
 
-Stops the spinners and sets the non-succeeded and non-failed ones to the provided status, which can be `succeed`, `fail` or `stopped`. You can see an example [here](https://github.com/jcarpanelli/spinnies/blob/master/examples/demo-stop-all.js).
+Stops the spinners and sets all of the active spinners statuses to the provided status, which can any [valid status](#valid-statuses). You can see an example [here](https://github.com/jcarpanelli/spinnies/blob/master/examples/demo-stop-all.js).
+
+Parameters:
+- **status** - `string`: Optional. Status to set for all of the active spinner. Defaults to 'stopped'
+
+Example:
+
+```js
+const spinnies = new Spinnies();
+spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+spinnies.add('spinner-2', { text: 'Hello! I am a cool spinner', color: 'blue' });
+
+// some code
+spinnies.stopAll();
+// or
+spinnies.stopAll('failed'); // Fail all active spinners
+```
 
 #### hasActiveSpinners()
 Return value: returns `false` if all spinners have succeeded, failed or have been stopped.
