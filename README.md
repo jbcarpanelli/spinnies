@@ -239,6 +239,35 @@ spinner1.update({ text: 'Hello, I am an updated text!', color: 'blue' });
 
 ```
 
+#### status(name, status)
+
+Sets the status of a spinner.
+See [Setting status](#setting-status) for more ways to set the status of a spinner.
+
+Parameters:
+- **name** - `string`: spinner reference name.
+- **status** - `string`: New status of the spinner. For valid statuses see [statuses](#valid-statuses).
+
+Return value: Returns the updated spinner instance.
+
+Example:
+
+```js
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+spinnies.add('spinner-2', { text: 'Hello! I am a cool spinner', color: 'blue' });
+
+// some code
+spinnies.status('spinner-1', 'success');
+// same as
+spinnies.get('spinner-1').status('success');
+// same as
+spinner1.status('success'); // return `false`
+
+spinnies.status('spinner-2', 'failed');
+
+```
+
 #### hidden(name, [bool])
 
 Pass `true` to hide a spinner, pass `false` to show a spinner.
@@ -439,19 +468,17 @@ There are 3 ways to set the status of a spinner.
 ```js
 spinner.update({ status: 'statusName' })
 // or
-spinners.update('spinnerName', { status: 'statusName' });
+spinnies.update('spinnerName', { status: 'statusName' });
 // e.g
 spinner.update({ status: 'success' });
 ```
-2.
+2. Using the [status()](#statusname-status) method.
 ```js
 spinner.status('statusName')
-// or
-spinners.status('spinnerName', 'statusName')
 // e.g
 spinner.status('fail');
 ```
-3. When possible. If a property with that status name exists on the spinnies constructor (add, update, get, pick etc...) it would not override that property and you wouldn't be able to set that status using this method.
+3. Use the status name as the method name. If you create a custom status and a property with that status name exists on the spinnies constructor (add, update, get, pick etc...) it would not override that property and you wouldn't be able to set that status using this method.
 ```js
 spinner.statusName()
 // or
