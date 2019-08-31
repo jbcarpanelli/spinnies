@@ -28,10 +28,14 @@ const spinnies = new Spinnies();
 
 spinnies.add('spinner-1', { text: 'I am a spinner' });
 spinnies.add('spinner-2', { text: 'I am another spinner' });
+const theCoolSpinner = spinnies.add('spinner-3', { text: 'I am a cooler spinner' });
 
 setTimeout(() => {
   spinnies.succeed('spinner-1', { text: 'Success!' });
-  spinnies.fail('spinner-2', { text: 'Fail :(' });
+
+  spinnies.get('spinner-2').fail({ text: 'Fail :(' });
+
+  theCoolSpinner.warn({ text: 'I think i\'m fine :-' });
 }, 2000);
 ```
 
