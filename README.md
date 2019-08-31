@@ -59,6 +59,24 @@ Follow this protocol:
 To fully understand how spinner statuses like `success, fail, stopped, spinning` or any other custom status works
 you should check out the [statues section](#statuses)
 
+#### About spinner instance
+Every spinner you create using [add()](#addname-options) will have it's own instance.
+
+You can access that instance by storing the return value of the [add()](#addname-options) method
+or using the [get()](#getname) method.
+
+Methods of the spinnies constructor that apply to individual spinners like
+[update()](#updatename-options),
+[hidden()](#hiddenname-bool),
+[hide()](#hidename),
+[show()](#showname)
+and [remove()](#removename)
+Can be called on the main spinnies instance: `spinnies.update('spinner-name', options)`
+
+Or directly on the spinner instance: `spinner.update(options)`
+
+For every methods, examples using both ways will be provided.
+
 #### new Spinnies([options])
 
 Parameters
