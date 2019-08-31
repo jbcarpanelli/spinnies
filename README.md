@@ -98,6 +98,7 @@ Parameters:
   - **text**: - `string`: Optional text to show in the spinner. If none is provided, the `name` field will be shown.
   - **status** - `string`: Initial status of the spinner. For valid statuses see [statuses](#valid-statuses).
   - **indent**: - `number`: Optional number of spaces to add before the spinner.
+  - **hidden**: - `boolean`: If true the spinner will be hidden and not print to the console. See [hidden()](#hiddenname-bool), [hide()](#hidename) and [show()](#showname).
   - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `white`. Will set the *color* option for the `spinning` (default) status. This will only modify the status options for this spinner.
   - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `green`. Will set the *color* option for the `success` status. This will only modify the status options for this spinner.
   - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `red`. Will set the *color* option for the `fail` status. This will only modify the status options for this spinner.
@@ -199,6 +200,7 @@ Parameters:
   - **text**: - `string`: Optional text to show in the spinner. If none is provided, the `name` field will be shown.
   - **status** - `string`: New status of the spinner. For valid statuses see [statuses](#valid-statuses).
   - **indent**: - `number`: Optional number of spaces to add before the spinner.
+  - **hidden**: - `boolean`: If true the spinner will be hidden and not print to the console. See [hidden()](#hiddenname-bool), [hide()](#hidename) and [show()](#showname).
   - **color** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `white`. Will set the *color* option for the `spinning` (default) status. This will only modify the status options for this spinner.
   - **succeedColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `green`. Will set the *color* option for the `success` status. This will only modify the status options for this spinner.
   - **failColor** - `string`: Any valid [chalk color](https://github.com/chalk/chalk#colors). The default value is `red`. Will set the *color* option for the `fail` status. This will only modify the status options for this spinner.
@@ -216,6 +218,93 @@ spinnies.update('spinner-1', { text: 'Hello, I am an updated text!', color: 'blu
 spinnies.get('spinner-1').update({ text: 'Hello, I am an updated text!', color: 'blue' });
 // same as
 spinner1.update({ text: 'Hello, I am an updated text!', color: 'blue' });
+
+```
+
+#### hidden(name, [bool])
+
+Pass `true` to hide a spinner, pass `false` to show a spinner.
+Hidden spinners will not print to the console.
+Unlike [remove()](#removename) hidden spinner can be shown again after hiding them.
+Use [hide()](#hidename) and [show()](#showname) for convenient.
+
+Parameters:
+- **name** - `string`: spinner reference name.
+- **bool** - `boolean`: Optional. Pass `true` to hide and `false` to show. Pass nothing to return the current hidden state of the spinner.
+
+Return value: return `true` if the spinner is hidden and return `false` if the spinner is not hidden.
+
+Example:
+
+```js
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+spinnies.add('spinner-2', { text: 'Hello! I am a cool spinner', color: 'blue' });
+// some code
+spinnies.hidden('spinner-1', true); // Hide the spinner
+// some code
+spinnies.hidden('spinner-1', false); // Show the spinner
+// some code
+spinnies.hidden('spinner-1'); // return `false`
+
+// OR
+
+spinner1.hidden(true); // Call on the spinner directly
+// same as
+spinnies.get('spinner-1').hidden(true);
+
+```
+
+#### hide(name)
+
+Hide a spinner.
+Use [show()](#showname) to show a spinner after hiding it.
+
+Parameters:
+- **name** - `string`: spinner reference name.
+
+Return value: `true`.
+
+Example:
+
+```js
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+spinnies.add('spinner-2', { text: 'Hello! I am a cool spinner', color: 'blue' });
+// some code
+spinnies.hide('spinner-1');
+// same as
+spinnies.get('spinner-1').hide();
+// same as
+spinner1.hide();
+
+```
+
+#### show(name)
+
+Show a spinner after it was hidden.
+Use [hide()](#hidename) to hide a spinner.
+
+Parameters:
+- **name** - `string`: spinner reference name.
+
+Return value: `false`.
+
+Example:
+
+```js
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+spinnies.add('spinner-2', { text: 'Hello! I am a cool spinner', color: 'blue' });
+
+// WE HID THE SPINNER USING hide()
+
+// some code
+spinnies.show('spinner-1');
+// same as
+spinnies.get('spinner-1').show();
+// same as
+spinner1.show();
 
 ```
 
