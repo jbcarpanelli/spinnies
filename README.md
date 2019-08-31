@@ -11,8 +11,14 @@
 
 ## Installation
 
+### With npm
 ```
 $ npm i spinnies
+```
+
+### With yarn
+```
+$ yarn add spinnies
 ```
 
 ## Usage & Example
