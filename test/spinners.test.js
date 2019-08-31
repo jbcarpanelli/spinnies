@@ -147,6 +147,54 @@ describe('Spinnies', () => {
       });
     });
 
+    describe('#hidden', () => {
+      context('when passing invalid value', () => {
+        it('ignores it', () => {
+          const spinner = this.spinners.add('some-spinner');
+          expect(spinner.options.hidden).to.be.false;
+          expect(spinner.hidden('a string')).to.be.false;
+          expect(spinner.options.hidden).to.be.false;
+        });
+      });
+
+      context('when passing true', () => {
+        it('sets the hidden option to true', () => {
+          const spinner = this.spinners.add('some-spinner');
+          expect(spinner.options.hidden).to.be.false;
+          expect(spinner.hidden(true)).to.be.true;
+          expect(spinner.options.hidden).to.be.true;
+        });
+      });
+
+      context('when passing false', () => {
+        it('sets the hidden option to false', () => {
+          const spinner = this.spinners.add('some-spinner');
+          expect(spinner.options.hidden).to.be.false;
+          spinner.options.hidden = 111;
+          expect(spinner.hidden(false)).to.be.false;
+          expect(spinner.options.hidden).to.be.false;
+        });
+      });
+    });
+
+    describe('#hide', () => {
+      it('sets the hidden option to true', () => {
+        const spinner = this.spinners.add('some-spinner');
+        expect(spinner.hidden()).to.be.false;
+        expect(spinner.hide()).to.be.true;
+        expect(spinner.hidden()).to.be.true;
+      });
+    });
+
+    describe('#show', () => {
+      it('sets the hidden option to false', () => {
+        const spinner = this.spinners.add('some-spinner');
+        expect(spinner.hide()).to.be.true;
+        expect(spinner.show()).to.be.false;
+        expect(spinner.hidden()).to.be.false;
+      });
+    });
+
     describe('#setFrames', () => {
       describe('setting frames', () => {
         it('sets the options.spinner property on the spinnies instance', () => {
