@@ -6,7 +6,7 @@
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-<p align="center"> <br> <img src='https://s3.us-west-2.amazonaws.com/jcarpanelli/termtosvg_zb90005u.svg' title='' /> </p>
+<p align="center"> <br> <img src='demo.gif' title='' /> </p>
 
 
 ## Installation
