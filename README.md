@@ -419,7 +419,7 @@ will set those options for the status specific to these spinners. That way every
 #### Setting status
 There are 3 ways to set the status of a spinner.
 
-1.
+1. Using the [update()](#updatename-options) method and passing `status`.
 ```js
 spinner.update({ status: 'statusName' })
 // or
@@ -445,9 +445,17 @@ spinners.statusName('spinnerName')
 spinner.success();
 // using alias
 spinner.succeed();
-// stopping a spinner
-spinner.cancel();
 
+// failing a spinner
+spinner.fail();
+
+// warning a spinner
+spinner.warn();
+// or
+spinner.warning();
+
+// stopping a spinner
+spinner.stop();
 ```
 
 ### StatusRegistry
