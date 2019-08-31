@@ -410,7 +410,7 @@ The default statuses are:
 Also any status you manually set using [configureStatus](#configureStatus) is valid.
 
 #### Compatibility
-For backwards compatibility reasons and convenient: passing `succeedColor`, `failColor`, `failPrefix`, `succeedPrefix`, `color` and `spinnerColor`
+For backwards compatibility reasons and convenient: passing `succeedColor`, `failColor`, `warnColor`, `infoColor`, `failPrefix`, `succeedPrefix`, `warnPrefix`, `infoPrefix`, `color` and `spinnerColor`
 To the [spinnies constructor](#new-spinniesoptions), [spinnies.add()](#addname-options) and [spinnies.update()](#updatename-options) will set the status options.
 
 Passing those options to [spinnies.add()](#addname-options) and [spinnies.update()](#updatename-options)
