@@ -232,6 +232,47 @@ describe('Spinnies', () => {
       });
     });
 
+    describe(`#text`, () => {
+      beforeEach('add spinner', () => {
+        this.spinner = this.spinners.add('spinner');
+        this.text = () => this.spinner.options.text;
+      });
+
+      it(`should change the text property on the spinner's options`, () => {
+        expect(this.text()).to.equal('spinner');
+        this.spinner.text('Another string');
+        expect(this.text()).to.equal('Another string');
+      });
+
+      context('with spinner instance', () => {
+        it(`should change the text property on the spinner's options`, () => {
+          expect(this.text()).to.equal('spinner');
+          this.spinners.text('spinner', 'Another string');
+          expect(this.text()).to.equal('Another string');
+        });
+      });
+
+      context('when text is invalid', () => {
+        it(`doesn't change the text property`, () => {
+          expect(this.text()).to.equal('spinner');
+          this.spinners.text('spinner', 9);
+          expect(this.text()).to.equal('spinner');
+        });
+      });
+
+      context('when not specifying a spinner name', () => {
+        it('throws an error', () => {
+            expect(() => this.spinners.text({})).to.throw('A spinner reference name must be specified');
+        });
+      });
+
+      context('when specifying a non-existent spinner name', () => {
+        it('throws an error', () => {
+          expect(() => this.spinners.text('i-dont-exist')).to.throw('No spinner initialized with name i-dont-exist')
+        });
+      });
+    });
+
     describe('methods that modify the status of a spinner', () => {
       beforeEach('initialize some spinners', () => {
         this.spinners.add('spinner');
