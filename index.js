@@ -7,7 +7,7 @@ const EventEmitter = require('events').EventEmitter;
 const EOL = require('os').EOL;
 const { dashes, dots } = require('./spinners');
 
-const { statusOptionsFromNormalUpdate, secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, prefixOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
+const { statusOptionsFromNormalUpdate, secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, prefixOptions, breakText, getLinesLength, terminalSupportsUnicode, isCI } = require('./utils');
 const { isValidStatus, writeStream, cleanStream } = require('./utils');
 
 const DEFAULT_STATUS = 'spinning';
@@ -304,7 +304,7 @@ class Spinnies {
     this.stream = process.stderr;
     this.lineCount = 0;
     this.currentFrameIndex = 0;
-    this.spin = !this.options.disableSpins && !process.env.CI && process.stderr && process.stderr.isTTY;
+    this.spin = !this.options.disableSpins && !isCI && process.stderr && process.stderr.isTTY;
 
     this.statusRegistry.on('statusAdded', name => {
       Object.values(this.spinners).forEach(spinner => {
