@@ -43,16 +43,16 @@ setTimeout(() => {
 
 This library follows a **non-error-throwing** philosophy. If you provide an invalid option or an invalid value for a valid option *it will be ignored*.
 
-### Initialization:
+### Abouts
 
 #### About spinner types
 
-The `spinner` option, passed to the instance options and to spinnies.setFrames()
+The `spinner` option, passed to the [spinnies constructor](#new-spinniesoptions) and to [setFrames()](setframesspinner)
 Follow this protocol:
 - If `spinner` is a string:
-  It will try to use the `spinner` as the name for a spinner from the [cli-spinners](https://github.com/sindresorhus/cli-spinners)
+  It will try to use the `spinner` as the name for a spinner from the [cli-spinners package](https://github.com/sindresorhus/cli-spinners)
 
-  *Note: cli-spinners is an optional dependencies.*
+  *Note: cli-spinners is an optional dependency.*
   Install it:
   - With yarn `yarn add cli-spinners`
   - With npm `npm i cli-spinners`
@@ -89,6 +89,8 @@ Can be called on the main spinnies instance: `spinnies.update('spinner-name', op
 Or directly on the spinner instance: `spinner.update(options)`
 
 For every methods, examples using both ways will be provided.
+
+### Initialization:
 
 #### new Spinnies([options])
 
