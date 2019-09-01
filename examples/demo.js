@@ -63,11 +63,11 @@ wait(25000, () => {
 })
 
 wait(26500, () => {
-  spinners.update('spinner-that-changes', { text: 'I have been updated :D'});
+  spinners.text('spinner-that-changes', 'I have been updated :D');
 })
 
 wait(28000, () => {
-  spinners.update('spinner-that-changes', { text: 'I have been updated again :D' });
+  spinners.text('spinner-that-changes', 'I have been updated again :D');
 })
 
 wait(30000, () => {

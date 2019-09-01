@@ -133,6 +133,14 @@ class Spinnie extends EventEmitter {
     return this;
   }
 
+  text(newText) {
+    if (typeof newText !== 'string') return this;
+    this.options.text = newText;
+    this.updateSpinnerState();
+
+    return this;
+  }
+
   remove() {
     this.emit('removeMe');
   }
@@ -348,7 +356,7 @@ class Spinnies {
       textColor: 'gray'
     });
 
-    ['update', 'status', 'setSpinnerProperties', 'hidden', 'hide', 'show'].forEach(method => {
+    ['update', 'status', 'setSpinnerProperties', 'hidden', 'hide', 'show', 'text'].forEach(method => {
       this.aliasChildMethod(method);
     });
 
