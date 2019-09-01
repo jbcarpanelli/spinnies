@@ -79,7 +79,9 @@ Methods of the spinnies constructor that apply to individual spinners like
 [update()](#updatename-options),
 [hidden()](#hiddenname-bool),
 [hide()](#hidename),
-[show()](#showname)
+[show()](#showname),
+[status()](#statusname-status),
+[text()](#textname-text),
 and [remove()](#removename)
 Can be called on the main spinnies instance: `spinnies.update('spinner-name', options)`
 
@@ -264,7 +266,7 @@ Example:
 
 ```js
 const spinnies = new Spinnies();
-const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am a spinner with the initial "spinning" status', color: 'green' });
 spinnies.add('spinner-2', { text: 'Hello! I am a cool spinner', color: 'blue' });
 
 // some code
@@ -272,9 +274,34 @@ spinnies.status('spinner-1', 'success');
 // same as
 spinnies.get('spinner-1').status('success');
 // same as
-spinner1.status('success'); // return `false`
+spinner1.status('success');
 
 spinnies.status('spinner-2', 'failed');
+
+```
+
+#### text(name, text)
+
+Sets the text of a spinner.
+
+Parameters:
+- **name** - `string`: spinner reference name.
+- **text** - `string`: New text of the spinner.
+
+Return value: Returns the updated spinner instance.
+
+Example:
+
+```js
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text' });
+
+// some code
+spinnies.text('spinner-1', 'Hello, I am an updated text!');
+// same as
+spinnies.get('spinner-1').text('Hello, I am an updated text!');
+// same as
+spinner1.text('Hello, I am an updated text!');
 
 ```
 
