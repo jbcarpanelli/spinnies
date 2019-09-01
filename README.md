@@ -13,8 +13,7 @@
 - [Installation](#installation)
   - [With npm](#with-npm)
   - [With yarn](#with-yarn)
-
-- [Usage & Example](#usage-examples)
+- [Usage & Example](#usage-example)
 - [API](#api)
   - [Abouts](#abouts)
     - [About spinner types](#about-spinner-types)
