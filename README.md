@@ -19,7 +19,7 @@
 
 :loop: (Optional) Use spinners from the [cli-spinners library](https://github.com/sindresorhus/cli-spinners)
 
-:musical_score: Long texts will be wrapped across multiple lines based on the terminal size thanks to (wordwrapjs)[https://github.com/75lb/wordwrapjs]
+:musical_score: Long texts will be wrapped across multiple lines based on the terminal size thanks to [wordwrapjs](https://github.com/75lb/wordwrapjs)
 
 :scroll: Indent spinners
 
@@ -35,7 +35,7 @@
 
 :gem: Change the status of a spinner. Each status has it's unique colors and symbols
 
-:white_check_mark: Preset 'success'
+:white_check_mark: Preset 'success' status
 
 :x: Preset 'fail' status
 
@@ -43,7 +43,7 @@
 
 :information_source: Preset 'info' status
 
-:white_small_square: Preset 'stopped' status
+:baseball: Preset 'stopped' status
 
 :u5272: Create your own custom statuses
 
