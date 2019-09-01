@@ -141,6 +141,14 @@ class Spinnie extends EventEmitter {
     return this;
   }
 
+  indent(newIndent) {
+    if (typeof newIndent !== 'number') return this;
+    this.options.indent = newIndent;
+    this.updateSpinnerState();
+
+    return this;
+  }
+
   remove() {
     this.emit('removeMe');
   }
@@ -356,7 +364,7 @@ class Spinnies {
       textColor: 'gray'
     });
 
-    ['update', 'status', 'setSpinnerProperties', 'hidden', 'hide', 'show', 'text'].forEach(method => {
+    ['update', 'status', 'setSpinnerProperties', 'hidden', 'hide', 'show', 'text', 'indent'].forEach(method => {
       this.aliasChildMethod(method);
     });
 
