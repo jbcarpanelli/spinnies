@@ -10,22 +10,44 @@
 
 ## Features
 :dolls: Create and manage multiple spinners at the same time
+
 :key: Control each spinner from it's own instance
+
 :clapper: Support for rendering in CI environments
+
 :rainbow: Colorful spinners thanks to [chalk](https://github.com/chalk/chalk)
+
 :loop: (Optional) Use spinners from the [cli-spinners library](https://github.com/sindresorhus/cli-spinners)
+
 :musical_score: Long texts will be wrapped across multiple lines based on the terminal size thanks to (wordwrapjs)[https://github.com/75lb/wordwrapjs]
+
 :scroll: Indent spinners
+
 :snake: Temporarily hide spinners and show them later
+
 :space_invader: Change the spinner animation while spinning
+
 :maple_leaf: Completely remove a spinner
+
 :tennis: Easily update existing spinners
+
+:sparkles: 'Non-spinnable' lines
+
 :gem: Change the status of a spinner. Each status has it's unique colors and symbols
+
 :white_check_mark: Preset 'success'
+
 :x: Preset 'fail' status
+
 :warning: Preset 'warn' status
+
 :information_source: Preset 'info' status
+
+:white_small_square: Preset 'stopped' status
+
 :u5272: Create your own custom statuses
+
+:paw_prints: Custom statuses are highly customizable to suit your needs
 
 ## Table of Contents
 
