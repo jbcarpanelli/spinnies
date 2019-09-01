@@ -8,6 +8,44 @@
 
 <p align="center"> <br> <img src='demo.gif' title='' /> </p>
 
+## Table of Contents
+
+- [Installation](#installation)
+  - [With npm](#with-npm)
+  - [With yarn](#with-yarn)
+
+- [Usage & Example](#usage-examples)
+- [API](#api)
+  - [Abouts](#abouts)
+    - [About spinner types](#about-spinner-types)
+    - [About statuses](#about-statuses)
+    - [About spinner instance](#about-spinner-instance)
+  - [Initialization](#initialization)
+  - [Instance methods](#instance-methods)
+    - [add](#addname-options)
+    - [get](#getname)
+    - [pick](#pickname)
+    - [setFrames](#setframesspinner)
+    - [update](#updatename-options)
+    - [status](#statusname-status)
+    - [text](#textname-text)
+    - [indent](#indentname-indent)
+    - [hidden](#hiddenname-bool)
+    - [hide](#hidename)
+    - [show](#showname)
+    - [remove](#removename)
+    - [stopAll](#stopallstatus)
+    - [hasActiveSpinners](#hasactivespinners)
+  - [Statuses](#statuses)
+    - [Valid statuses](#valid-statuses)
+    - [Compatibility](#compatibility)
+    - [Setting status](#setting-status)
+  - [StatusRegistry](#statusregistry)
+    - [configureStatus](#configurestatusname-options)
+    - [getStatus](#getstatusnameOrAlias)
+- [Contribute](#contribute)
+- [Acknowledgements](#acknowledgements)
+- [License](#license)
 
 ## Installation
 
@@ -47,7 +85,7 @@ This library follows a **non-error-throwing** philosophy. If you provide an inva
 
 #### About spinner types
 
-The `spinner` option, passed to the [spinnies constructor](#new-spinniesoptions) and to [setFrames()](setframesspinner)
+The `spinner` option, passed to the [spinnies constructor](#new-spinniesoptions) and to [setFrames()](#setframesspinner)
 Follow this protocol:
 - If `spinner` is a string:
   It will try to use the `spinner` as the name for a spinner from the [cli-spinners package](https://github.com/sindresorhus/cli-spinners)
@@ -574,7 +612,7 @@ and the rest of the spinners.
 **Note: StatusRegistry is not used to set the status of a spinner just to store information about statuses, like prefixes,colors, ect...**
 **To set the status of a spinner see [setting statuses](#setting-status)**
 
-#### configureStatus
+#### configureStatus(name, options)
 
 Configure a status with the `name`. Will create a status with that `name` if it doesn't exist or modify the status options if it does exist.
 Will try to set the spinnies instance[`name`] as a function to set that status.
