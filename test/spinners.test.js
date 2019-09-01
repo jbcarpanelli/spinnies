@@ -238,14 +238,14 @@ describe('Spinnies', () => {
         this.text = () => this.spinner.options.text;
       });
 
-      it(`should change the text property on the spinner's options`, () => {
+      it(`changes the text property on the spinner's options`, () => {
         expect(this.text()).to.equal('spinner');
         this.spinner.text('Another string');
         expect(this.text()).to.equal('Another string');
       });
 
       context('with spinner instance', () => {
-        it(`should change the text property on the spinner's options`, () => {
+        it(`changes the text property on the spinner's options`, () => {
           expect(this.text()).to.equal('spinner');
           this.spinners.text('spinner', 'Another string');
           expect(this.text()).to.equal('Another string');
@@ -269,6 +269,47 @@ describe('Spinnies', () => {
       context('when specifying a non-existent spinner name', () => {
         it('throws an error', () => {
           expect(() => this.spinners.text('i-dont-exist')).to.throw('No spinner initialized with name i-dont-exist')
+        });
+      });
+    });
+
+    describe(`#indent`, () => {
+      beforeEach('add spinner', () => {
+        this.spinner = this.spinners.add('spinner', { indent: 2 });
+        this.indent = () => this.spinner.options.indent;
+      });
+
+      it(`changes the indent property on the spinner's options`, () => {
+        expect(this.indent()).to.equal(2);
+        this.spinner.indent(4);
+        expect(this.indent()).to.equal(4);
+      });
+
+      context('with spinner instance', () => {
+        it(`changes the indent property on the spinner's options`, () => {
+          expect(this.indent()).to.equal(2);
+          this.spinners.indent('spinner', 4);
+          expect(this.indent()).to.equal(4);
+        });
+      });
+
+      context('when indent is invalid', () => {
+        it(`doesn't change the indent property`, () => {
+          expect(this.indent()).to.equal(2);
+          this.spinner.indent('a string');
+          expect(this.indent()).to.equal(2);
+        });
+      });
+
+      context('when not specifying a spinner name', () => {
+        it('throws an error', () => {
+            expect(() => this.spinners.indent({})).to.throw('A spinner reference name must be specified');
+        });
+      });
+
+      context('when specifying a non-existent spinner name', () => {
+        it('throws an error', () => {
+          expect(() => this.spinners.indent('i-dont-exist')).to.throw('No spinner initialized with name i-dont-exist')
         });
       });
     });
