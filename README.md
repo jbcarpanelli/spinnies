@@ -82,6 +82,7 @@ Methods of the spinnies constructor that apply to individual spinners like
 [show()](#showname),
 [status()](#statusname-status),
 [text()](#textname-text),
+[indent()](#indentname-indent),
 and [remove()](#removename)
 Can be called on the main spinnies instance: `spinnies.update('spinner-name', options)`
 
@@ -302,6 +303,31 @@ spinnies.text('spinner-1', 'Hello, I am an updated text!');
 spinnies.get('spinner-1').text('Hello, I am an updated text!');
 // same as
 spinner1.text('Hello, I am an updated text!');
+
+```
+
+#### indent(name, indent)
+
+Sets the indent of a spinner.
+
+Parameters:
+- **name** - `string`: spinner reference name.
+- **indent**: - `number`: number of spaces to add before the spinner.
+
+Return value: Returns the updated spinner instance.
+
+Example:
+
+```js
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am indented with 2 spaces, but soon will upgrade to 4 spaces :D', indent: 2 });
+
+// some code
+spinnies.indent('spinner-1', 4);
+// same as
+spinnies.get('spinner-1').indent(4);
+// same as
+spinner1.indent(4);
 
 ```
 
