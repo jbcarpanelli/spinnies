@@ -5,7 +5,24 @@ const stripAnsi = require('strip-ansi');
 const { dashes, dots } = require('./spinners');
 
 const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped'];
-const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
+const VALID_COLORS = [
+  'black',
+  'red',
+  'green',
+  'yellow',
+  'blue',
+  'magenta',
+  'cyan',
+  'white',
+  'gray',
+  'redBright',
+  'greenBright',
+  'yellowBright',
+  'blueBright',
+  'magentaBright',
+  'cyanBright',
+  'whiteBright',
+];
 
 function purgeSpinnerOptions(options) {
   const { text, status, indent } = options;
@@ -25,7 +42,7 @@ function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
   const disableSpinsOption = typeof disableSpins === 'boolean' ? { disableSpins } : {};
   spinner = turnToValidSpinner(spinner);
 
-  return { ...colors, ...prefixes, ...disableSpinsOption, spinner }
+  return { ...colors, ...prefixes, ...disableSpinsOption, spinner };
 }
 
 function turnToValidSpinner(spinner = {}) {
@@ -48,7 +65,7 @@ function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
 }
 
 function prefixOptions({ succeedPrefix, failPrefix }) {
-  if(terminalSupportsUnicode()) {
+  if (terminalSupportsUnicode()) {
     succeedPrefix = succeedPrefix || '✓';
     failPrefix = failPrefix || '✖';
   } else {
@@ -60,24 +77,26 @@ function prefixOptions({ succeedPrefix, failPrefix }) {
 }
 
 function breakText(text, prefixLength) {
-  return text.split('\n')
-    .map((line, index) => index === 0 ? breakLine(line, prefixLength) : breakLine(line, 0))
+  return text
+    .split('\n')
+    .map((line, index) => (index === 0 ? breakLine(line, prefixLength) : breakLine(line, 0)))
     .join('\n');
 }
 
 function breakLine(line, prefixLength) {
   const columns = process.stderr.columns || 95;
-  return line.length  >= columns - prefixLength
-    ? `${line.substring(0, columns - prefixLength - 1)}\n${
-      breakLine(line.substring(columns - prefixLength - 1, line.length), 0)
-    }`
+  return line.length >= columns - prefixLength
+    ? `${line.substring(0, columns - prefixLength - 1)}\n${breakLine(
+        line.substring(columns - prefixLength - 1, line.length),
+        0,
+      )}`
     : line;
 }
 
 function getLinesLength(text, prefixLength) {
   return stripAnsi(text)
     .split('\n')
-    .map((line, index) => index === 0 ? line.length + prefixLength : line.length);
+    .map((line, index) => (index === 0 ? line.length + prefixLength : line.length));
 }
 
 function writeStream(stream, output, rawLines) {
@@ -97,11 +116,9 @@ function cleanStream(stream, rawLines) {
 }
 
 function terminalSupportsUnicode() {
-    // The default command prompt and powershell in Windows do not support Unicode characters.
-    // However, the VSCode integrated terminal and the Windows Terminal both do.
-    return process.platform !== 'win32'
-      || process.env.TERM_PROGRAM === 'vscode'
-      || !!process.env.WT_SESSION
+  // The default command prompt and powershell in Windows do not support Unicode characters.
+  // However, the VSCode integrated terminal and the Windows Terminal both do.
+  return process.platform !== 'win32' || process.env.TERM_PROGRAM === 'vscode' || !!process.env.WT_SESSION;
 }
 
 module.exports = {
@@ -113,4 +130,4 @@ module.exports = {
   writeStream,
   cleanStream,
   terminalSupportsUnicode,
-}
+};

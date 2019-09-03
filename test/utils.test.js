@@ -1,6 +1,6 @@
 'use strict';
 
-const expect = require('chai').expect
+const { expect } = require('chai');
 
 const { purgeSpinnersOptions, purgeSpinnerOptions, colorOptions, breakText } = require('../utils');
 const { dots } = require('../spinners');
@@ -42,7 +42,10 @@ describe('utils', () => {
           it('picks the interval from the default spinner', () => {
             const spinner = { interval: 'foo', frames: ['-', '+'] };
             const options = purgeSpinnersOptions({ ...this.colors, spinner });
-            expect(options).to.deep.include({ ...this.colors, spinner: { interval: dots.interval, frames: ['-', '+'] } });
+            expect(options).to.deep.include({
+              ...this.colors,
+              spinner: { interval: dots.interval, frames: ['-', '+'] },
+            });
           });
         });
 
@@ -60,7 +63,7 @@ describe('utils', () => {
             const options = purgeSpinnersOptions({ ...this.colors, spinner });
             expect(options).to.deep.include({ ...this.colors, spinner });
           });
-        })
+        });
       });
     });
 
@@ -93,7 +96,6 @@ describe('utils', () => {
           expect(options).to.not.have.key('indent');
         });
       });
-      
     });
 
     describe('#breakText', () => {

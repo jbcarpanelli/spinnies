@@ -1,11 +1,16 @@
-'use strict';
-
 const readline = require('readline');
 const chalk = require('chalk');
 const cliCursor = require('cli-cursor');
 const { dashes, dots } = require('./spinners');
 
-const { purgeSpinnerOptions, purgeSpinnersOptions, colorOptions, breakText, getLinesLength, terminalSupportsUnicode } = require('./utils');
+const {
+  purgeSpinnerOptions,
+  purgeSpinnersOptions,
+  colorOptions,
+  breakText,
+  getLinesLength,
+  terminalSupportsUnicode,
+} = require('./utils');
 const { isValidStatus, writeStream, cleanStream } = require('./utils');
 
 class Spinnies {
@@ -17,7 +22,7 @@ class Spinnies {
       failColor: 'red',
       spinner: terminalSupportsUnicode() ? dots : dashes,
       disableSpins: false,
-      ...options
+      ...options,
     };
     this.spinners = {};
     this.isCursorHidden = false;
@@ -127,7 +132,7 @@ class Spinnies {
     const { frames, interval } = this.options.spinner;
     return setInterval(() => {
       this.setStreamOutput(frames[this.currentFrameIndex]);
-      this.currentFrameIndex = this.currentFrameIndex === frames.length - 1 ? 0 : ++this.currentFrameIndex
+      this.currentFrameIndex = this.currentFrameIndex === frames.length - 1 ? 0 : ++this.currentFrameIndex;
     }, interval);
   }
 
@@ -135,34 +140,32 @@ class Spinnies {
     let output = '';
     const linesLength = [];
     const hasActiveSpinners = this.hasActiveSpinners();
-    Object
-      .values(this.spinners)
-      .map(({ text, status, color, spinnerColor, succeedColor, failColor, succeedPrefix, failPrefix, indent }) => {
+    Object.values(this.spinners).map(
+      ({ text, status, color, spinnerColor, succeedColor, failColor, succeedPrefix, failPrefix, indent }) => {
         let line;
         let prefixLength = indent || 0;
         if (status === 'spinning') {
           prefixLength += frame.length + 1;
           text = breakText(text, prefixLength);
           line = `${chalk[spinnerColor](frame)} ${color ? chalk[color](text) : text}`;
+        } else if (status === 'succeed') {
+          prefixLength += succeedPrefix.length + 1;
+          if (hasActiveSpinners) text = breakText(text, prefixLength);
+          line = `${chalk.green(succeedPrefix)} ${chalk[succeedColor](text)}`;
+        } else if (status === 'fail') {
+          prefixLength += failPrefix.length + 1;
+          if (hasActiveSpinners) text = breakText(text, prefixLength);
+          line = `${chalk.red(failPrefix)} ${chalk[failColor](text)}`;
         } else {
-          if (status === 'succeed') {
-            prefixLength += succeedPrefix.length + 1;
-            if (hasActiveSpinners) text = breakText(text, prefixLength);
-            line = `${chalk.green(succeedPrefix)} ${chalk[succeedColor](text)}`;
-          } else if (status === 'fail') {
-            prefixLength += failPrefix.length + 1;
-            if (hasActiveSpinners) text = breakText(text, prefixLength);
-            line = `${chalk.red(failPrefix)} ${chalk[failColor](text)}`;
-          } else {
-            if (hasActiveSpinners) text = breakText(text, prefixLength);
-            line = color ? chalk[color](text) : text;
-          }
+          if (hasActiveSpinners) text = breakText(text, prefixLength);
+          line = color ? chalk[color](text) : text;
         }
         linesLength.push(...getLinesLength(text, prefixLength));
-        output += indent ? `${" ".repeat(indent)}${line}\n` : `${line}\n`;
-      });
+        output += indent ? `${' '.repeat(indent)}${line}\n` : `${line}\n`;
+      },
+    );
 
-    if(!hasActiveSpinners) readline.clearScreenDown(this.stream);
+    if (!hasActiveSpinners) readline.clearScreenDown(this.stream);
     writeStream(this.stream, output, linesLength);
     if (hasActiveSpinners) cleanStream(this.stream, linesLength);
     this.lineCount = linesLength.length;

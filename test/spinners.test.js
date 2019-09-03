@@ -1,12 +1,12 @@
 'use strict';
 
-const expect = require('chai').expect
+const { expect } = require('chai');
 
 const Spinnies = require('..');
 const { expectToBehaveLikeAnUpdate } = require('./behaviours.test');
 
-setInterval = (fn) => fn();
-setTimeout = (fn) => fn();
+setInterval = fn => fn();
+setTimeout = fn => fn();
 process.stderr.write = () => {};
 
 describe('Spinnies', () => {
@@ -53,7 +53,14 @@ describe('Spinnies', () => {
         context('when specifying options', () => {
           context('when options are correct', () => {
             it('overrides the default options', () => {
-              const options = { color: 'black', spinnerColor: 'black', succeedColor: 'black', failColor: 'black', status: 'non-spinnable', indent: 2 };
+              const options = {
+                color: 'black',
+                spinnerColor: 'black',
+                succeedColor: 'black',
+                failColor: 'black',
+                status: 'non-spinnable',
+                indent: 2,
+              };
               const spinner = this.spinnies.add('spinner-name', options);
               expect(spinner).to.include({ ...this.spinnersOptions, ...options });
             });

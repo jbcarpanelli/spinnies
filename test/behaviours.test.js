@@ -1,6 +1,6 @@
 'use strict';
 
-const expect = require('chai').expect
+const { expect } = require('chai');
 
 function expectToBehaveLikeAnUpdate(self, status) {
   const currentStatus = status === 'update' ? 'succeed' : status;
@@ -15,13 +15,13 @@ function expectToBehaveLikeAnUpdate(self, status) {
 
     context('when not specifying a spinner name', () => {
       it('throws an error', () => {
-          expect(() => self.spinnies[status]({})).to.throw('A spinner reference name must be specified');
+        expect(() => self.spinnies[status]({})).to.throw('A spinner reference name must be specified');
       });
     });
 
     context('when specifying a non-existent spinner name', () => {
       it('throws an error', () => {
-        expect(() => self.spinnies[status]('i-dont-exist')).to.throw('No spinner initialized with name i-dont-exist')
+        expect(() => self.spinnies[status]('i-dont-exist')).to.throw('No spinner initialized with name i-dont-exist');
       });
     });
 
@@ -45,7 +45,7 @@ function expectToBehaveLikeAnUpdate(self, status) {
       context('when specifying invalid attributes', () => {
         it('ignores those attributes', () => {
           const options = { text: 'updated text', color: 'black', spinnerColor: 'black' };
-          const invalidOptions = { foo: 42, bar: 'bar'}
+          const invalidOptions = { foo: 42, bar: 'bar' };
           const spinner = self.spinnies[status]('spinner', options);
           expect(spinner).to.include(options);
           expect(spinner).to.not.have.any.keys('foo', 'bar');
@@ -57,5 +57,4 @@ function expectToBehaveLikeAnUpdate(self, status) {
 
 module.exports = {
   expectToBehaveLikeAnUpdate,
-}
-
+};
