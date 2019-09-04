@@ -187,7 +187,7 @@ function prefixOptions(prefixes) {
 function breakText(text, prefixLength, indent = 0) {
   const columns = process.stderr.columns || 95;
 
-  return wordwrapjs.wrap(text, { width: (columns - prefixLength - indent - 1) });
+  return wordwrapjs.wrap(text, { break: true, width: (columns - prefixLength - indent - 1) });
 }
 
 function indentText(text, prefixLength, indent = 0) {
