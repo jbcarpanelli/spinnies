@@ -498,6 +498,129 @@ spinner1.show();
 
 ```
 
+#### bind(name, task)
+
+Bind a spinner to a Promise or an Observable.
+
+When `task` is a **Promise**:
+
+If that promise resolves, the spinner will succeed.
+Passing a string to the `resolve` call will update the spinner text when succeeding it.
+
+If that promise rejects, the spinner will fail.
+Passing a string to the `reject` call will update the spinner text when failing it.
+Passing an `Error` to the `reject` call will format that error and update the spinner text with the error message and stack.
+
+When `task` is an **Observable**:
+
+Calling `next()` with a string will update the spinner text. you can call `next()` multiple times.
+
+Calling `complete()` will succeed the spinner. Note: Observables do not allow passing arguments to `complete()`, meaning you can't change the text using `complete()`.
+
+Calling `error()` with a string will update the spinner text when failing it.
+
+Calling `error()` with an `Error` will format that error and update the spinner text with the error message and stack.
+
+
+Parameters:
+- **task** - `Promise` || `Observable`: a Promise or an Observable to bind to that spinner.
+
+Return value: Returns the spinner instance.
+
+Example:
+
+```js
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+
+// How to bind?
+spinnies.bind('spinner-1', task);
+// same as
+spinnies.get('spinner-1').bind(task);
+// same as
+spinner1.bind(task);
+
+```
+
+Example with a resolved `Promise`:
+
+```js
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+
+spinner1.bind(Promise.resolve('Success :D'));
+
+```
+
+Example with a rejected `Promise`:
+
+```js
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+
+spinner1.bind(Promise.reject('I failed :('));
+
+```
+
+Example with a rejected `Promise`, passing an `Error`:
+
+```js
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+
+spinner1.bind(Promise.reject(new Error('Something went wrong :/')));
+
+```
+
+Example with an `Observable`:
+
+```js
+const { Observable } = require('rxjs');
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+
+spinner1.bind(new Observable(subscriber => {
+  setTimeout(() => {
+    subscriber.next('I was updated!');
+  }, 1500);
+
+  setTimeout(() => {
+    subscriber.next('I was updated again!');
+  }, 3000);
+
+  setTimeout(() => {
+    subscriber.next('and again...');
+  }, 4500);
+
+  setTimeout(() => {
+    subscriber.complete();
+  }, 5000);
+}));
+
+```
+
+Example with an `Observable` that fails:
+
+```js
+const { Observable } = require('rxjs');
+const spinnies = new Spinnies();
+const spinner1 = spinnies.add('spinner-1', { text: 'Hello! I am the initial text', color: 'green' });
+
+spinner1.bind(new Observable(subscriber => {
+  setTimeout(() => {
+    subscriber.next('Doing some stuff...');
+  }, 1000);
+
+  setTimeout(() => {
+    subscriber.next('More important stuff...');
+  }, 3000);
+
+  setTimeout(() => {
+    subscriber.error('Something is not right');
+  }, 4500);
+
+```
+
 #### remove(name)
 
 Remove a spinner, which will make the spinner disappear and not rerender.
