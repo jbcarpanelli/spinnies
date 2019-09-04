@@ -29,8 +29,8 @@
 
 :vertical_traffic_light: Bind a spinner to an `Observable`.
 Use `next()` to update the spinner text,
-`complete()` will succeed the spinner
-and `error()` will fail the spinner with an optional error message or `Error`
+`complete()` to succeed the spinner
+and `error()` to fail the spinner with an optional error message or `Error`
 
 :space_invader: Change the spinner animation while spinning
 
