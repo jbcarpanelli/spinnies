@@ -2,9 +2,12 @@
 
 const expect = require('chai').expect
 const sinon = require('sinon');
+const { Observable } = require('rxjs');
 
 const Spinnies = require('..');
 const { expectToBehaveLikeAnUpdate, expectToBehaveLikeAStatusChange } = require('./behaviours.test');
+
+const _setTimeout = setTimeout;
 
 setInterval = (fn) => fn();
 setTimeout = (fn) => fn();
@@ -192,6 +195,174 @@ describe('Spinnies', () => {
         expect(spinner.hide()).to.be.true;
         expect(spinner.show()).to.be.false;
         expect(spinner.hidden()).to.be.false;
+      });
+    });
+
+    describe('#bind', () => {
+      beforeEach('add spinner', () => {
+        this.spinner = this.spinners.add('spinner');
+      });
+
+      context('when task is an observable', () => {
+        context('when the observable calls next', () => {
+          context('when it calls next with a string', () => {
+            it('updates the spinner text', (done) => {
+              expect(this.spinner.options.text).to.equal('spinner');
+              this.spinner.bind(new Observable(subscriber => {
+                subscriber.next('Updated text');
+              }));
+              _setTimeout(() => {
+                expect(this.spinner.options.text).to.equal('Updated text');
+                done();
+              }, 1);
+            });
+          });
+
+          context('when it calls next with an invalid argument', () => {
+            it('doesn\'t modify the text', (done) => {
+              expect(this.spinner.options.text).to.equal('spinner');
+              this.spinner.bind(new Observable(subscriber => {
+                subscriber.next(10);
+              }));
+              _setTimeout(() => {
+                expect(this.spinner.options.text).to.equal('spinner');
+                done();
+              }, 1);
+            });
+          });
+        });
+
+        context('when the observable calls complete', () => {
+          it('succeed the spinner', (done) => {
+            expect(this.spinner.options.status).to.equal('spinning');
+            this.spinner.bind(new Observable(subscriber => {
+              subscriber.complete();
+            }));
+            _setTimeout(() => {
+              expect(this.spinner.options.status).to.equal('success');
+              done();
+            }, 1);
+          });
+        });
+
+        context('when the observable calls error', () => {
+          context('when it calls error with no arguments', () => {
+            it('fails the spinner', (done) => {
+              expect(this.spinner.options.status).to.equal('spinning');
+              this.spinner.bind(new Observable(subscriber => {
+                subscriber.error();
+              }));
+              _setTimeout(() => {
+                expect(this.spinner.options.status).to.equal('fail');
+                done();
+              }, 1);
+            });
+          });
+
+          context('when it calls error with a string', () => {
+            it('fails the spinner and changes the text to that string', (done) => {
+              expect(this.spinner.options.status).to.equal('spinning');
+              this.spinner.bind(new Observable(subscriber => {
+                subscriber.error('I failed :(');
+              }));
+              _setTimeout(() => {
+                expect(this.spinner.options.status).to.equal('fail');
+                expect(this.spinner.options.text).to.equal('I failed :(');
+                done();
+              }, 1);
+            });
+          });
+
+          context('when it calls error with an invalid argument', () => {
+            it('fails the spinner without changing the text', (done) => {
+              expect(this.spinner.options.status).to.equal('spinning');
+              this.spinner.bind(new Observable(subscriber => {
+                subscriber.error([]);
+              }));
+              _setTimeout(() => {
+                expect(this.spinner.options.status).to.equal('fail');
+                expect(this.spinner.options.text).to.equal('spinner');
+                done();
+              }, 1);
+            });
+          });
+        });
+      });
+
+      context('when task is a promise', () => {
+        context('when the promise resolves', () => {
+          context('when it resolves with no arguments', () => {
+            it('succeed the spinner', (done) => {
+              expect(this.spinner.options.status).to.equal('spinning');
+              this.spinner.bind(Promise.resolve());
+              _setTimeout(() => {
+                expect(this.spinner.options.status).to.equal('success');
+                done();
+              }, 1);
+            });
+          });
+
+          context('when it resolves with a string', () => {
+            it('succeed the spinner and changes the text to that string', (done) => {
+              expect(this.spinner.options.status).to.equal('spinning');
+              this.spinner.bind(Promise.resolve('Success :D'));
+              _setTimeout(() => {
+                expect(this.spinner.options.status).to.equal('success');
+                expect(this.spinner.options.text).to.equal('Success :D');
+                done();
+              }, 1);
+            });
+          });
+
+          context('when it resolves with an invalid argument', () => {
+            it('succeed the spinner without changing the text', (done) => {
+              expect(this.spinner.options.status).to.equal('spinning');
+              this.spinner.bind(Promise.resolve([]));
+              _setTimeout(() => {
+                expect(this.spinner.options.status).to.equal('success');
+                expect(this.spinner.options.text).to.equal('spinner');
+                done();
+              }, 1);
+            });
+          });
+        });
+
+        context('when the promise rejects', () => {
+          context('when it rejects with no arguments', () => {
+            it('fails the spinner', (done) => {
+              expect(this.spinner.options.status).to.equal('spinning');
+              this.spinner.bind(Promise.reject());
+              _setTimeout(() => {
+                expect(this.spinner.options.status).to.equal('fail');
+                done();
+              }, 1);
+            });
+          });
+
+          context('when it rejects with a string', () => {
+            it('fails the spinner and changes the text to that string', (done) => {
+              expect(this.spinner.options.status).to.equal('spinning');
+              this.spinner.bind(Promise.reject('I failed :('));
+              _setTimeout(() => {
+                expect(this.spinner.options.status).to.equal('fail');
+                expect(this.spinner.options.text).to.equal('I failed :(');
+                done();
+              }, 1);
+            });
+          });
+
+          context('when it rejects with an invalid argument', () => {
+            it('fails the spinner without changing the text', (done) => {
+              expect(this.spinner.options.status).to.equal('spinning');
+              this.spinner.bind(Promise.reject([]));
+              _setTimeout(() => {
+                expect(this.spinner.options.status).to.equal('fail');
+                expect(this.spinner.options.text).to.equal('spinner');
+                done();
+              }, 1);
+            });
+          });
+        });
       });
     });
 
