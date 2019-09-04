@@ -248,10 +248,16 @@ describe('utils', () => {
             const text = breakText('im a very long sentence yay yay yay yay', 3, 4);
             const splitted = text.split(EOL);
             expect(splitted).to.have.lengthOf(7);
-            expect(splitted[0]).to.equal('im a');
-            expect(splitted[1]).to.equal('very');
-            expect(splitted[2]).to.equal('long');
-            expect(splitted[3]).to.equal('sentence');
+          });
+        });
+
+        context('when trying to break a really long word', () => {
+          it('force breaks the word', () => {
+            const text = breakText('imaverylongwordyesiam', 3);
+            const splitted = text.split(EOL);
+            expect(splitted).to.have.lengthOf(2);
+            expect(splitted[0]).to.equal('imaverylong');
+            expect(splitted[1]).to.equal('wordyesiam');
           });
         });
       });
