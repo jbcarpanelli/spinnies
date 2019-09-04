@@ -5,6 +5,7 @@ const cliCursor = require('cli-cursor');
 const onExit = require('signal-exit')
 const EventEmitter = require('events').EventEmitter;
 const EOL = require('os').EOL;
+const isPromise = require('is-promise');
 const { dashes, dots } = require('./spinners');
 
 const { statusOptionsFromNormalUpdate, secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, prefixOptions, breakText, getLinesLength, terminalSupportsUnicode, isCI } = require('./utils');
@@ -167,6 +168,24 @@ class Spinnie extends EventEmitter {
 
   show() {
     return this.hidden(false);
+  }
+
+  bind(task) {
+    if (isPromise(task)) {
+      task.then((result) => {
+        if (result && typeof result === 'string') {
+          this.update({ status: 'success', text: result });
+        } else {
+          this.status('success');
+        }
+      }).catch((err) => {
+        if (err && typeof err === 'string') {
+          this.update({ status: 'fail', text: err });
+        } else {
+          this.status('fail');
+        }
+      });
+    }
   }
 
   applyStatusOverrides(opts) {
@@ -364,7 +383,7 @@ class Spinnies {
       textColor: 'gray'
     });
 
-    ['update', 'status', 'setSpinnerProperties', 'hidden', 'hide', 'show', 'text', 'indent'].forEach(method => {
+    ['update', 'status', 'setSpinnerProperties', 'hidden', 'hide', 'show', 'text', 'indent', 'bind'].forEach(method => {
       this.aliasChildMethod(method);
     });
 
