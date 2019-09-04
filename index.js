@@ -6,6 +6,7 @@ const onExit = require('signal-exit')
 const EventEmitter = require('events').EventEmitter;
 const EOL = require('os').EOL;
 const isPromise = require('is-promise');
+const isObservable = require('is-observable');
 const { dashes, dots } = require('./spinners');
 
 const { statusOptionsFromNormalUpdate, secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, prefixOptions, breakText, getLinesLength, terminalSupportsUnicode, isCI, isError } = require('./utils');
@@ -171,6 +172,19 @@ class Spinnie extends EventEmitter {
   }
 
   bind(task) {
+    if (isObservable(task)) {
+      task = new Promise((resolve, reject) => {
+        task.subscribe({
+          next: (text) => {
+            if (typeof text !== 'string') return;
+            this.text(text);
+          },
+          error: reject,
+          complete: resolve
+        });
+      });
+    }
+
     if (isPromise(task)) {
       task.then((result) => {
         if (result && typeof result === 'string') {
