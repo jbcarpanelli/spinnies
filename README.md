@@ -25,6 +25,13 @@
 
 :snake: Temporarily hide spinners and show them later
 
+:pray: Bind a spinner to a `Promise`. The spinner will fail if the promise rejects and succeed if it's resolved
+
+:vertical_traffic_light: Bind a spinner to an `Observable`.
+Use `next()` to update the spinner text,
+`complete()` will succeed the spinner
+and `error()` will fail the spinner with an optional error message or `Error`
+
 :space_invader: Change the spinner animation while spinning
 
 :maple_leaf: Completely remove a spinner
