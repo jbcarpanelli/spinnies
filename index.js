@@ -231,7 +231,8 @@ class Spinnie extends EventEmitter {
   rawRender() {
     const status = this.getStatus(this.options.status);
     const text = this.options.text;
-    let output = `${status.prefix ? (chalk[status.prefixColor](status.prefix) + (status.noSpaceAfterPrefix ? '' : ' ')) : ''}${status.textColor ? chalk[status.textColor](text) : text}`;
+    const renderedPrefix = `${status.prefix ? ((status.prefixColor ? chalk[status.prefixColor](status.prefix) : status.prefix) + (status.noSpaceAfterPrefix ? '' : ' ')) : ''}`;
+    let output = `${renderedPrefix}${status.textColor ? chalk[status.textColor](text) : text}`;
 
     const indent = this.options.indent;
     let prefixLengthToIndent = 0;
@@ -274,7 +275,7 @@ class Spinnie extends EventEmitter {
 
     text = breakText(text, prefixLength, indent);
     text = indentText(text, prefixLength, indent);
-    line = `${prefixLength ? chalk[prefixColor](prefix) : ''}${textColor ? chalk[textColor](text) : text}`;
+    line = `${prefixLength ? (prefixColor ? chalk[prefixColor](prefix) : prefix) : ''}${textColor ? chalk[textColor](text) : text}`;
 
     const linesLength = getLinesLength(text, prefixLength, indent);
     const output = `${secondStageIndent(line, indent)}${EOL}`;
