@@ -73,6 +73,7 @@
     - [hidden](#hiddenname-bool)
     - [hide](#hidename)
     - [show](#showname)
+    - [bind](#bindname-task)
     - [remove](#removename)
     - [stopAll](#stopallstatus)
     - [hasActiveSpinners](#hasactivespinners)
