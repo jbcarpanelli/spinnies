@@ -187,7 +187,9 @@ class Spinnie extends EventEmitter {
           const color = this.getStatus('fail').textColor;
           const msg = err.message;
           const stack = err.stack.substring(err.stack.indexOf('\n') + 1);
-          message = `${chalk[color](msg)}\n${stack}`;
+
+          this.statusOverrides.fail.textColor = false; // to prevent spinnies from painting the text
+          message = `${chalk[color](msg)}\n${chalk.gray(stack)}`;
         }
 
         if (message !== false) {
