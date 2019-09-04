@@ -8,7 +8,7 @@ const EOL = require('os').EOL;
 const isPromise = require('is-promise');
 const { dashes, dots } = require('./spinners');
 
-const { statusOptionsFromNormalUpdate, secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, prefixOptions, breakText, getLinesLength, terminalSupportsUnicode, isCI } = require('./utils');
+const { statusOptionsFromNormalUpdate, secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, prefixOptions, breakText, getLinesLength, terminalSupportsUnicode, isCI, isError } = require('./utils');
 const { isValidStatus, writeStream, cleanStream } = require('./utils');
 
 const DEFAULT_STATUS = 'spinning';
@@ -179,8 +179,19 @@ class Spinnie extends EventEmitter {
           this.status('success');
         }
       }).catch((err) => {
-        if (err && typeof err === 'string') {
-          this.update({ status: 'fail', text: err });
+        let message = false;
+
+        if (typeof err === 'string') {
+          message = err;
+        } else if (isError(err)) {
+          const color = this.getStatus('fail').textColor;
+          const msg = err.message;
+          const stack = err.stack.substring(err.stack.indexOf('\n') + 1);
+          message = `${chalk[color](msg)}\n${stack}`;
+        }
+
+        if (message !== false) {
+          this.update({ status: 'fail', text: message });
         } else {
           this.status('fail');
         }

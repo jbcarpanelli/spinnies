@@ -236,6 +236,10 @@ function terminalSupportsUnicode() {
       || !!process.env.WT_SESSION
 }
 
+function isError(err) {
+  return err && err.message && err.stack;
+}
+
 const isCI = // Taken from ci-info [https://github.com/watson/ci-info]
   process.env.CI || // Travis CI, CircleCI, Cirrus CI, Gitlab CI, Appveyor, CodeShip, dsari
   process.env.CONTINUOUS_INTEGRATION || // Travis CI, Cirrus CI
@@ -258,5 +262,6 @@ module.exports = {
   indentText,
   secondStageIndent,
   statusOptionsFromNormalUpdate,
-  isCI
+  isCI,
+  isError
 }
