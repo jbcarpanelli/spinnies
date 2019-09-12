@@ -340,6 +340,7 @@ class Spinnies {
       infoColor: 'blue',
       spinner: terminalSupportsUnicode() ? dots : dashes,
       disableSpins: false,
+      stream: process.stderr,
       ...options
     };
 
@@ -349,7 +350,7 @@ class Spinnies {
 
     this.isCursorHidden = false;
     this.currentInterval = null;
-    this.stream = process.stderr;
+    this.stream = this.options.stream;
     this.lineCount = 0;
     this.currentFrameIndex = 0;
     this.spin = !this.options.disableSpins && !isCI && this.stream && this.stream.isTTY;
