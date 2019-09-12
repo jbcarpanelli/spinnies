@@ -232,7 +232,7 @@ describe('utils', () => {
       context('when number of lines in text is greater than the columns length', () => {
         context('without indent', () => {
           it('adds line-breaks to the given text', () => {
-            const text = breakText('im a very long sentence yay yay yay yay', 3);
+            const text = breakText('im a very long sentence yay yay yay yay', 3, null, process.stderr);
             const splitted = text.split(EOL);
             expect(splitted).to.have.lengthOf(5);
             expect(splitted[0]).to.equal('im a very');
@@ -245,7 +245,7 @@ describe('utils', () => {
 
         context('with indent', () => {
           it('adds line-breaks to the given text taking indent into consideration', () => {
-            const text = breakText('im a very long sentence yay yay yay yay', 3, 4);
+            const text = breakText('im a very long sentence yay yay yay yay', 3, 4, process.stderr);
             const splitted = text.split(EOL);
             expect(splitted).to.have.lengthOf(7);
           });
@@ -253,7 +253,7 @@ describe('utils', () => {
 
         context('when trying to break a really long word', () => {
           it('force breaks the word', () => {
-            const text = breakText('imaverylongwordyesiam', 3);
+            const text = breakText('imaverylongwordyesiam', 3, null, process.stderr);
             const splitted = text.split(EOL);
             expect(splitted).to.have.lengthOf(2);
             expect(splitted[0]).to.equal('imaverylong');
