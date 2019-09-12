@@ -184,8 +184,8 @@ function prefixOptions(prefixes) {
   return { ...symbols, ...purgedPrefixes };
 }
 
-function breakText(text, prefixLength, indent = 0) {
-  const columns = process.stderr.columns || 95;
+function breakText(text, prefixLength, indent = 0, stream) {
+  const columns = stream.columns || 95;
 
   return wordwrapjs.wrap(text, { break: true, width: (columns - prefixLength - indent - 1) });
 }

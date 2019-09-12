@@ -85,7 +85,7 @@ class StatusRegistry extends EventEmitter {
 };
 
 class Spinnie extends EventEmitter {
-  constructor({ name, options, inheritedOptions, statusRegistry, logs }) {
+  constructor({ name, options, inheritedOptions, statusRegistry, logs, stream }) {
     super();
 
     if (!options.text) options.text = name;
@@ -102,6 +102,7 @@ class Spinnie extends EventEmitter {
     this.options = spinnerProperties;
     this.statusRegistry = statusRegistry;
     this.statusOverrides = {};
+    this.stream = stream;
 
     Object.keys(this.statusRegistry.statuses).forEach(name => {
       this.aliasStatusAsMethod(name);
@@ -261,7 +262,7 @@ class Spinnie extends EventEmitter {
       }
     }
 
-    output = breakText(output, 0, indent);
+    output = breakText(output, 0, indent, this.stream);
     output = indentText(output, prefixLengthToIndent, indent);
     output = secondStageIndent(output, indent);
 
@@ -289,7 +290,7 @@ class Spinnie extends EventEmitter {
     const textColor = statusOptions.textColor;
     const prefixColor = statusOptions.isStatic ? statusOptions.prefixColor : statusOptions.spinnerColor;
 
-    text = breakText(text, prefixLength, indent);
+    text = breakText(text, prefixLength, indent, this.stream);
     text = indentText(text, prefixLength, indent);
     line = `${prefixLength ? (prefixColor ? chalk[prefixColor](prefix) : prefix) : ''}${textColor ? chalk[textColor](text) : text}`;
 
@@ -351,7 +352,7 @@ class Spinnies {
     this.stream = process.stderr;
     this.lineCount = 0;
     this.currentFrameIndex = 0;
-    this.spin = !this.options.disableSpins && !isCI && process.stderr && process.stderr.isTTY;
+    this.spin = !this.options.disableSpins && !isCI && this.stream && this.stream.isTTY;
 
     this.statusRegistry.on('statusAdded', name => {
       Object.values(this.spinners).forEach(spinner => {
@@ -445,7 +446,7 @@ class Spinnies {
     if (typeof name !== 'string') throw new Error('A spinner reference name must be specified');
     if (this.spinners[name] !== undefined) throw new Error(`A spinner named '${name}' already exists`);
 
-    const spinnie = new Spinnie({ name, options, inheritedOptions: this.options, statusRegistry: this.statusRegistry, logs: this.logs });
+    const spinnie = new Spinnie({ name, options, stream: this.stream, inheritedOptions: this.options, statusRegistry: this.statusRegistry, logs: this.logs });
 
     spinnie.on('removeMe', () => {
       this.remove(name);
@@ -499,7 +500,7 @@ class Spinnies {
       const spinner = this.get(name);
 
       if (spinner.hidden()) return;
-      process.stderr.write(spinner.rawRender() + EOL);
+      this.stream.write(spinner.rawRender() + EOL);
     }
   }
 
@@ -557,7 +558,7 @@ class Spinnies {
   bindExitEvent() {
     this.removeExitListener = onExit(() => {
       // cli-cursor will automatically show the cursor...
-      readline.moveCursor(process.stderr, 0, this.lineCount);
+      readline.moveCursor(this.stream, 0, this.lineCount);
     }, { alwaysLast: true });
   }
 
