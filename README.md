@@ -192,9 +192,9 @@ Parameters
     or `object`:
       - **interval** - `number`
       - **frames** - `string[]`
-  - **stream** - `stream.Writable`: Spinnies will write output to this stream. Defaults to `process.stderr`.
 
     You can see the already provided spinner [here](https://github.com/jcarpanelli/spinnies/blob/master/spinners.json).
+  - **stream** - `stream.Writable`: Spinnies will write output to this stream. Defaults to `process.stderr`.
   - **disableSpins** - `boolean`: Disable spins (will still print raw messages).
 
 *Note: If you are working in any `win32` platform, the default spin animation will be overriden. You can get rid of this defining a different spinner animation manually, or by using the integrated VSCode terminal or Windows Terminal.*
