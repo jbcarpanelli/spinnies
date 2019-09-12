@@ -295,9 +295,7 @@ class Spinnie extends EventEmitter {
     line = `${prefixLength ? (prefixColor ? chalk[prefixColor](prefix) : prefix) : ''}${textColor ? chalk[textColor](text) : text}`;
     line = secondStageIndent(line, indent);
 
-    const linesLength = getLinesLength(line);
-    const output = `${line}${EOL}`;
-    return { output, linesLength };
+    return line;
   }
 
   addLog(log) {
@@ -522,10 +520,11 @@ class Spinnies {
       .values(this.spinners)
       .filter(spinner => !spinner.hidden())
       .forEach((spinner) => {
-        const renderedSpinner = spinner.render(frame);
+        const lines = spinner.render(frame);
+        const length = getLinesLength(lines);
 
-        linesLength.push(...renderedSpinner.linesLength);
-        output += renderedSpinner.output;
+        linesLength.push(...length);
+        output += lines + EOL;
       });
 
     if (!hasActiveSpinners) readline.clearScreenDown(this.stream);
