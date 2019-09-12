@@ -192,6 +192,7 @@ Parameters
     or `object`:
       - **interval** - `number`
       - **frames** - `string[]`
+  - **stream** - `stream.Writable`: Spinnies will write output to this stream. Defaults to `process.stderr`.
 
     You can see the already provided spinner [here](https://github.com/jcarpanelli/spinnies/blob/master/spinners.json).
   - **disableSpins** - `boolean`: Disable spins (will still print raw messages).
