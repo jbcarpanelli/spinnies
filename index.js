@@ -293,9 +293,10 @@ class Spinnie extends EventEmitter {
     text = breakText(text, prefixLength, indent, this.stream);
     text = indentText(text, prefixLength, indent);
     line = `${prefixLength ? (prefixColor ? chalk[prefixColor](prefix) : prefix) : ''}${textColor ? chalk[textColor](text) : text}`;
+    line = secondStageIndent(line, indent);
 
-    const linesLength = getLinesLength(text, prefixLength, indent);
-    const output = `${secondStageIndent(line, indent)}${EOL}`;
+    const linesLength = getLinesLength(line);
+    const output = `${line}${EOL}`;
     return { output, linesLength };
   }
 

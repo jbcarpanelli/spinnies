@@ -207,10 +207,10 @@ function secondStageIndent(str, indent = 0) {
 }
 
 
-function getLinesLength(text, prefixLength, indent = 0) {
+function getLinesLength(text) {
   return stripAnsi(text)
     .split(/\r\n|\r|\n/)
-    .map((line, index) => index === 0 ? line.length + prefixLength + indent : line.length);
+    .map((line) => line.length);
 }
 
 function writeStream(stream, output, rawLines) {
