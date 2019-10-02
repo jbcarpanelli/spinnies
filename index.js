@@ -115,7 +115,7 @@ class Spinnies {
     if (this.spin) {
       clearInterval(this.currentInterval);
       this.currentInterval = this.loopStream();
-      if (!this.isCursonHidden) cliCursor.hide();
+      if (!this.isCursorHidden) cliCursor.hide();
       this.isCursorHidden = true;
       this.checkIfActiveSpinners();
     } else {
