@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.1] - 2019-12-11
+### Fixed
+- Fix typo on `isCursorHidden` call (https://github.com/jcarpanelli/spinnies/pull/20). Thanks @noriyotcp!
+
 ## [0.5.0] - 2019-08-25
 ### Added
 - Add `indent` option to indent a spinner given a number of spaces (https://github.com/jcarpanelli/spinnies/pull/15). Thanks @rap2hpoutre!
