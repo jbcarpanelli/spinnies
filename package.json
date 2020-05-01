@@ -3,6 +3,7 @@
   "version": "0.5.1",
   "description": "Create and manage multiple spinners in command-line interface programs",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "test": "npx mocha test"
   },
