@@ -3,6 +3,15 @@
   "version": "0.5.0",
   "description": "Create and manage multiple spinners in command-line interface programs",
   "main": "index.js",
+  "files": [
+    "index.js",
+    "utils.js",
+    "purgeOptions.js",
+    "package.json",
+    "package-lock.json",
+    "spinners.json",
+    "README.md"
+  ],
   "scripts": {
     "test": "npx mocha test"
   },
