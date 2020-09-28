@@ -1,12 +1,26 @@
-# ![spin](https://i.ibb.co/4M0J13j/spin.png) Spinnies ![spin](https://i.ibb.co/4M0J13j/spin.png)
+# ![spin](https://i.ibb.co/4M0J13j/spin.png) Dreidels ![spin](https://i.ibb.co/4M0J13j/spin.png)
 > Node.js module to create and manage multiple spinners in command-line interface programs
 
-[![npm](https://img.shields.io/npm/v/spinnies.svg)](https://www.npmjs.com/package/spinnies)
+[![npm](https://img.shields.io/npm/v/dreidels?style=flat-square)](https://www.npmjs.com/package/dreidels)
 [![CircleCI](https://circleci.com/gh/jcarpanelli/spinnies.svg?style=shield)](https://circleci.com/gh/jcarpanelli/spinnies)
-[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
 <p align="center"> <br> <img src='demo.gif' title='' /> </p>
+
+#### Note:
+This project was forked from the original [spinnies](https://www.npmjs.com/package/spinnies) package.
+
+Without the amazing work of [jcarpanelli](https://github.com/jcarpanelli/), this would not have been possible.
+
+I have opened a [PR](https://github.com/jcarpanelli/spinnies/pull/17) but the project seems to be unmaintained. Which is why I decided to publish this package.
+
+You can see all the changes made from the original spinnies in the PR. I kept the original package philosophy
+of **non-error-throwing** while also creating tests and demos for all the new features.
+
+**Although the name of the package changed, the programmatic name stayed as `spinnies`. Which is why in the examples we still refer to it as `spinnies`**
+
+[Meaning of the name](https://en.wikipedia.org/wiki/Dreidel)
 
 ## Features
 :dolls: Create and manage multiple spinners at the same time
@@ -99,17 +113,18 @@ and `error()` to fail the spinner with an optional error message or `Error`
 
 ### With npm
 ```
-$ npm i spinnies
+npm i dreidels
 ```
 
 ### With yarn
 ```
-$ yarn add spinnies
+yarn add dreidels
 ```
 
 ## Usage & Example
 
 ```js
+const Spinnies = require('dreidels')
 const spinnies = new Spinnies();
 
 spinnies.add('spinner-1', { text: 'I am a spinner' });
@@ -833,4 +848,4 @@ Thanks to [chalk](https://github.com/chalk/chalk) for helping making this lib co
 
 ## License
 
-[MIT](https://github.com/jcarpanelli/spinnies/blob/master/LICENSE)
+[MIT](https://github.com/SweetMnM/spinnies/blob/master/LICENSE)
