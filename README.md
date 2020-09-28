@@ -1,8 +1,8 @@
 # ![spin](https://i.ibb.co/4M0J13j/spin.png) Dreidels ![spin](https://i.ibb.co/4M0J13j/spin.png)
 > Node.js module to create and manage multiple spinners in command-line interface programs
 
+[![CircleCI](https://circleci.com/gh/SweetMNM/spinnies.svg?style=svg)](https://circleci.com/gh/SweetMNM/spinnies)
 [![npm](https://img.shields.io/npm/v/dreidels?style=flat-square)](https://www.npmjs.com/package/dreidels)
-[![CircleCI](https://circleci.com/gh/jcarpanelli/spinnies.svg?style=shield)](https://circleci.com/gh/jcarpanelli/spinnies)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
