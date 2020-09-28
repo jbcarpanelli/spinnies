@@ -27,12 +27,12 @@
   "author": "Sweet MnM <sweeetmnm@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:SweetMNM/spinnies.git"
+    "url": "git+ssh://git@github.com:SweetMNM/dreidels.git"
   },
   "bugs": {
-    "url": "https://github.com/SweetMNM/spinnies/issues"
+    "url": "https://github.com/SweetMNM/dreidels/issues"
   },
-  "homepage": "https://github.com/SweetMNM/spinnies#readme",
+  "homepage": "https://github.com/SweetMNM/dreidels#readme",
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.4.2",
