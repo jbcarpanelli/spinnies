@@ -15,13 +15,15 @@ jobs: # a collection of steps
       - run:
           name: Install dependencies
           command: npm install
+      - run: npm install mocha-junit-reporter # just for CircleCI
       - save_cache: # special step to save the dependency cache
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
+      - run: mkdir reports
       - run: # run tests
           name: Run tests
-          command: npm test -- --reporter xunit --reporter-option output=test-results.xml
+          command: npm test -- --reporter mocha-junit-reporter --reporter-options mochaFile=reports/mocha/test-results.xml
 #      - run: # run coverage report
 #          name: code-coverage
 #          command: './node_modules/.bin/nyc report --reporter=text-lcov'
@@ -33,5 +35,5 @@ jobs: # a collection of steps
           path: coverage
           prefix: coverage
       - store_test_results: # for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
-          path: test-results.xml
+          path: reports
       # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
