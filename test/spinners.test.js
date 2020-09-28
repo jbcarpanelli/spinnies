@@ -398,7 +398,9 @@ describe('Spinnies', () => {
             frames: ['a', 'b', 'c']
           });
 
-          expect(this.spinners.currentFrameIndex).to.equal(1);
+          const expectedIndex = this.spinners.spin ? 1 : 0; // On CI the spinners don't actually spin meaning the index would not increase to 1
+
+          expect(this.spinners.currentFrameIndex).to.equal(expectedIndex);
         });
       });
     });
