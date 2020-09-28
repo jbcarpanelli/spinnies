@@ -24,15 +24,15 @@
     "command",
     "terminal"
   ],
-  "author": "Juan Bautista Carpanelli <juanbanelli@gmail.com>",
+  "author": "Sweet MnM <sweeetmnm@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:jcarpanelli/spinnies.git"
+    "url": "git+ssh://git@github.com:SweetMNM/spinnies.git"
   },
   "bugs": {
-    "url": "https://github.com/jcarpanelli/spinnies/issues"
+    "url": "https://github.com/SweetMNM/spinnies/issues"
   },
-  "homepage": "https://github.com/jcarpanelli/spinnies#readme",
+  "homepage": "https://github.com/SweetMNM/spinnies#readme",
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.4.2",
