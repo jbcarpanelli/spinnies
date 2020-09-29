@@ -844,7 +844,7 @@ Star it, fork it, improve it, PR it! :raised_hands:.
 
 ## Acknowledgements
 
-Thanks to [chalk](https://github.com/chalk/chalk) for helping making this lib colorful :rainbow: and to [ora](https://github.com/sindresorhus/ora) which was a great inspiration :unicorn:.
+Thanks to [chalk](https://github.com/chalk/chalk) `(<=v0.5.1)` and [colorette](https://github.com/jorgebucaran/colorette) `(>=v0.5.2)` for helping to make this lib colorful :rainbow: and to [ora](https://github.com/sindresorhus/ora) which was a great inspiration :unicorn:.
 
 ## License
 
