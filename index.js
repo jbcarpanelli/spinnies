@@ -1,6 +1,6 @@
 'use strict';
 const readline = require('readline');
-const chalk = require('chalk');
+const colorette = require('colorette');
 const cliCursor = require('cli-cursor');
 const onExit = require('signal-exit')
 const EventEmitter = require('events').EventEmitter;
@@ -202,7 +202,7 @@ class Spinnie extends EventEmitter {
           const stack = err.stack.substring(err.stack.indexOf('\n') + 1);
 
           this.statusOverrides.fail.textColor = false; // to prevent spinnies from painting the text
-          message = `${chalk[color](msg)}\n${chalk.gray(stack)}`;
+          message = `${colorette[color](msg)}\n${colorette.gray(stack)}`;
         }
 
         if (message !== false) {
@@ -256,8 +256,8 @@ class Spinnie extends EventEmitter {
   rawRender() {
     const status = this.getStatus(this.options.status);
     const text = this.options.text;
-    const renderedPrefix = `${status.prefix ? ((status.prefixColor ? chalk[status.prefixColor](status.prefix) : status.prefix) + (status.noSpaceAfterPrefix ? '' : ' ')) : ''}`;
-    let output = `${renderedPrefix}${status.textColor ? chalk[status.textColor](text) : text}`;
+    const renderedPrefix = `${status.prefix ? ((status.prefixColor ? colorette[status.prefixColor](status.prefix) : status.prefix) + (status.noSpaceAfterPrefix ? '' : ' ')) : ''}`;
+    let output = `${renderedPrefix}${status.textColor ? colorette[status.textColor](text) : text}`;
 
     const indent = this.options.indent;
     let prefixLengthToIndent = 0;
@@ -300,7 +300,7 @@ class Spinnie extends EventEmitter {
 
     text = breakText(text, prefixLength, indent, this.stream);
     text = indentText(text, prefixLength, indent);
-    line = `${prefixLength ? (prefixColor ? chalk[prefixColor](prefix) : prefix) : ''}${textColor ? chalk[textColor](text) : text}`;
+    line = `${prefixLength ? (prefixColor ? colorette[prefixColor](prefix) : prefix) : ''}${textColor ? colorette[textColor](text) : text}`;
     line = secondStageIndent(line, indent);
 
     return line;

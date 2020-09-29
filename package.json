@@ -44,13 +44,13 @@
   "homepage": "https://github.com/SweetMNM/dreidels#readme",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^2.4.2",
     "cli-cursor": "^3.0.0",
     "is-observable": "^2.0.0",
     "is-promise": "^2.1.0",
     "signal-exit": "^3.0.2",
     "strip-ansi": "^5.2.0",
-    "wordwrapjs": "^4.0.0"
+    "wordwrapjs": "^4.0.0",
+    "colorette": "^1.2.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
