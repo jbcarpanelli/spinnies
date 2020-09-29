@@ -201,24 +201,6 @@ describe('utils', () => {
       });
     });
 
-    describe('#statusOptionsFromNormalUpdate', () => {
-      it('reports what to update and provide options', () => {
-        const res = statusOptionsFromNormalUpdate({ ...this.colors, text: 'text', status: 'succeed' });
-        expect(res).to.deep.equal({
-          shouldSetDefault: true,
-          shouldSetFail: true,
-          shouldSetSucceed: true,
-          shouldSetInfo: true,
-          shouldSetWarn: true,
-          defaultSet: { textColor: 'blue', spinnerColor: 'blue', prefixColor: 'blue' },
-          failSet: { prefixColor: 'blue', textColor: 'blue' },
-          succeedSet: { prefixColor: 'blue', textColor: 'blue' },
-          warnSet: { prefixColor: 'blue', textColor: 'blue' },
-          infoSet: { prefixColor: 'cyan', textColor: 'cyan' }
-        });
-      });
-    });
-
     describe('#breakText', () => {
       beforeEach(() => {
         this.columns = process.stderr.columns;

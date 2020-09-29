@@ -54,75 +54,6 @@ function purgeSpinnersOptions({ spinner, disableSpins, stream, ...others }) {
   return { ...colors, ...prefixes, ...disableSpinsOption, ...streamOption, spinner }
 }
 
-function statusOptionsFromNormalUpdate(opts) {
-  // for compatibility with update();
-  const { succeedColor, succeedPrefix, failColor, failPrefix, warnColor, warnPrefix, infoColor, infoPrefix, color, spinnerColor } = opts;
-
-  let shouldSetFail = false;
-  const failSet = {};
-  let shouldSetSucceed = false;
-  const succeedSet = {};
-  let shouldSetDefault = false;
-  const defaultSet = {};
-  let shouldSetWarn = false;
-  const warnSet = {};
-  let shouldSetInfo = false;
-  const infoSet = {};
-
-  if (isValidPrefix(failPrefix)) {
-    shouldSetFail = true;
-    failSet.prefix = failPrefix;
-  }
-  if (isValidColor(failColor)) {
-    shouldSetFail = true;
-    failSet.prefixColor = failColor;
-    failSet.textColor = failColor;
-  }
-
-  if (isValidPrefix(succeedPrefix)) {
-    shouldSetSucceed = true;
-    succeedSet.prefix = succeedPrefix;
-  }
-  if (isValidColor(succeedColor)) {
-    shouldSetSucceed = true;
-    succeedSet.prefixColor = succeedColor;
-    succeedSet.textColor = succeedColor;
-  }
-
-  if (isValidPrefix(warnPrefix)) {
-    shouldSetWarn = true;
-    warnSet.prefix = warnPrefix;
-  }
-  if (isValidColor(warnColor)) {
-    shouldSetWarn = true;
-    warnSet.prefixColor = warnColor;
-    warnSet.textColor = warnColor;
-  }
-
-  if (isValidPrefix(infoPrefix)) {
-    shouldSetInfo = true;
-    infoSet.prefix = infoPrefix;
-  }
-  if (isValidColor(infoColor)) {
-    shouldSetInfo = true;
-    infoSet.prefixColor = infoColor;
-    infoSet.textColor = infoColor;
-  }
-
-  if (isValidColor(spinnerColor)) {
-    shouldSetDefault = true;
-    defaultSet.spinnerColor = spinnerColor;
-    defaultSet.prefixColor = spinnerColor;
-  }
-
-  if (isValidColor(color)) {
-    shouldSetDefault = true;
-    defaultSet.textColor = color;
-  }
-
-  return { shouldSetDefault, shouldSetFail, shouldSetSucceed, shouldSetWarn, shouldSetInfo, defaultSet, failSet, succeedSet, warnSet, infoSet };
-}
-
 function purgeStatusOptions(options) {
   return purgeOptions({
     prefix: isValidPrefix,
@@ -252,7 +183,6 @@ module.exports = {
   purgeSpinnersOptions,
   purgeSpinnerOptions,
   purgeStatusOptions,
-  prefixOptions,
   colorOptions,
   breakText,
   getLinesLength,
@@ -262,7 +192,8 @@ module.exports = {
   turnToValidSpinner,
   indentText,
   secondStageIndent,
-  statusOptionsFromNormalUpdate,
   isCI,
-  isError
+  isError,
+  isValidPrefix,
+  isValidColor
 }

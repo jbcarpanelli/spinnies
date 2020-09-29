@@ -8,9 +8,7 @@ const EOL = require('os').EOL;
 const isPromise = require('is-promise');
 const isObservable = require('is-observable');
 const { dashes, dots } = require('./spinners');
-
-const { statusOptionsFromNormalUpdate, secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, prefixOptions, breakText, getLinesLength, terminalSupportsUnicode, isCI, isError } = require('./utils');
-const { isValidStatus, writeStream, cleanStream } = require('./utils');
+const { writeStream, cleanStream, secondStageIndent, indentText, turnToValidSpinner, purgeSpinnerOptions, purgeSpinnersOptions, purgeStatusOptions, colorOptions, breakText, getLinesLength, terminalSupportsUnicode, isCI, isError, isValidPrefix, isValidColor } = require('./utils');
 
 const DEFAULT_STATUS = 'spinning';
 
@@ -217,28 +215,38 @@ class Spinnie extends EventEmitter {
   }
 
   applyStatusOverrides(opts) {
-    const { shouldSetDefault, shouldSetFail, shouldSetSucceed, shouldSetWarn, shouldSetInfo, defaultSet, failSet, succeedSet, warnSet, infoSet } = statusOptionsFromNormalUpdate(opts);
+    const newOpts = {
+      ...opts,
+      successColor: opts.succeedColor,
+      successPrefix: opts.succeedPrefix,
+      spinningColor: opts.color
+    }
+    const statuses = ['success', 'fail', 'warn', 'info', 'spinning'];
 
-    if (shouldSetDefault) {
-      const current = this.statusOverrides['spinning'] || {};
-      this.statusOverrides['spinning'] = { ...current, ...defaultSet };
-    }
-    if (shouldSetFail) {
-      const current = this.statusOverrides['fail'] || {};
-      this.statusOverrides['fail'] = { ...current, ...failSet };
-    }
-    if (shouldSetSucceed) {
-      const current = this.statusOverrides['success'] || {};
-      this.statusOverrides['success'] = { ...current, ...succeedSet };
-    }
-    if (shouldSetWarn) {
-      const current = this.statusOverrides['warn'] || {};
-      this.statusOverrides['warn'] = { ...current, ...warnSet };
-    }
-    if (shouldSetInfo) {
-      const current = this.statusOverrides['info'] || {};
-      this.statusOverrides['info'] = { ...current, ...infoSet };
-    }
+    statuses.forEach(status => {
+      const overrides = {};
+      const prefix = newOpts[status + 'Prefix']
+      const color = newOpts[status + 'Color']
+
+      // Validate options
+      if (isValidPrefix(prefix)) {
+        overrides.prefix = prefix;
+      }
+      if (isValidColor(color)) {
+        overrides.prefixColor = color;
+        overrides.textColor = color;
+      }
+
+      // Spinner color exception
+      if (status === 'spinning' && isValidColor(opts.spinnerColor)) {
+        overrides.spinnerColor = opts.spinnerColor;
+        overrides.prefixColor = opts.spinnerColor;
+      }
+
+      // Apply overrides
+      const current = this.statusOverrides[status] || {};
+      this.statusOverrides[status] = { ...current, ...overrides };
+    })
   }
 
   isActive() {
