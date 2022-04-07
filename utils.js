@@ -3,20 +3,22 @@
 const readline = require('readline');
 const stripAnsi = require('strip-ansi');
 const { dashes, dots } = require('./spinners');
+const chalk = require('chalk');
 
 const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped'];
-const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright'];
+const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright', 'none'];
 
 function purgeSpinnerOptions(options) {
   const { text, status, indent } = options;
   const opts = { text, status, indent };
   const colors = colorOptions(options);
+  const prefixes = prefixOptions(options);
 
   if (!VALID_STATUSES.includes(status)) delete opts.status;
   if (typeof text !== 'string') delete opts.text;
   if (typeof indent !== 'number') delete opts.indent;
 
-  return { ...colors, ...opts };
+  return { ...colors, ...prefixes, ...opts};
 }
 
 function purgeSpinnersOptions({ spinner, disableSpins, ...others }) {
@@ -38,8 +40,8 @@ function turnToValidSpinner(spinner = {}) {
   return { interval, frames };
 }
 
-function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
-  const colors = { color, succeedColor, failColor, spinnerColor };
+function colorOptions({ textColor, prefixColor }) {
+  const colors = { textColor, prefixColor };
   Object.keys(colors).forEach(key => {
     if (!VALID_COLORS.includes(colors[key])) delete colors[key];
   });
@@ -47,7 +49,7 @@ function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
   return colors;
 }
 
-function prefixOptions({ succeedPrefix, failPrefix }) {
+function prefixOptions({ succeedPrefix, failPrefix, stoppedPrefix }) {
   if(terminalSupportsUnicode()) {
     succeedPrefix = succeedPrefix || '✓';
     failPrefix = failPrefix || '✖';
@@ -56,7 +58,9 @@ function prefixOptions({ succeedPrefix, failPrefix }) {
     failPrefix = failPrefix || '×';
   }
 
-  return { succeedPrefix, failPrefix };
+  stoppedPrefix = stoppedPrefix || "";
+
+  return { succeedPrefix, failPrefix, stoppedPrefix };
 }
 
 function breakText(text, prefixLength) {
@@ -104,13 +108,23 @@ function terminalSupportsUnicode() {
       || !!process.env.WT_SESSION
 }
 
+function applyColor(color, text) {
+  if (color && color !== 'none') {
+    return chalk[color](text);
+  }
+
+  return text;
+}
+
 module.exports = {
   purgeSpinnersOptions,
   purgeSpinnerOptions,
   colorOptions,
+  prefixOptions,
   breakText,
   getLinesLength,
   writeStream,
   cleanStream,
   terminalSupportsUnicode,
+  applyColor
 }

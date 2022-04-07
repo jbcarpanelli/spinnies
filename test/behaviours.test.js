@@ -3,11 +3,18 @@
 const expect = require('chai').expect
 
 function expectToBehaveLikeAnUpdate(self, status) {
-  const currentStatus = status === 'update' ? 'succeed' : status;
+  const statusMap = {
+    update: "spinning",
+    stop: "stopped",
+    succeed: "succeed",
+    fail: "fail"
+  };
+  const currentStatus = statusMap[status] || status;
 
   describe(`#${status}`, () => {
+
     it(`changes the status to ${currentStatus}`, () => {
-      const spinner = self.spinnies[currentStatus]('spinner');
+      const spinner = self.spinnies[status]('spinner');
       const anotherSpinner = self.spinnies.pick('another-spinner');
       expect(spinner.status).to.eq(currentStatus);
       expect(anotherSpinner.status).to.eq('spinning');
@@ -28,7 +35,7 @@ function expectToBehaveLikeAnUpdate(self, status) {
     context('when specifying options', () => {
       context('when options are correct', () => {
         it('overrides the default options', () => {
-          const options = { text: 'updated text', color: 'black', spinnerColor: 'black' };
+          const options = { text: 'updated text', textColor: 'black', prefixColor: 'black' };
           const spinner = self.spinnies[status]('spinner', options);
           expect(spinner).to.include(options);
         });
@@ -36,15 +43,15 @@ function expectToBehaveLikeAnUpdate(self, status) {
 
       context('when options have no valid values', () => {
         it('mantains the previous options', () => {
-          const options = { text: 42, color: 'foo', spinnerColor: 'bar' };
-          const spinner = self.spinnies[currentStatus]('spinner', options);
-          expect(spinner).to.include({ text: 'spinner', spinnerColor: 'greenBright' });
+          const options = { text: 42, textColor: 'foo', prefixColor: 'bar' };
+          const spinner = self.spinnies[status]('spinner', options);
+          expect(spinner).to.include({ text: 'spinner' });
         });
       });
 
       context('when specifying invalid attributes', () => {
         it('ignores those attributes', () => {
-          const options = { text: 'updated text', color: 'black', spinnerColor: 'black' };
+          const options = { text: 'updated text', textColor: 'black', prefixColor: 'black' };
           const invalidOptions = { foo: 42, bar: 'bar'}
           const spinner = self.spinnies[status]('spinner', options);
           expect(spinner).to.include(options);

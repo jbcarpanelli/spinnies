@@ -10,7 +10,7 @@ declare namespace Spinnies {
     const dashes: Spinner;
 
     type Color =
-      "black"
+        "black"
       | "red"
       | "green"
       | "yellow"
@@ -25,7 +25,8 @@ declare namespace Spinnies {
       | "blueBright"
       | "magentaBright"
       | "cyanBright"
-      | "whiteBright";
+      | "whiteBright"
+      | "none";
 
     type StopAllStatus = "succeed" | "fail" | "stopped";
     type SpinnerStatus = StopAllStatus | "spinning" | "non-spinnable";
@@ -55,50 +56,15 @@ declare namespace Spinnies {
         status: SpinnerStatus;
 
         /**
-         * The color of the text that accompanies the spinner. If not specified, the console's default foreground color is used.
+         * The color of the text that accompanies the spinner. Default value is
+         * `"none"`.
          */
-        color?: Color;
+        textColor?: Color;
 
         /**
-         * The color for the text on success. Default value is `"green"`
+         * The color of the spinner or prefix. Default value is `"none"`.
          */
-        succeedColor: Color;
-
-        /**
-         * The color for the text on failure. Default value is `"red"`.
-         */
-        failColor: Color;
-
-        /**
-         * The color of the spinner, when active. The default value is `"greenBright"`
-         */
-        spinnerColor: Color;
-    }
-
-    /**
-     * Contains top-level configuration for the Spinnies class. Also allows the
-     * caller to override default values used in `SpinnerOptions`.
-     */
-    interface Options {
-        /**
-         * The color of the text that accompanies the spinner. If not specified, the console's default foreground color is used.
-         */
-        color?: Color;
-
-        /**
-         * The color for the text on success. Default value is `"green"`
-         */
-        succeedColor: Color;
-
-        /**
-         * The color for the text on failure. Default value is `"red"`.
-         */
-        failColor: Color;
-
-        /**
-         * The color of the spinner, when active. The default value is `"greenBright"`
-         */
-        spinnerColor: Color;
+        prefixColor?: Color;
 
         /**
          * The symbol to be used in place of the spinner on success. The default value is ✓.
@@ -111,6 +77,43 @@ declare namespace Spinnies {
         failPrefix: string;
 
         /**
+         * The symbol to be used in place of the spinner on stop. Default value is `""`.
+         */
+        stoppedPrefix?: string;
+    }
+
+    /**
+     * Contains top-level configuration for the Spinnies class. Also allows the
+     * caller to override default values used in `SpinnerOptions`.
+     */
+    interface Options {
+        /**
+         * The color of the text that accompanies the spinner. Default value is
+         * `"none"`.
+         */
+        textColor?: Color;
+
+        /**
+         * The color of the spinner. Default value is `"none"`.
+         */
+        prefixColor?: Color;
+
+        /**
+         * The symbol to be used in place of the spinner on success. The default value is ✓.
+         */
+        succeedPrefix: string;
+
+        /**
+         * The symbol to be used in place of the spinner on failure. The default value is ✖.
+         */
+        failPrefix: string;
+
+        /**
+         * The symbol to be used in place of the spinner on stop. Default value is `undefined`.
+         */
+        stoppedPrefix?: string;
+
+        /**
          * Disable spinner animations (will still print raw messages if `true`). The default value is `false`.
          */
         disableSpins: boolean;
@@ -119,6 +122,7 @@ declare namespace Spinnies {
          * Defines the animated spinner to be used while each spinner is active/spinning.
          */
         spinner: Spinner;
+
     }
 }
 
@@ -172,6 +176,7 @@ declare class Spinnies {
      * @returns full `SpinnerOptions` object for the given spinner, with
      * defaults applied
      */
+    succeed: (name: string, text?: string) => Spinnies.SpinnerOptions;
     succeed: (name: string, options?: Partial<Spinnies.SpinnerOptions>) => Spinnies.SpinnerOptions;
 
     /**
@@ -180,7 +185,17 @@ declare class Spinnies {
      * @returns full `SpinnerOptions` object for the given spinner, with
      * defaults applied
      */
+    fail: (name: string, text?: string) => Spinnies.SpinnerOptions;
     fail: (name: string, options?: Partial<Spinnies.SpinnerOptions>) => Spinnies.SpinnerOptions;
+
+    /**
+     * Sets the specified spinner status as stopped.
+     *
+     * @returns full `SpinnerOptions` object for the given spinner, with
+     * defaults applied
+     */
+    stop: (name: string, text?: string) => Spinnies.SpinnerOptions;
+    stop: (name: string, options?: Partial<Spinnies.SpinnerOptions>) => Spinnies.SpinnerOptions;
 
     /**
      * Stops the spinners and sets the non-succeeded and non-failed ones to the provided status.

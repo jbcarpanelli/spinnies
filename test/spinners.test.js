@@ -13,9 +13,6 @@ describe('Spinnies', () => {
   beforeEach('constructor', () => {
     this.spinnies = new Spinnies();
     this.spinnersOptions = {
-      succeedColor: 'green',
-      failColor: 'red',
-      spinnerColor: 'greenBright',
       status: 'spinning',
     };
   });
@@ -53,7 +50,7 @@ describe('Spinnies', () => {
         context('when specifying options', () => {
           context('when options are correct', () => {
             it('overrides the default options', () => {
-              const options = { color: 'black', spinnerColor: 'black', succeedColor: 'black', failColor: 'black', status: 'non-spinnable', indent: 2 };
+              const options = { textColor: 'black', prefixColor: 'black', status: 'non-spinnable', indent: 2 };
               const spinner = this.spinnies.add('spinner-name', options);
               expect(spinner).to.include({ ...this.spinnersOptions, ...options });
             });
@@ -61,7 +58,7 @@ describe('Spinnies', () => {
 
           context('when options are not valid', () => {
             it('mantains the default options', () => {
-              const options = { color: 'foo', spinnerColor: 'bar', status: 'buz', indent: 'baz' };
+              const options = { textColor: 'foo', prefixColor: 'bar', status: 'buz', indent: 'baz' };
               const spinner = this.spinnies.add('spinner-name', options);
               expect(spinner).to.include(this.spinnersOptions);
             });
@@ -99,6 +96,7 @@ describe('Spinnies', () => {
 
       expectToBehaveLikeAnUpdate(this, 'succeed');
       expectToBehaveLikeAnUpdate(this, 'fail');
+      expectToBehaveLikeAnUpdate(this, 'stop');
       expectToBehaveLikeAnUpdate(this, 'update');
 
       describe('#stopAll', () => {
@@ -121,7 +119,8 @@ describe('Spinnies', () => {
 
             expectToKeepFinishedSpinners();
             expect(this.thirdSpinner.status).to.eq('succeed');
-            expect(this.thirdSpinner.color).to.eq('green');
+            expect(this.thirdSpinner.prefixColor).to.eq('green');
+            expect(this.thirdSpinner.textColor).to.eq('none');
           });
 
           it('sets non-finished spinners as fail', () => {
@@ -129,7 +128,8 @@ describe('Spinnies', () => {
 
             expectToKeepFinishedSpinners();
             expect(this.thirdSpinner.status).to.eq('fail');
-            expect(this.thirdSpinner.color).to.eq('red');
+            expect(this.thirdSpinner.prefixColor).to.eq('red');
+            expect(this.thirdSpinner.textColor).to.eq('none');
           });
 
           it('sets non-finished spinners as stopped', () => {
@@ -137,7 +137,8 @@ describe('Spinnies', () => {
 
             expectToKeepFinishedSpinners();
             expect(this.thirdSpinner.status).to.eq('stopped');
-            expect(this.thirdSpinner.color).to.eq('grey');
+            expect(this.thirdSpinner.prefixColor).to.eq('none');
+            expect(this.thirdSpinner.textColor).to.eq('none');
           });
         });
 
@@ -147,7 +148,8 @@ describe('Spinnies', () => {
 
             expectToKeepFinishedSpinners();
             expect(this.thirdSpinner.status).to.eq('stopped');
-            expect(this.thirdSpinner.color).to.eq('grey');
+            expect(this.thirdSpinner.prefixColor).to.eq('none');
+            expect(this.thirdSpinner.textColor).to.eq('none');
           });
         });
       });

@@ -1,13 +1,14 @@
 'use strict';
 
 const expect = require('chai').expect
+const chalk = require('chalk');
 
-const { purgeSpinnersOptions, purgeSpinnerOptions, colorOptions, breakText } = require('../utils');
+const { purgeSpinnersOptions, purgeSpinnerOptions, colorOptions, breakText, applyColor } = require('../utils');
 const { dots } = require('../spinners');
 
 describe('utils', () => {
   beforeEach('set options', () => {
-    this.colors = { color: 'blue', spinnerColor: 'blue', succeedColor: 'blue', failColor: 'blue' };
+    this.colors = { textColor: 'blue', prefixColor: 'blue' };
   });
 
   describe('functions', () => {
@@ -21,9 +22,9 @@ describe('utils', () => {
         });
 
         it('removes invalid colors', () => {
-          const colors = colorOptions({ ...this.colors, spinnerColor: 'foo', succeedColor: 'bar' });
-          expect(colors).to.include({ color: 'blue', failColor: 'blue' });
-          expect(colors).to.not.have.any.keys('spinnerColor', 'succeedColor');
+          const colors = colorOptions({ ...this.colors, prefixColor: 'foo' });
+          expect(colors).to.include({ textColor: 'blue' });
+          expect(colors).to.not.have.any.keys('prefixColor');
         });
       });
     });
@@ -120,6 +121,42 @@ describe('utils', () => {
         it('does not add line-breaks to the given text', () => {
           const text = '12345';
           expect(text.split('\n')).to.have.lengthOf(1);
+        });
+      });
+    });
+
+    describe('#applyColor', () => {
+      context('when a valid color is given', () => {
+        it ('should apply a color', () => {
+          const text = '12345';
+          const color = 'green';
+
+          const coloredText = applyColor(color, text);
+
+          expect(coloredText).to.equal(chalk.green(text));
+          expect(coloredText).not.to.equal(text);
+        });
+      });
+
+      context("when a color value of 'none' is given", () => {
+        it ('should not apply a color', () => {
+          const text = '12345';
+          const color = 'none';
+
+          const coloredText = applyColor(color, text);
+
+          expect(coloredText).to.equal(text);
+        });
+      });
+
+      context('when a color value of undefined is given', () => {
+        it ('should not apply a color', () => {
+          const text = '12345';
+          const color = undefined;
+
+          const coloredText = applyColor(color, text);
+
+          expect(coloredText).to.equal(text);
         });
       });
     });
