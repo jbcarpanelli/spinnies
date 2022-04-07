@@ -1,8 +1,11 @@
 # ![spin](https://i.ibb.co/4M0J13j/spin.png) Spinnies ![spin](https://i.ibb.co/4M0J13j/spin.png)
+> Maintained by the Truffle team, originally forked from
+> [jcarpanelli/spinnies](https://github.com/jcarpanelli/spinnies)
+
 > Node.js module to create and manage multiple spinners in command-line interface programs
 
-[![npm](https://img.shields.io/npm/v/spinnies.svg)](https://www.npmjs.com/package/spinnies)
-[![CircleCI](https://circleci.com/gh/jcarpanelli/spinnies.svg?style=shield)](https://circleci.com/gh/jcarpanelli/spinnies)
+
+[![npm](https://img.shields.io/npm/v/spinnies.svg)](https://www.npmjs.com/package/@trufflesuite/spinnies)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg)](https://github.com/RichardLitt/standard-readme)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 

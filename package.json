@@ -1,6 +1,6 @@
 {
-  "name": "spinnies",
-  "version": "0.5.1",
+  "name": "@trufflesuite/spinnies",
+  "version": "0.1.0-0",
   "description": "Create and manage multiple spinners in command-line interface programs",
   "main": "index.js",
   "scripts": {
@@ -24,15 +24,25 @@
     "command",
     "terminal"
   ],
-  "author": "Juan Bautista Carpanelli <juanbanelli@gmail.com>",
+  "contributors": [
+    {
+      "name": "Juan Bautista Carpanelli",
+      "email": "juanbanelli@gmail.com",
+      "url": "https://github.com/jcarpanelli"
+    },
+    {
+      "name": "Ben Burns",
+      "url": "https://github.com/benjamincburns"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:jcarpanelli/spinnies.git"
+    "url": "git+ssh://git@github.com:trufflesuite/spinnies.git"
   },
   "bugs": {
-    "url": "https://github.com/jcarpanelli/spinnies/issues"
+    "url": "https://github.com/trufflesuite/spinnies/issues"
   },
-  "homepage": "https://github.com/jcarpanelli/spinnies#readme",
+  "homepage": "https://github.com/trufflesuite/spinnies#readme",
   "license": "MIT",
   "dependencies": {
     "chalk": "^2.4.2",
