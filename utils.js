@@ -5,7 +5,7 @@ const stripAnsi = require('strip-ansi');
 const { dashes, dots } = require('./spinners');
 const chalk = require('chalk');
 
-const VALID_STATUSES = ['succeed', 'fail', 'spinning', 'non-spinnable', 'stopped'];
+const VALID_STATUSES = ['succeed', 'fail', 'warn', 'spinning', 'non-spinnable', 'stopped'];
 const VALID_COLORS = ['black', 'red', 'green', 'yellow', 'blue', 'magenta', 'cyan', 'white', 'gray', 'redBright', 'greenBright', 'yellowBright', 'blueBright', 'magentaBright', 'cyanBright', 'whiteBright', 'none'];
 
 function purgeSpinnerOptions(options) {
@@ -49,18 +49,20 @@ function colorOptions({ textColor, prefixColor }) {
   return colors;
 }
 
-function prefixOptions({ succeedPrefix, failPrefix, stoppedPrefix }) {
+function prefixOptions({ succeedPrefix, failPrefix, warnPrefix, stoppedPrefix }) {
   if(terminalSupportsUnicode()) {
     succeedPrefix = succeedPrefix || '✓';
     failPrefix = failPrefix || '✖';
+    warnPrefix = warnPrefix || '⚠';
   } else {
     succeedPrefix = succeedPrefix || '√';
     failPrefix = failPrefix || '×';
+    warnPrefix = warnPrefix || '~';
   }
 
   stoppedPrefix = stoppedPrefix || "";
 
-  return { succeedPrefix, failPrefix, stoppedPrefix };
+  return { succeedPrefix, failPrefix, warnPrefix, stoppedPrefix };
 }
 
 function breakText(text, prefixLength) {

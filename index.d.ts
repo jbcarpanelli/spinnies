@@ -28,7 +28,7 @@ declare namespace Spinnies {
       | "whiteBright"
       | "none";
 
-    type StopAllStatus = "succeed" | "fail" | "stopped";
+    type StopAllStatus = "succeed" | "fail" | "warn" | "stopped";
     type SpinnerStatus = StopAllStatus | "spinning" | "non-spinnable";
 
     interface Spinner {
@@ -75,6 +75,11 @@ declare namespace Spinnies {
          * The symbol to be used in place of the spinner on failure. The default value is ✖.
          */
         failPrefix: string;
+
+        /**
+         * The symbol to be used in place of the spinner on warn. The default value is ⚠.
+         */
+        warnPrefix: string;
 
         /**
          * The symbol to be used in place of the spinner on stop. Default value is `""`.
@@ -181,6 +186,15 @@ declare class Spinnies {
 
     /**
      * Sets the specified spinner status as fail.
+     *
+     * @returns full `SpinnerOptions` object for the given spinner, with
+     * defaults applied
+     */
+    fail: (name: string, text?: string) => Spinnies.SpinnerOptions;
+    fail: (name: string, options?: Partial<Spinnies.SpinnerOptions>) => Spinnies.SpinnerOptions;
+
+    /**
+     * Sets the specified spinner status as warn.
      *
      * @returns full `SpinnerOptions` object for the given spinner, with
      * defaults applied

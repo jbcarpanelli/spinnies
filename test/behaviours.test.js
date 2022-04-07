@@ -7,6 +7,7 @@ function expectToBehaveLikeAnUpdate(self, status) {
     update: "spinning",
     stop: "stopped",
     succeed: "succeed",
+    warn: "warn",
     fail: "fail"
   };
   const currentStatus = statusMap[status] || status;
