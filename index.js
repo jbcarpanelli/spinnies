@@ -144,8 +144,6 @@ class Spinnies {
         options.status = newStatus;
       }
     });
-    this.checkIfActiveSpinners();
-
     return this.spinners;
   }
 
@@ -168,7 +166,6 @@ class Spinnies {
       this.currentInterval = this.loopStream();
       if (!this.isCursorHidden) cliCursor.hide();
       this.isCursorHidden = true;
-      this.checkIfActiveSpinners();
     } else {
       this.setRawStreamOutput();
     }
@@ -179,6 +176,7 @@ class Spinnies {
     return setInterval(() => {
       this.setStreamOutput(frames[this.currentFrameIndex]);
       this.currentFrameIndex = this.currentFrameIndex === frames.length - 1 ? 0 : ++this.currentFrameIndex
+      this.checkIfActiveSpinners();
     }, interval);
   }
 
