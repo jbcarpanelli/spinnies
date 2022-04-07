@@ -6,6 +6,7 @@
   "scripts": {
     "test": "npx mocha test"
   },
+  "types": "index.d.ts",
   "keywords": [
     "node",
     "nodejs",
