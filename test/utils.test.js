@@ -3,7 +3,7 @@
 const expect = require('chai').expect
 
 const { purgeSpinnersOptions, purgeSpinnerOptions, colorOptions, breakText } = require('../utils');
-const { dots } = require('../spinners');
+const { dots } = require('../spinners.json');
 
 describe('utils', () => {
   beforeEach('set options', () => {
