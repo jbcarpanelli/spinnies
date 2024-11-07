@@ -27,7 +27,7 @@
   "author": "Juan Bautista Carpanelli <juanbanelli@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:jcarpanelli/spinnies.git"
+    "url": "https://github.com/jcarpanelli/spinnies.git"
   },
   "bugs": {
     "url": "https://github.com/jcarpanelli/spinnies/issues"
