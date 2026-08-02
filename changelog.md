@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+### Fixed
+- `destroy()` no longer no-ops: it set `isDestroyed` before calling `cleanup()`, which bailed out on that very flag. The render interval kept running (holding the process open) and the cursor stayed hidden for good, since the `exit` listener had just been removed.
+- `stopAll()` returned `{}` instead of the stopped spinners, and `succeed()`/`fail()` returned `undefined` when applied to the last active spinner: the registry is reset by the final render, so the reference is now captured beforehand.
+- Wrapped text no longer corrupts the display. Line lengths were measured on the raw text while the wrapped text was drawn, so the cursor was rewound by too few lines — a drift of 3 rows per frame on a 60-character line at 20 columns.
+- `update()` no longer resets every color the caller did not restate, and no longer stores a status that failed validation.
+- `add()` no longer mutates the options object it is given.
+- The registry is now reset consistently: outside a TTY it used to survive, so `pick()` returned a spinner or `undefined` depending on the environment.
+- `stopAll()` now logs the final statuses outside a TTY.
+- Fixed an operator precedence bug in the constructor where `options.spinner ?? TERMINAL_SUPPORTS_UNICODE ? dots : dashes` always evaluated to `dots`. It was masked by a later spread, so behaviour is unchanged.
+
+### Changed
+- Raw output (no TTY, or `disableSpins`) is now an append-only log: one line per spinner appearance or change, instead of reprinting the whole list on every mutation. The bundled demo drops from 87 lines of CI output to 15.
+- Spinners are mutated in place, so references returned by `add()`/`pick()` stay live across `update()` — matching what `stopAll()` already did.
+- `SIGINT`/`SIGTERM` are no longer intercepted. The library used to call `process.exit()` from its own handler, pre-empting the host application's shutdown; `cliCursor.hide()` already registers a restore hook of its own.
+- A single `exit` listener is now shared by all instances, instead of three per instance crossing Node's default cap of 10 after ten instances.
+
+### Performance
+- A frame is emitted in a single stream write rather than `3N+3`: with 10 spinners, 2 writes per frame instead of 33.
+- The render interval is reused instead of being torn down and rebuilt on every `add`/`update`/`succeed`/`fail`/`remove`.
+
 ## [0.5.1] - 2019-12-11
 ### Fixed
 - Fix typo on `isCursorHidden` call (https://github.com/jcarpanelli/spinnies/pull/20). Thanks @noriyotcp!

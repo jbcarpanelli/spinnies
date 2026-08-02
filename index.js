@@ -1,6 +1,5 @@
 'use strict';
 
-import readline from 'readline';
 import colors from 'yoctocolors';
 import cliCursor from 'cli-cursor';
 import spinners from './spinners.json' with { type: 'json' };
@@ -10,27 +9,64 @@ import {
     colorOptions,
     breakText,
     getLinesLength,
-    DEFAULT_COLOR,
-    TERMINAL_SUPPORTS_UNICODE,
+    moveCursorSequence,
     writeStream,
-    cleanStream
+    cleanStream,
+    CLEAR_SCREEN_DOWN,
+    DEFAULT_COLOR,
 } from './utils.js';
 
 const { dashes, dots } = spinners;
 
+const FINISHED_STATUSES = ['fail', 'succeed', 'non-spinnable'];
+const STOPPABLE_STATUSES = ['fail', 'succeed'];
+
+/**
+ * Every live instance shares a single `exit` listener. Binding one per instance used to
+ * cross Node's default cap of 10 listeners per event as soon as 10 instances existed.
+ *
+ * Signals are deliberately left alone: `cliCursor.hide()` registers its own restore hook,
+ * and a library that traps SIGINT to call `process.exit()` robs the host application of
+ * its own shutdown sequence.
+ */
+const liveInstances = new Set();
+let exitListener = null;
+
+function bindExitListener() {
+    if (exitListener) return;
+
+    exitListener = () => {
+        for (const instance of liveInstances) instance.cleanup();
+    };
+
+    try {
+        process.on('exit', exitListener);
+    } catch { // some hosts freeze the process object
+        exitListener = null;
+    }
+}
+
+function unbindExitListener() {
+    if (!exitListener || liveInstances.size > 0) return;
+
+    try {
+        process.removeListener('exit', exitListener);
+    } catch { /* idem */ }
+
+    exitListener = null;
+}
+
 class Spinnies {
     constructor(options = {}) {
-        options = purgeSpinnersOptions(options);
+        // `purgeSpinnersOptions` always returns every color, both prefixes and a validated
+        // spinner, so listing defaults here would be dead code.
         this.options = {
-            spinnerColor: DEFAULT_COLOR.SPINNER,
-            succeedColor: DEFAULT_COLOR.SUCCEED,
-            failColor: DEFAULT_COLOR.FAILED,
-            spinner: options.spinner ?? TERMINAL_SUPPORTS_UNICODE ? dots : dashes,
             disableSpins: false,
-            ...options,
+            ...purgeSpinnersOptions(options),
         };
 
         this.spinners = {};
+        this.rawRenderedLines = new Map();
         this.isCursorHidden = false;
         this.currentInterval = null;
         this.stream = process.stderr;
@@ -38,21 +74,23 @@ class Spinnies {
         this.currentFrameIndex = 0;
         this.isDestroyed = false;
 
-        this.spin = !this.options.disableSpins && !process.env.CI && this.stream?.isTTY && this.stream?.writable;
-        if (!this.spin) {
-            console.warn('[spinnies] Falling back to raw output (TTY not detected or spins disabled)');
+        this.spin = Boolean(
+            !this.options.disableSpins
+            && !process.env.CI
+            && this.stream?.isTTY
+            && this.stream?.writable
+        );
+
+        // Disabling spins is a deliberate choice, not a fallback worth warning about.
+        if (!this.spin && !this.options.disableSpins) {
+            console.warn('[spinnies] Falling back to raw output (TTY not detected)');
         }
 
-        this.exitHandler = this.handleExit.bind(this);
-        this.sigintHandler = this.handleSigint.bind(this);
-        this.sigtermHandler = this.handleSigterm.bind(this);
-        
-        this.bindEventListeners();
+        liveInstances.add(this);
+        bindExitListener();
     }
 
     cleanup() {
-        if (this.isDestroyed) return;
-
         if (this.currentInterval) {
             clearInterval(this.currentInterval);
             this.currentInterval = null;
@@ -64,48 +102,24 @@ class Spinnies {
         }
 
         if (this.lineCount > 0 && this.stream?.writable) {
-            readline.moveCursor(this.stream, 0, this.lineCount);
-            readline.clearScreenDown(this.stream);
+            this.stream.write(`${moveCursorSequence(0, this.lineCount)}${CLEAR_SCREEN_DOWN}`);
+            this.lineCount = 0;
         }
-    }
-
-    handleExit() {
-        this.cleanup();
-    }
-
-    handleSigint() {
-        this.cleanup();
-        process.exit(130);
-    }
-    
-    handleSigterm() {
-        this.cleanup();
-        process.exit(143);
-    }
-    
-    bindEventListeners() {
-        if (this.isDestroyed) return;
-        
-        try {
-            process.on('exit', this.exitHandler);
-            process.on('SIGINT', this.sigintHandler);
-            process.on('SIGTERM', this.sigtermHandler);
-        } catch (error) {}// eslint-disable-line
     }
 
     destroy() {
         if (this.isDestroyed) return;
-        
-        this.isDestroyed = true;
-        try {
-            process.removeListener('exit', this.exitHandler);
-            process.removeListener('SIGINT', this.sigintHandler);
-            process.removeListener('SIGTERM', this.sigtermHandler);
-        } catch (error) {}// eslint-disable-line
-        
+
+        // Cleanup runs first: it used to be called after `isDestroyed` was set, and bailed
+        // out on that very flag, leaving the interval running and the cursor hidden.
         this.cleanup();
 
+        this.isDestroyed = true;
+        liveInstances.delete(this);
+        unbindExitListener();
+
         this.spinners = {};
+        this.rawRenderedLines.clear();
         this.options = null;
         this.stream = null;
     }
@@ -122,14 +136,16 @@ class Spinnies {
         if (typeof name !== 'string' || !name.trim()) throw new Error('A spinner reference name must be specified');
         if (this.spinners[name]) throw new Error(`Spinner with name "${name}" already exists.`);
 
-        if (!options.text) options.text = name;
+        // Purged into a fresh object so the caller's options are never mutated.
+        const purgedOptions = purgeSpinnerOptions(options);
+        if (!purgedOptions.text) purgedOptions.text = name;
 
         const spinnerProperties = {
             ...colorOptions(this.options),
             succeedPrefix: this.options.succeedPrefix,
             failPrefix: this.options.failPrefix,
             status: 'spinning',
-            ...purgeSpinnerOptions(options),
+            ...purgedOptions,
         };
 
         this.spinners[name] = spinnerProperties;
@@ -140,99 +156,111 @@ class Spinnies {
 
     update(name, options = {}) {
         if (this.isDestroyed) throw new Error('Spinnies instance has been destroyed');
-        
-        this.setSpinnerProperties(name, options, options.status);
+
+        // The status goes through `setSpinnerProperties` unvalidated when passed as an
+        // argument, so it is left to be picked from the purged options instead.
+        const spinner = this.setSpinnerProperties(name, options);
         this.updateSpinnerState();
 
-        return this.spinners[name];
+        return spinner;
     }
 
     succeed(name, options = {}) {
         if (this.isDestroyed) throw new Error('Spinnies instance has been destroyed');
-        
-        this.setSpinnerProperties(name, options, 'succeed');
+
+        const spinner = this.setSpinnerProperties(name, options, 'succeed');
         this.updateSpinnerState();
 
-        return this.spinners[name];
+        return spinner;
     }
 
     fail(name, options = {}) {
         if (this.isDestroyed) throw new Error('Spinnies instance has been destroyed');
-        
-        this.setSpinnerProperties(name, options, 'fail');
+
+        const spinner = this.setSpinnerProperties(name, options, 'fail');
         this.updateSpinnerState();
 
-        return this.spinners[name];
+        return spinner;
     }
 
     remove(name) {
         if (this.isDestroyed) throw new Error('Spinnies instance has been destroyed');
-        
+
         if (typeof name !== 'string') throw new Error('A spinner reference name must be specified');
         if (!this.spinners[name]) throw new Error(`No spinner initialized with name ${name}`);
 
         delete this.spinners[name];
+        this.rawRenderedLines.delete(name);
         this.updateSpinnerState();
     }
 
     stopAll(newStatus = 'stopped') {
         if (this.isDestroyed) throw new Error('Spinnies instance has been destroyed');
-        
-        for (const name of Object.keys(this.spinners)) {
-            const spinner = this.spinners[name];
-            if (!['fail', 'succeed', 'non-spinnable'].includes(spinner.status)) {
-                if (['fail', 'succeed'].includes(newStatus)) {
-                    spinner.status = newStatus;
-                    spinner.color = this.options[`${newStatus}Color`];
-                } else {
-                    spinner.status = 'stopped';
-                    spinner.color = DEFAULT_COLOR.STOPPED;
-                }
+
+        // Captured before rendering: a completed run swaps `this.spinners` for a fresh
+        // object, which used to make this method always return `{}`.
+        const stoppedSpinners = this.spinners;
+
+        for (const spinner of Object.values(stoppedSpinners)) {
+            if (FINISHED_STATUSES.includes(spinner.status)) continue;
+
+            if (STOPPABLE_STATUSES.includes(newStatus)) {
+                spinner.status = newStatus;
+                spinner.color = this.options[`${newStatus}Color`];
+            } else {
+                spinner.status = 'stopped';
+                spinner.color = DEFAULT_COLOR.STOPPED;
             }
         }
 
-        this.checkIfActiveSpinners();
-        return this.spinners;
+        // Routed through the normal render path: calling `checkIfActiveSpinners` directly
+        // skipped raw output, so the final statuses were never logged outside a TTY.
+        this.updateSpinnerState();
+
+        return stoppedSpinners;
     }
 
     hasActiveSpinners() {
-        return Object.values(this.spinners).some(({ status }) => status === 'spinning');
+        // Hot path, called on every frame: avoids the array `Object.values` would allocate.
+        for (const name in this.spinners) {
+            if (this.spinners[name].status === 'spinning') return true;
+        }
+
+        return false;
     }
 
     setSpinnerProperties(name, options, status) {
         if (typeof name !== 'string') throw new Error('A spinner reference name must be specified');
-        if (!this.spinners[name]) throw new Error(`No spinner initialized with name ${name}`);
 
-        options = purgeSpinnerOptions(options);
-        const updatedStatus = status || this.spinners[name].status || 'spinning';
+        const spinner = this.spinners[name];
+        if (!spinner) throw new Error(`No spinner initialized with name ${name}`);
 
-        this.spinners[name] = {
-            ...this.spinners[name],
-            ...options,
-            status: updatedStatus
-        };
+        // Mutated in place so references handed out by `add`/`pick` stay live, matching
+        // what `stopAll` already did. Replacing the object also reset every color that
+        // the caller had not restated.
+        const purgedOptions = purgeSpinnerOptions(options);
+        Object.assign(spinner, purgedOptions);
+        spinner.status = status ?? purgedOptions.status ?? spinner.status ?? 'spinning';
+
+        return spinner;
     }
 
     updateSpinnerState() {
         if (this.isDestroyed) return;
 
-        if (!this.spin) {
-            this.setRawStreamOutput();
-            return;
-        }
+        if (this.spin) {
+            if (this.hasActiveSpinners()) {
+                // Reused rather than torn down and rebuilt: recreating it on every mutation
+                // allocated a timer per call and restarted the frame cadence each time.
+                this.currentInterval ??= this.loopStream();
 
-        if (this.currentInterval) {
-            clearInterval(this.currentInterval);
-            this.currentInterval = null;
-        }
-    
-        if (this.hasActiveSpinners()) {
-            this.currentInterval = this.loopStream();
-
-            if (!this.isCursorHidden) {
-                this.isCursorHidden = true;
-                cliCursor.hide();
+                if (!this.isCursorHidden) {
+                    this.isCursorHidden = true;
+                    cliCursor.hide();
+                }
             }
+        } else {
+            this.setRawStreamOutput();
         }
 
         this.checkIfActiveSpinners();
@@ -260,58 +288,51 @@ class Spinnies {
         const linesLength = [];
         const hasActiveSpinners = this.hasActiveSpinners();
 
-        Object.values(this.spinners).forEach(
-            ({
-                text,
-                status,
-                color,
-                spinnerColor,
-                succeedColor,
-                failColor,
-                succeedPrefix,
-                failPrefix,
-                indent,
-            }) => {
-                let line;
-                let prefixLength = indent || 0;
+        for (const spinner of Object.values(this.spinners)) {
+            const { text, status, color, spinnerColor, succeedColor, failColor,
+                succeedPrefix, failPrefix, indent } = spinner;
 
-                switch (status) {
-                case 'spinning': {
-                    prefixLength += frame.length + 1;
-                    const formattedText = breakText(text, prefixLength);
-                    line = `${colors[spinnerColor](frame)} ${
-                        color ? colors[color](formattedText) : formattedText
-                    }`;
-                    break;
-                }
-                case 'succeed': {
-                    prefixLength += succeedPrefix.length + 1;
-                    const formattedText = hasActiveSpinners ? breakText(text, prefixLength) : text;
-                    line = `${colors[succeedColor](succeedPrefix)} ${colors[succeedColor](formattedText)}`;
-                    break;
-                }
-                case 'fail': {
-                    prefixLength += failPrefix.length + 1;
-                    const formattedText = hasActiveSpinners ? breakText(text, prefixLength) : text;
-                    line = `${colors[failColor](failPrefix)} ${colors[failColor](formattedText)}`;
-                    break;
-                }
-                default: {
-                    const formattedText = hasActiveSpinners ? breakText(text, prefixLength) : text;
-                    line = color && colors[color] ? colors[color](formattedText) : formattedText;
-                    break;
-                }
-                }
+            let line;
+            let formattedText;
+            let prefixLength = indent || 0;
 
-                linesLength.push(...getLinesLength(text, prefixLength));
-                output += indent ? `${' '.repeat(indent)}${line}\n` : `${line}\n`;
+            switch (status) {
+            case 'spinning': {
+                prefixLength += frame.length + 1;
+                formattedText = breakText(text, prefixLength);
+                line = `${colors[spinnerColor](frame)} ${
+                    color ? colors[color](formattedText) : formattedText
+                }`;
+                break;
             }
-        );
+            case 'succeed': {
+                prefixLength += succeedPrefix.length + 1;
+                formattedText = hasActiveSpinners ? breakText(text, prefixLength) : text;
+                line = `${colors[succeedColor](succeedPrefix)} ${colors[succeedColor](formattedText)}`;
+                break;
+            }
+            case 'fail': {
+                prefixLength += failPrefix.length + 1;
+                formattedText = hasActiveSpinners ? breakText(text, prefixLength) : text;
+                line = `${colors[failColor](failPrefix)} ${colors[failColor](formattedText)}`;
+                break;
+            }
+            default: {
+                formattedText = hasActiveSpinners ? breakText(text, prefixLength) : text;
+                line = color && colors[color] ? colors[color](formattedText) : formattedText;
+                break;
+            }
+            }
 
-        if (!hasActiveSpinners) readline.clearScreenDown(this.stream);
+            // Measured on the wrapped text, not the raw one: a wrapped line renders as
+            // several physical lines, and under-counting them rewound the cursor too
+            // little on the next frame, corrupting the display.
+            linesLength.push(...getLinesLength(formattedText, prefixLength));
+            output += indent ? `${' '.repeat(indent)}${line}\n` : `${line}\n`;
+        }
 
-        const writeSuccess = writeStream(this.stream, output, linesLength);
-        if (!writeSuccess) return false;
+        const prefix = hasActiveSpinners ? '' : CLEAR_SCREEN_DOWN;
+        if (!writeStream(this.stream, `${prefix}${output}`, linesLength)) return false;
 
         if (hasActiveSpinners) cleanStream(this.stream, linesLength);
 
@@ -322,23 +343,45 @@ class Spinnies {
     setRawStreamOutput() {
         if (this.isDestroyed || !this.stream?.writable) return;
 
-        for (const { text } of Object.values(this.spinners)) {
-            const prefix = '- ';
-            this.stream.write(`${prefix}${text}\n`);
+        let output = '';
+
+        for (const [name, spinner] of Object.entries(this.spinners)) {
+            const { text, status, succeedPrefix, failPrefix, indent } = spinner;
+
+            let prefix = '-';
+            if (status === 'succeed') prefix = succeedPrefix;
+            else if (status === 'fail') prefix = failPrefix;
+
+            const line = `${' '.repeat(indent || 0)}${prefix} ${text}`;
+
+            // Raw output is an append-only log, not a canvas: a line is emitted only when
+            // it differs from the last one written for that spinner. Reprinting the whole
+            // list on every mutation made CI logs grow quadratically.
+            if (this.rawRenderedLines.get(name) === line) continue;
+
+            this.rawRenderedLines.set(name, line);
+            output += `${line}\n`;
         }
+
+        if (output) this.stream.write(output);
     }
 
     checkIfActiveSpinners() {
-        if (this.isDestroyed) return;
-
-        if (this.hasActiveSpinners()) return;
+        if (this.isDestroyed || this.hasActiveSpinners()) return;
 
         if (this.spin) {
             this.setStreamOutput();
-            if (this.lineCount > 0) readline.moveCursor(this.stream, 0, this.lineCount);
 
-            clearInterval(this.currentInterval);
-            this.currentInterval = null;
+            if (this.lineCount > 0 && this.stream?.writable) {
+                this.stream.write(moveCursorSequence(0, this.lineCount));
+            }
+            // Those lines are committed: `cleanup` must not scroll past them a second time.
+            this.lineCount = 0;
+
+            if (this.currentInterval) {
+                clearInterval(this.currentInterval);
+                this.currentInterval = null;
+            }
 
             if (this.isCursorHidden) {
                 cliCursor.show();
@@ -346,7 +389,10 @@ class Spinnies {
             }
         }
 
+        // Reset in both modes: the registry used to survive in raw mode only, so `pick`
+        // returned a spinner or `undefined` depending on whether stderr was a TTY.
         this.spinners = {};
+        this.rawRenderedLines.clear();
     }
 }
 

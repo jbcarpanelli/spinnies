@@ -177,7 +177,9 @@ Stops the spinners and sets the non-succeeded and non-failed ones to the provide
 
 #### destroy()
 
-Proper cleanup when the instance is no longer needed
+Proper cleanup when the instance is no longer needed: stops the render interval, restores the cursor and releases the process listener. Safe to call more than once.
+
+Spinnies does not intercept `SIGINT`/`SIGTERM`, so your application keeps full control of its own shutdown. The cursor is still restored on exit.
 
 #### hasActiveSpinners()
 Return value: returns `false` if all spinners have succeeded, failed or have been stopped.

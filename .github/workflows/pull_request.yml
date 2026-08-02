@@ -40,3 +40,6 @@ jobs:
 
       - name: Run demo-stop-all
         run: npm run demo-stop-all
+
+      - name: Run demo-destroy
+        run: npm run demo-destroy

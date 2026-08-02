@@ -38,6 +38,24 @@ describe('Spinnies', () => {
                         });
                     });
                 });
+
+                describe('when the name is blank', () => {
+                    it('throws an error', () => {
+                        assert.throws(() => spinnies.add('   '), {
+                            message: 'A spinner reference name must be specified',
+                        });
+                    });
+                });
+
+                describe('when the name is already taken', () => {
+                    it('throws an error', () => {
+                        spinnies.add('duplicate');
+
+                        assert.throws(() => spinnies.add('duplicate'), {
+                            message: 'Spinner with name "duplicate" already exists.',
+                        });
+                    });
+                });
             });
 
             describe('adding new spinners', () => {
@@ -110,6 +128,14 @@ describe('Spinnies', () => {
                 });
             });
 
+            describe('when the spinner does not exist', () => {
+                it('throws an error', () => {
+                    assert.throws(() => spinnies.remove('i-dont-exist'), {
+                        message: 'No spinner initialized with name i-dont-exist',
+                    });
+                });
+            });
+
             it('removes the spinner from the spinners object', () => {
                 spinnies.add('spinner-name');
                 assertHasExactKeys(spinnies.spinners, 'spinner-name');
@@ -117,6 +143,34 @@ describe('Spinnies', () => {
                 spinnies.remove('spinner-name');
                 assertHasExactKeys(spinnies.spinners);
             });
+        });
+
+        describe('#pick', () => {
+            it('returns undefined when the name is not a string', () => {
+                assert.strictEqual(spinnies.pick(42), undefined);
+                assert.strictEqual(spinnies.pick(), undefined);
+            });
+        });
+
+        describe('once the instance has been destroyed', () => {
+            const mutations = {
+                add: (instance) => instance.add('whatever'),
+                update: (instance) => instance.update('whatever'),
+                succeed: (instance) => instance.succeed('whatever'),
+                fail: (instance) => instance.fail('whatever'),
+                remove: (instance) => instance.remove('whatever'),
+                stopAll: (instance) => instance.stopAll(),
+            };
+
+            for (const [method, invoke] of Object.entries(mutations)) {
+                it(`#${method} throws`, () => {
+                    spinnies.destroy();
+
+                    assert.throws(() => invoke(spinnies), {
+                        message: 'Spinnies instance has been destroyed',
+                    });
+                });
+            }
         });
 
         describe('methods that modify the status of a spinner', () => {

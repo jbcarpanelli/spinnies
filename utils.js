@@ -1,6 +1,5 @@
 'use strict';
 
-import readline from 'readline';
 import stripAnsi from 'strip-ansi';
 import stringWidth from 'string-width';
 import spinners from './spinners.json' with { type: 'json' };
@@ -17,6 +16,8 @@ const VALID_COLORS = new Set([
     'magentaBright', 'cyanBright', 'whiteBright',
 ]);
 
+const COLOR_KEYS = ['color', 'succeedColor', 'failColor', 'spinnerColor'];
+
 const DEFAULT_COLOR = {
     COLOR: 'white',
     SPINNER: 'greenBright',
@@ -24,6 +25,10 @@ const DEFAULT_COLOR = {
     FAILED: 'red',
     STOPPED: 'gray',
 };
+
+const CSI = `${String.fromCharCode(27)}[`;
+const CLEAR_LINE_RIGHT = `${CSI}0K`;
+const CLEAR_SCREEN_DOWN = `${CSI}0J`;
 
 const MAX_INDENT = 100;
 const MAX_RECURSIVE = 15;
@@ -43,18 +48,18 @@ function colorOptions({ color, succeedColor, failColor, spinnerColor }) {
     };
 }
 
-function purgeSpinnerOptions(options) {
+function purgeSpinnerOptions(options = {}) {
     const { text, status, indent } = options;
 
     const opts = {};
+    for (const key of COLOR_KEYS) {
+        if (VALID_COLORS.has(options[key])) opts[key] = options[key];
+    }
     if (typeof status === 'string' && VALID_STATUSES.has(status)) opts.status = status;
     if (typeof text === 'string') opts.text = text;
     if (typeof indent === 'number' && indent >= 0 && indent <= MAX_INDENT) opts.indent = indent;
 
-    return {
-        ...colorOptions(options),
-        ...opts
-    };
+    return opts;
 }
 
 function prefixOptions({ succeedPrefix, failPrefix }) {
@@ -134,27 +139,44 @@ function getLinesLength(text, prefixLength) {
         );
 }
 
+function moveCursorSequence(dx, dy) {
+    let sequence = '';
+
+    if (dx < 0) sequence += `${CSI}${-dx}D`;
+    else if (dx > 0) sequence += `${CSI}${dx}C`;
+
+    if (dy < 0) sequence += `${CSI}${-dy}A`;
+    else if (dy > 0) sequence += `${CSI}${dy}B`;
+
+    return sequence;
+}
+
 function writeStream(stream, output, rawLines) {
     if (!stream || stream.destroyed) return false;
 
     try {
-        stream.write(output);
-        readline.moveCursor(stream, 0, -rawLines.length);
+        stream.write(`${output}${moveCursorSequence(0, -rawLines.length)}`);
         return true;
-    } catch (error) {// eslint-disable-line no-unused-vars
+    } catch {
         return false;
     }
 }
 
 function cleanStream(stream, rawLines) {
+    if (!stream || stream.destroyed) return false;
+
+    let sequence = '';
     rawLines.forEach((lineLength, index) => {
-        readline.moveCursor(stream, lineLength, index);
-        readline.clearLine(stream, 1);
-        readline.moveCursor(stream, -lineLength, -index);
+        sequence += `${moveCursorSequence(lineLength, index)}${CLEAR_LINE_RIGHT}${moveCursorSequence(-lineLength, -index)}`;
     });
-    readline.moveCursor(stream, 0, rawLines.length);
-    readline.clearScreenDown(stream);
-    readline.moveCursor(stream, 0, -rawLines.length);
+    sequence += `${moveCursorSequence(0, rawLines.length)}${CLEAR_SCREEN_DOWN}${moveCursorSequence(0, -rawLines.length)}`;
+
+    try {
+        stream.write(sequence);
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 export {
@@ -163,8 +185,10 @@ export {
     colorOptions,
     breakText,
     getLinesLength,
+    moveCursorSequence,
     writeStream,
     cleanStream,
+    CLEAR_SCREEN_DOWN,
     DEFAULT_COLOR,
     TERMINAL_SUPPORTS_UNICODE,
 };

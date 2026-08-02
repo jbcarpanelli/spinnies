@@ -11,6 +11,7 @@
   "scripts": {
     "demo": "node examples/demo.js",
     "demo-stop-all": "node examples/demo-stop-all.js",
+    "demo-destroy": "node examples/demo-destroy.js",
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "pretest": "npm run lint",
